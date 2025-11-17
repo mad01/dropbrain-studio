@@ -47,36 +47,91 @@
         .cta {
             text-align: center;
             margin: 40px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
         }
         .cta a {
             display: inline-block;
             background: #667eea;
             color: white;
-            padding: 15px 40px;
+            padding: 16px 48px;
             text-decoration: none;
             border-radius: 30px;
             font-size: 1.1em;
-            margin: 10px;
+            font-weight: 600;
             transition: all 0.3s;
+            min-width: 240px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
         .cta a:hover {
             background: #764ba2;
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .cta a.secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 14px 48px;
+        }
+        .cta a.secondary:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+            color: #764ba2;
         }
         .links {
             text-align: center;
             margin-top: 30px;
             padding-top: 30px;
             border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
         }
         .links a {
             color: #667eea;
             text-decoration: none;
-            margin: 0 15px;
+            padding: 8px 0;
         }
         .links a:hover {
             text-decoration: underline;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 16px;
+            }
+            .container {
+                padding: 32px 24px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .tagline {
+                font-size: 1.1em;
+            }
+            .cta {
+                gap: 12px;
+            }
+            .cta a {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                padding: 16px 24px;
+            }
+            .cta a.secondary {
+                padding: 14px 24px;
+            }
+            .links {
+                flex-direction: column;
+                gap: 16px;
+            }
         }
     </style>
 </head>
@@ -117,16 +172,13 @@
 
         <div class="cta">
             <a href="https://apps.apple.com/us/app/dropbrain/id6747975488" target="_blank">Download on App Store</a>
+            <a href="../" class="secondary">More Apps</a>
+            <a href="privacy_policy.html" class="secondary">Privacy Policy</a>
         </div>
 
         <p style="text-align: center; color: #999; font-size: 0.9em; margin: 30px 0;">
             DropBrain is a productivity tool with accessibility features. Individual experiences may vary.
         </p>
-
-        <div class="links">
-            <a href="privacy_policy.html">Privacy Policy</a>
-            <a href="../">More Apps</a>
-        </div>
     </div>
 </body>
 </html>

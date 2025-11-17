@@ -45,20 +45,41 @@
         }
         .links {
             margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .links a {
             display: inline-block;
             color: #007AFF;
             text-decoration: none;
-            margin-right: 20px;
-            padding: 8px 16px;
+            padding: 12px 20px;
             border: 1px solid #007AFF;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: all 0.2s;
+            min-width: 120px;
+            text-align: center;
         }
         .links a:hover {
             background: #007AFF;
             color: white;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 16px;
+            }
+            .app-card {
+                padding: 24px 20px;
+            }
+            .links {
+                flex-direction: column;
+            }
+            .links a {
+                width: 100%;
+                margin-right: 0;
+            }
         }
         footer {
             text-align: center;
