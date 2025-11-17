@@ -10,6 +10,13 @@ Privacy-first note-taking designed for neurodivergent minds.
 - **Privacy Policy:** [dropbrain/privacy_policy.html](dropbrain/privacy_policy.html)
 - **App Store:** [Link to be added]
 
+**GDPR Compliance:**
+- ✅ Full data export functionality (ZIP with YAML files)
+- ✅ Right to be forgotten (permanent data deletion)
+- ✅ Multi-step confirmation flow to prevent accidental deletion
+- ✅ No data collection, no tracking, no servers
+- ✅ All data stays in your personal iCloud account
+
 ## Structure
 
 ```
