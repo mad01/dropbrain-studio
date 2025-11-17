@@ -68,17 +68,29 @@
         /* Mobile optimizations */
         @media (max-width: 600px) {
             body {
-                padding: 20px 16px;
+                padding: 20px 12px;
             }
             .app-card {
                 padding: 24px 20px;
             }
             .links {
                 flex-direction: column;
+                padding: 0 8px;
             }
             .links a {
                 width: 100%;
-                margin-right: 0;
+                max-width: 360px;
+                margin: 0 auto;
+            }
+        }
+        
+        /* Extra small mobile */
+        @media (max-width: 400px) {
+            .app-card {
+                padding: 20px 16px;
+            }
+            .links a {
+                max-width: 100%;
             }
         }
         footer {

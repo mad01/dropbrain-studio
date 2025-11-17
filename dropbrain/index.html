@@ -104,10 +104,10 @@
         /* Mobile optimizations */
         @media (max-width: 600px) {
             body {
-                padding: 20px 16px;
+                padding: 20px 12px;
             }
             .container {
-                padding: 32px 24px;
+                padding: 28px 20px;
                 border-radius: 12px;
             }
             h1 {
@@ -115,22 +115,39 @@
             }
             .tagline {
                 font-size: 1.1em;
+                margin-bottom: 32px;
             }
             .cta {
                 gap: 12px;
+                padding: 0 8px;
             }
             .cta a {
                 width: 100%;
-                max-width: 100%;
+                max-width: 360px;
                 min-width: 0;
-                padding: 16px 24px;
+                padding: 14px 24px;
+                font-size: 1em;
             }
             .cta a.secondary {
-                padding: 14px 24px;
+                padding: 12px 24px;
             }
             .links {
                 flex-direction: column;
                 gap: 16px;
+            }
+        }
+        
+        /* Extra small mobile */
+        @media (max-width: 400px) {
+            .container {
+                padding: 24px 16px;
+            }
+            .cta {
+                padding: 0 4px;
+            }
+            .cta a {
+                max-width: 100%;
+                padding: 14px 20px;
             }
         }
     </style>
