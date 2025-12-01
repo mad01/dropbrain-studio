@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migraine Me - Track Your Migraine Patterns</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #FF6B6B;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .tagline {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        .feature {
+            margin: 30px 0;
+        }
+        .feature h2 {
+            color: #FF6B6B;
+            margin-bottom: 10px;
+        }
+        .feature p {
+            color: #666;
+            line-height: 1.8;
+        }
+        .cta {
+            text-align: center;
+            margin: 40px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+        .cta a {
+            display: inline-block;
+            background: #FF6B6B;
+            color: white;
+            padding: 16px 48px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 240px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        }
+        .cta a:hover {
+            background: #E85555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 107, 107, 0.4);
+        }
+        .cta a.secondary {
+            background: white;
+            color: #FF6B6B;
+            border: 2px solid #FF6B6B;
+            padding: 14px 48px;
+        }
+        .cta a.secondary:hover {
+            background: #FFF0F0;
+            border-color: #E85555;
+            color: #E85555;
+        }
+        .privacy-badge {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #4caf50;
+        }
+        .privacy-badge h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .privacy-badge p {
+            color: #555;
+            margin-bottom: 0;
+        }
+        .links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .links a {
+            color: #FF6B6B;
+            text-decoration: none;
+            padding: 8px 0;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 12px;
+            }
+            .container {
+                padding: 28px 20px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .tagline {
+                font-size: 1.1em;
+                margin-bottom: 32px;
+            }
+            .cta {
+                gap: 12px;
+                padding: 0 20px;
+            }
+            .cta a {
+                width: auto;
+                max-width: 220px;
+                min-width: 180px;
+                padding: 14px 32px;
+                font-size: 1em;
+            }
+            .cta a.secondary {
+                padding: 12px 32px;
+            }
+            .links {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+        
+        /* Extra small mobile */
+        @media (max-width: 400px) {
+            .container {
+                padding: 24px 16px;
+            }
+            .cta {
+                padding: 0 12px;
+            }
+            .cta a {
+                max-width: 200px;
+                min-width: 160px;
+                padding: 14px 24px;
+            }
+            .cta a.secondary {
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Migraine Me</h1>
+        <p class="tagline">Track Your Migraine Patterns, Take Control of Your Health</p>
+        
+        <div class="feature">
+            <h2>Comprehensive Migraine Recording</h2>
+            <p>Record every aspect of your migraine episodes—severity, duration, location, symptoms, and medications. Build a statistical record with detailed daily logs including food, water intake, sleep, stress levels, and physical activity. The app displays counts, averages, and graphs for you to discuss with your healthcare provider.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Record Lifestyle Factors</h2>
+            <p>Record dietary habits, sleep quality, stress levels, and lifestyle factors alongside your migraine episodes. Log meals, foods, water intake, physical activity, and medications. The app displays statistical summaries that you can share with your healthcare provider for their professional interpretation.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Visual Timeline & Statistics</h2>
+            <p>See your migraine history at a glance with calendar views. Track patterns over time with visual indicators showing episode frequency and severity. The app displays statistical summaries including counts, averages, and trends. Share these statistics with your healthcare provider for informed medical discussions.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Medication Management</h2>
+            <p>Track all your medications, supplements, and treatments. Record what works and what doesn't. Monitor medication effectiveness and side effects. Keep a complete medication history to share with your doctor.</p>
+        </div>
+
+
+        <div class="privacy-badge">
+            <h3>🔒 Your Health Data is Completely Private</h3>
+            <p><strong>Zero access to your health information.</strong> All migraine logs, medications, and symptoms are stored exclusively in your private iCloud account and on your device. We have no servers and cannot see your data. Your health information never leaves Apple's secure ecosystem. The app ONLY shows statistics from your data—it does NOT provide medical advice or diagnosis. Export your data anytime to share with your healthcare team.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Doctor-Ready Data Export</h2>
+            <p>Export comprehensive health data in standard formats (JSON/CSV) to share with your healthcare providers. Give your doctor detailed statistical summaries of your migraine patterns, medication history, and tracked symptoms. Your healthcare provider can interpret these statistics to provide proper medical advice. Full GDPR compliance with built-in data export and deletion tools.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Dark Mode & Accessibility</h2>
+            <p>Designed with migraine sufferers in mind. Beautiful dark mode interface reduces eye strain during episodes. Clean, intuitive design makes tracking quick and easy even when you're not feeling well. Fully accessible with VoiceOver support.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Premium Features</h2>
+            <p>Unlock advanced features with Premium: unlimited historical tracking beyond 30 days, detailed statistical displays, advanced export options, and ad-free experience. Monthly subscription. Cancel anytime.</p>
+        </div>
+
+        <div class="cta">
+            <a href="#" target="_blank">Download on App Store</a>
+            <a href="../" class="secondary">More Apps</a>
+            <a href="privacy_policy.html" class="secondary">Privacy Policy</a>
+        </div>
+
+        <p style="text-align: center; color: #999; font-size: 0.9em; margin: 30px 0;">
+            <strong>Medical Disclaimer:</strong> Migraine Me is a statistical tracking tool, NOT a medical device. It ONLY displays statistics and does NOT provide medical advice, diagnosis, or treatment recommendations. Always consult qualified healthcare professionals for ALL medical advice and treatment decisions.
+        </p>
+
+        <div class="links">
+            <a href="privacy_policy.html">Privacy Policy</a>
+            <a href="terms_of_use.html">Terms of Use</a>
+        </div>
+    </div>
+</body>
+</html>
+
