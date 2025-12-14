@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Mustache Man - Fly, Dodge, Survive!</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #333;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4A90D9;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .tagline {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        .feature {
+            margin: 30px 0;
+        }
+        .feature h2 {
+            color: #4A90D9;
+            margin-bottom: 10px;
+        }
+        .feature p {
+            color: #666;
+            line-height: 1.8;
+        }
+        .cta {
+            text-align: center;
+            margin: 40px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+        .cta a {
+            display: inline-block;
+            background: #4A90D9;
+            color: white;
+            padding: 16px 48px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 240px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+        }
+        .cta a:hover {
+            background: #3A7BC8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(74, 144, 217, 0.4);
+        }
+        .cta a.secondary {
+            background: white;
+            color: #4A90D9;
+            border: 2px solid #4A90D9;
+            padding: 14px 48px;
+        }
+        .cta a.secondary:hover {
+            background: #EBF5FF;
+            border-color: #3A7BC8;
+            color: #3A7BC8;
+        }
+        .privacy-badge {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #4caf50;
+        }
+        .privacy-badge h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .privacy-badge p {
+            color: #555;
+            margin-bottom: 0;
+        }
+        .family-friendly {
+            background: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .family-friendly h3 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .family-friendly p {
+            color: #555;
+            margin-bottom: 0;
+        }
+        .links {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .links a {
+            color: #4A90D9;
+            text-decoration: none;
+            padding: 8px 0;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 12px;
+            }
+            .container {
+                padding: 28px 20px;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .tagline {
+                font-size: 1.1em;
+                margin-bottom: 32px;
+            }
+            .cta {
+                gap: 12px;
+                padding: 0 20px;
+            }
+            .cta a {
+                width: auto;
+                max-width: 220px;
+                min-width: 180px;
+                padding: 14px 32px;
+                font-size: 1em;
+            }
+            .cta a.secondary {
+                padding: 12px 32px;
+            }
+            .links {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+        
+        /* Extra small mobile */
+        @media (max-width: 400px) {
+            .container {
+                padding: 24px 16px;
+            }
+            .cta {
+                padding: 0 12px;
+            }
+            .cta a {
+                max-width: 200px;
+                min-width: 160px;
+                padding: 14px 24px;
+            }
+            .cta a.secondary {
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Air Mustache Man</h1>
+        <p class="tagline">Fly, Dodge, Survive! Classic Arcade Fun for Everyone</p>
+        
+        <div class="feature">
+            <h2>Simple, Addictive Gameplay</h2>
+            <p>Take control of a mustachioed flying hero and navigate through an endless sky filled with challenges. Swipe up to fly higher, swipe down to dive lower. Avoid obstacles, collect bonuses, and survive as long as possible. Easy to learn, challenging to master!</p>
+        </div>
+
+        <div class="feature">
+            <h2>Dynamic Challenges</h2>
+            <p>Navigate through an ever-changing sky with procedurally generated levels. Dodge spikes, mines, towering pillars, dark clouds, lightning storms, and even angry seagulls! Every run is unique and presents new challenges as the difficulty progressively increases.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Collect Bonuses</h2>
+            <p>Grab collectibles scattered throughout the sky to boost your score. Pickles and mustaches give you small boosts, coins and diamonds are worth more, and special items give massive points. But watch out for negative items that can hurt your score!</p>
+        </div>
+
+        <div class="feature">
+            <h2>Unlock Characters</h2>
+            <p>Discover and unlock new characters as you play. Start with the classic Air Mustache Man and expand your roster through gameplay achievements. Each character has a unique style to show off.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Compete for High Scores</h2>
+            <p>Track your top 3 scores and challenge yourself to beat your personal best. iCloud sync keeps your scores and progress across all your devices. Play offline anytime—your progress is always saved.</p>
+        </div>
+
+        <div class="family-friendly">
+            <h3>🎮 Family Friendly</h3>
+            <p>Designed for players of all ages (4+). No violence, no inappropriate content, no gambling mechanics. Simple controls anyone can learn. Beautiful, colorful graphics with smooth animations. Perfect for quick sessions or extended play.</p>
+        </div>
+
+        <div class="privacy-badge">
+            <h3>🔒 Privacy First</h3>
+            <p>Your data stays yours. All game progress is stored locally on your device. Optional iCloud sync uses your private iCloud account—we never see your data. No analytics, no tracking, no personal data collection. No ads. Just pure gaming fun.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Optional Support</h2>
+            <p>Love the game? Support development with optional contributions. The full game is free forever—no gameplay locked behind purchases. Your support helps fund future updates and new features.</p>
+        </div>
+
+        <div class="cta">
+            <a href="#" target="_blank">Download on App Store</a>
+            <a href="../" class="secondary">More Apps</a>
+            <a href="privacy_policy.html" class="secondary">Privacy Policy</a>
+        </div>
+
+        <div class="links">
+            <a href="privacy_policy.html">Privacy Policy</a>
+            <a href="terms_of_use.html">Terms of Use</a>
+        </div>
+    </div>
+</body>
+</html>
+
