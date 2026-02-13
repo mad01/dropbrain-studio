@@ -1,0 +1,21 @@
+# dropbrain studio
+
+> Privacy-first iOS apps. No tracking, no ads, no servers.
+
+## Apps
+- [DropBrain](https://dropbrain.io/dropbrain/): Personal journal timeline with AI writing support and accessibility features
+- [Migraine Me](https://dropbrain.io/migraineme/): Migraine pattern tracker with triggers, symptoms, and medication management
+- [Look Up, Silly!](https://dropbrain.io/lookupsilly/): Mindful screen time app with challenges (coming soon)
+- [Air Mustache Man](https://dropbrain.io/airmustacheman/): Family-friendly arcade game
+
+## Blog
+- [Blog](https://dropbrain.io/blog/): Development blog and app feature deep-dives
+
+## Privacy Policies
+- [DropBrain Privacy Policy](https://dropbrain.io/dropbrain/privacy_policy.html)
+- [Migraine Me Privacy Policy](https://dropbrain.io/migraineme/privacy_policy.html)
+- [Look Up, Silly! Privacy Policy](https://dropbrain.io/lookupsilly/privacy_policy.html)
+- [Air Mustache Man Privacy Policy](https://dropbrain.io/airmustacheman/privacy_policy.html)
+
+## About
+All apps are developed by a solo indie developer based in Sweden. Every app is privacy-first: data is stored on-device and in private iCloud accounts. No analytics, no tracking, no data collection. Revenue comes from optional subscriptions and contributions, never ads.

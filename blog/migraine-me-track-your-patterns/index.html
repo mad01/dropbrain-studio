@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migraine Me: Understanding Your Migraine Patterns — dropbrain blog</title>
+    <meta name="description" content="A deep dive into how Migraine Me helps you track migraine episodes, identify triggers, manage medications, and share meaningful data with your healthcare team.">
+    <meta property="og:title" content="Migraine Me: Understanding Your Migraine Patterns">
+    <meta property="og:description" content="A deep dive into how Migraine Me helps you track migraine episodes, identify triggers, manage medications, and share meaningful data with your healthcare team.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/migraine-me-track-your-patterns/">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">Migraine Me: Understanding Your Migraine Patterns</h1>
+            <div class="post-meta">
+                <span class="post-date">February 13, 2026</span>
+                <div class="post-tags"><span class="tag">ios</span><span class="tag">health</span><span class="tag">migraine</span><span class="tag">privacy</span><span class="tag">tracking</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h2 id="why-we-built-migraine-me">Why We Built Migraine Me</h2>
+<p>If you live with migraines, you know the frustration. Episodes come and go, and when your doctor asks what your triggers might be, you&rsquo;re left guessing. &ldquo;Maybe it was the weather? The coffee? Stress?&rdquo; Keeping track in a notebook works until it doesn&rsquo;t — pages get lost, patterns stay hidden, and bringing a stack of scribbled notes to a medical appointment isn&rsquo;t exactly practical.</p>
+<p>We built Migraine Me because we wanted a tool that does one thing well: record your migraine episodes thoroughly and show you clear statistics you can actually share with your healthcare team. No gimmicks, no AI diagnoses, no cloud services harvesting your health data. Just a solid, private place to track what happens and when.</p>
+<h2 id="comprehensive-episode-tracking">Comprehensive Episode Tracking</h2>
+<p>Every migraine is different, and Migraine Me is designed to capture that complexity. When you log an episode, you can record:</p>
+<ul>
+<li><strong>Intensity</strong> — how severe the episode is</li>
+<li><strong>Duration</strong> — start and end times so you know exactly how long it lasted</li>
+<li><strong>Pain location</strong> — where the pain is concentrated</li>
+<li><strong>Triggers</strong> — what you think may have caused it</li>
+<li><strong>Symptoms</strong> — everything you experienced alongside the pain</li>
+<li><strong>Medications</strong> — what you took and when</li>
+</ul>
+<p>Beyond the episode itself, you can also log post-episode context — whether you used a dark room, slept, rested, took a break, or experienced light sensitivity. These details matter when you&rsquo;re trying to understand not just what causes your migraines, but what helps you recover from them.</p>
+<h2 id="trigger-and-symptom-management">Trigger and Symptom Management</h2>
+<p>Migraine Me ships with predefined lists of common triggers and symptoms so you can log episodes quickly — even mid-migraine when the last thing you want is to spend time typing. If the predefined options don&rsquo;t cover your experience, you can add custom entries. Over time, the app builds statistical summaries showing your top triggers and most common symptoms, helping you spot connections you might otherwise miss.</p>
+<h2 id="medication-tracking-that-goes-beyond-a-simple-list">Medication Tracking That Goes Beyond a Simple List</h2>
+<p>Most tracking apps let you note which medication you took. Migraine Me goes further. For each medication, you can record:</p>
+<ul>
+<li><strong>Dosage and quantity</strong> — exactly what you took</li>
+<li><strong>Timing</strong> — when you took it relative to the episode</li>
+<li><strong>Effectiveness rating</strong> — did it actually help?</li>
+<li><strong>Time-to-relief</strong> — how long before it started working</li>
+</ul>
+<p>This builds a real medication history over time. When your doctor asks whether a particular medication is working, you won&rsquo;t have to rely on memory — you&rsquo;ll have data. You can see which medications are most effective for you and how quickly they tend to provide relief.</p>
+<h2 id="visual-timeline-and-statistics">Visual Timeline and Statistics</h2>
+<p>Migraine Me presents your history through calendar views with visual indicators showing frequency and severity. At a glance, you can see whether your migraines are clustering around certain days, becoming more frequent, or improving over time.</p>
+<p>The statistical summaries pull together your data into something meaningful — top triggers, most common symptoms, medication effectiveness rates, and patterns across time periods. These are the kinds of numbers that make a doctor&rsquo;s appointment more productive.</p>
+<h2 id="doctor-ready-data-export">Doctor-Ready Data Export</h2>
+<p>When it&rsquo;s time to share your data with a healthcare provider, Migraine Me gives you two options: JSON and PDF.</p>
+<p>The JSON export is a structured ZIP file you can access via Settings, then Data &amp; Privacy, then Export All Data. It contains all your episodes, triggers, symptoms, medications, and context organized by type and date. Here&rsquo;s what a snippet of the exported data looks like:</p>
+<pre><code class="language-json">{
+  &quot;episode&quot;: {
+    &quot;date&quot;: &quot;2026-01-15&quot;,
+    &quot;start_time&quot;: &quot;14:30&quot;,
+    &quot;end_time&quot;: &quot;19:45&quot;,
+    &quot;duration_hours&quot;: 5.25,
+    &quot;intensity&quot;: 7,
+    &quot;pain_location&quot;: &quot;left_temple&quot;,
+    &quot;triggers&quot;: [&quot;stress&quot;, &quot;poor_sleep&quot;, &quot;skipped_meal&quot;],
+    &quot;symptoms&quot;: [&quot;nausea&quot;, &quot;light_sensitivity&quot;, &quot;aura&quot;],
+    &quot;post_episode&quot;: {
+      &quot;dark_room&quot;: true,
+      &quot;slept&quot;: true,
+      &quot;light_sensitivity&quot;: true
+    }
+  },
+  &quot;medications&quot;: [
+    {
+      &quot;name&quot;: &quot;Sumatriptan&quot;,
+      &quot;dosage&quot;: &quot;50mg&quot;,
+      &quot;quantity&quot;: 1,
+      &quot;time_taken&quot;: &quot;14:45&quot;,
+      &quot;effectiveness&quot;: 4,
+      &quot;time_to_relief_minutes&quot;: 35
+    }
+  ]
+}
+</code></pre>
+<p>PDF reports offer an easier format for handing directly to your doctor during an appointment. Either way, the goal is the same — giving your healthcare provider real data instead of vague recollections.</p>
+<h2 id="privacy-as-a-core-feature">Privacy as a Core Feature</h2>
+<p>Health data is deeply personal, and we treat it that way. Migraine Me&rsquo;s privacy model is simple: we have zero access to your data.</p>
+<p>All your migraine logs, medications, symptoms, and settings are stored exclusively in your private iCloud account and on your device. We do not operate servers that store health information. There is no analytics, no tracking, no advertising, and no third-party access to your health data. Your information never leaves Apple&rsquo;s ecosystem.</p>
+<p>The only third-party service involved is RevenueCat for subscription management, and it only handles anonymous subscription status — completely separated from your health data.</p>
+<p>For GDPR compliance, the app includes built-in tools for both data export and complete data deletion. You can export everything via Settings, then Data &amp; Privacy, then Export All Data. If you want to delete everything permanently, the Remove All Data option walks you through a multi-step confirmation process — including a prompt to export first — before irreversibly removing all your data from both your device and iCloud.</p>
+<h2 id="dark-mode-and-accessibility">Dark Mode and Accessibility</h2>
+<p>If you&rsquo;ve ever tried to use your phone during a migraine, you know that a bright white screen is the last thing you need. Migraine Me includes dark mode to reduce eye strain during episodes. The interface is designed to be clean and minimal so you can log an episode quickly without unnecessary friction — even when you&rsquo;re not feeling well. The app also supports VoiceOver for full accessibility.</p>
+<h2 id="whats-free-and-whats-premium">What&rsquo;s Free and What&rsquo;s Premium</h2>
+<p>Migraine Me is free to use with full tracking capabilities for up to 30 days of history. The premium subscription unlocks unlimited historical tracking, detailed statistical displays, and advanced export options. It&rsquo;s a monthly subscription and you can cancel anytime.</p>
+<h2 id="a-note-on-what-migraine-me-is-not">A Note on What Migraine Me Is Not</h2>
+<p>We want to be transparent about this: Migraine Me is a statistical tracking tool, not a medical device. It displays statistics based on the data you enter. It does not provide medical advice, diagnosis, or treatment recommendations. The patterns and numbers it shows are meant to support conversations with your healthcare provider — not replace them. Always consult qualified healthcare professionals for medical decisions.</p>
+<hr />
+<p>Migraine Me is available now on the <a href="https://apps.apple.com/us/app/migraineme/id6755067713">App Store</a>. You can read our full <a href="https://dropbrain.io/migraineme/privacy_policy.html">Privacy Policy</a> for complete details on how your data is handled.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Migraine Me is a privacy-first iOS app for tracking migraine and headache episodes. It records intensity, duration, pain location, triggers, symptoms, and medications with effectiveness ratings. Features include visual calendar timeline, statistical summaries, medication management with time-to-relief tracking, doctor-ready JSON/PDF data export, dark mode for migraine sufferers, and GDPR-compliant data controls. All data stored on-device and in private iCloud — zero server access. Premium subscription unlocks unlimited history beyond 30 days and advanced statistics. Available on the App Store. NOT a medical device — displays statistics only.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Migraine Me: Understanding Your Migraine Patterns",
+    "datePublished": "2026-02-13",
+    "description": "A deep dive into how Migraine Me helps you track migraine episodes, identify triggers, manage medications, and share meaningful data with your healthcare team.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/migraine-me-track-your-patterns/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

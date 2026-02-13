@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — dropbrain studio</title>
+    <meta name="description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
+    <meta property="og:title" content="Blog — dropbrain studio">
+    <meta property="og:description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dropbrain.io/blog/">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.blog-header {
+    padding: 56px 0 40px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.blog-title {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    color: var(--text);
+}
+
+.post-list {
+    padding-bottom: 56px;
+}
+
+.post-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    opacity: 0;
+    animation: fadeUp 0.55s ease both;
+}
+
+.post-item:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(255,255,255,0.02);
+}
+
+.post-item-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+}
+
+.post-item-title a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.post-item-title a:hover {
+    color: var(--text);
+}
+
+.post-item-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.post-item-desc {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-item-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.post-item-tags .tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 9px;
+    letter-spacing: 0.01em;
+}
+
+@media (max-width: 400px) {
+    .post-item {
+        padding: 18px 16px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/" class="wordmark">dropbrain<span>.studio</span></a>
+        </header>
+
+        <div class="blog-header">
+            <h1 class="blog-title">Blog</h1>
+        </div>
+
+        <div class="post-list">
+            <div class="post-item" style="animation-delay: 0.15s;">
+                <h2 class="post-item-title"><a href="/blog/migraine-me-track-your-patterns/">Migraine Me: Understanding Your Migraine Patterns</a></h2>
+                <div class="post-item-date">February 13, 2026</div>
+                <p class="post-item-desc">A deep dive into how Migraine Me helps you track migraine episodes, identify triggers, manage medications, and share meaningful data with your healthcare team.</p>
+                <div class="post-item-tags"><span class="tag">ios</span><span class="tag">health</span><span class="tag">migraine</span><span class="tag">privacy</span><span class="tag">tracking</span></div>
+            </div>
+        </div>
+
+        <footer>
+            <a href="/">&larr; dropbrain.studio</a>
+            <a href="/">Home</a>
+        </footer>
+    </div>
+</body>
+</html>
