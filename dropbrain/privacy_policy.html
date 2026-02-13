@@ -41,21 +41,21 @@
 </head>
 <body>
     <h1>Privacy Policy for DropBrain</h1>
-    <p><strong>Last Updated: November 16, 2025</strong></p>
+    <p><strong>Last Updated: February 13, 2026</strong></p>
 
     <h2>Overview</h2>
-    <p>DropBrain is designed with privacy at its core. We believe your notes and thoughts are yours alone. This privacy policy explains how DropBrain handles your data.</p>
+    <p>DropBrain is designed with privacy at its core. We believe your journal entries and thoughts are yours alone. This privacy policy explains how DropBrain handles your data.</p>
 
     <h2>Data Collection</h2>
     <p><strong>Minimal data collection.</strong></p>
-    <p>DropBrain does not collect, store, or transmit your personal notes or content. Everything you create in DropBrain stays on your devices and in your private iCloud account. We use RevenueCat for subscription management, which collects anonymous subscription data (see Subscription Management section below).</p>
+    <p>DropBrain does not collect, store, or transmit your personal journal entries or content. Everything you create in DropBrain stays on your devices and in your private iCloud account. We use RevenueCat for subscription management, which collects anonymous subscription data (see Subscription Management section below).</p>
     <p><strong>Apple Intelligence:</strong> When you use the sentence correction feature, your text is processed entirely on-device using Apple's Foundation Models framework. No data is sent to Apple servers or any third party for AI processing.</p>
 
     <h2>Your Data Storage</h2>
     
     <h3>iCloud Storage</h3>
     <ul>
-        <li>All your notes, groups, and settings are stored in <strong>your private iCloud account</strong></li>
+        <li>All your journal entries, groups, and settings are stored in <strong>your private iCloud account</strong></li>
         <li>This data syncs across your devices using Apple's iCloud infrastructure</li>
         <li>We have no servers and cannot access your iCloud data</li>
         <li>Your data is encrypted in transit and at rest by Apple's iCloud security</li>
@@ -66,6 +66,13 @@
         <li>DropBrain works offline by storing data locally on your device</li>
         <li>Local data syncs to your iCloud when you're connected to the internet</li>
         <li>All local storage is protected by your device's security features</li>
+    </ul>
+
+    <h3>Keychain Storage</h3>
+    <ul>
+        <li>If you enable app lock, your PIN code is stored securely in the iOS Keychain</li>
+        <li>Keychain data is encrypted by the operating system and protected by your device passcode</li>
+        <li>We do not have access to your Keychain data</li>
     </ul>
 
     <h2>What We Don't Do</h2>
@@ -86,7 +93,7 @@
         <li>Subscription status</li>
     </ul>
     <p>RevenueCat Privacy Policy: <a href="https://www.revenuecat.com/privacy">https://www.revenuecat.com/privacy</a></p>
-    <p><strong>Important:</strong> Your notes and personal data are never shared with RevenueCat or any third party. Only anonymous subscription status is processed.</p>
+    <p><strong>Important:</strong> Your journal entries and personal data are never shared with RevenueCat or any third party. Only anonymous subscription status is processed.</p>
 
     <h2>Apple App Store</h2>
     <p>When you download DropBrain from the App Store, Apple may collect information as described in their privacy policy. We have no access to this information.</p>
@@ -123,14 +130,22 @@
         <li><strong>Who sees it:</strong> Only you. We do not have access to your iCloud data.</li>
     </ul>
 
-    <h3>No Other Permissions Required</h3>
+    <h3>Optional Permissions</h3>
+    <p>DropBrain may request access to:</p>
+    <ul>
+        <li><strong>Photos:</strong> Only if you choose to attach images to journal entries</li>
+        <li><strong>Camera:</strong> Only if you choose to take photos for journal entries</li>
+        <li><strong>Face ID / Touch ID / Optic ID:</strong> Only if you enable biometric authentication to lock the app</li>
+    </ul>
+
+    <h3>Background Notifications</h3>
+    <p>DropBrain uses silent background notifications from Apple's CloudKit to keep your data in sync across devices. These are system-level notifications that do not appear on screen and are used solely for iCloud data synchronization.</p>
+
     <p>DropBrain does not request access to:</p>
     <ul>
-        <li>Your camera or photos</li>
         <li>Your contacts</li>
         <li>Your location</li>
         <li>Your microphone</li>
-        <li>Any other sensitive data</li>
     </ul>
 
     <h2>Data Security</h2>
@@ -138,8 +153,10 @@
     <ul>
         <li><strong>Apple's iCloud encryption</strong> - All data encrypted in transit and at rest</li>
         <li><strong>iOS sandboxing</strong> - DropBrain can only access its own data container</li>
-        <li><strong>No network transmission to third parties</strong> - Your notes never leave Apple's ecosystem</li>
+        <li><strong>No network transmission to third parties</strong> - Your journal entries never leave Apple's ecosystem</li>
         <li><strong>Device-level encryption</strong> - Protected by your device passcode/biometrics</li>
+        <li><strong>Keychain protection</strong> - App lock PIN stored in the iOS Keychain, encrypted by the operating system</li>
+        <li><strong>Biometric authentication</strong> - Optional Face ID, Touch ID, or Optic ID to lock the app</li>
         <li><strong>On-device AI processing</strong> - Sentence corrections use Apple's local Foundation Models, no cloud AI services</li>
         <li><strong>Secure AI framework</strong> - Apple Intelligence runs in a secure environment isolated from other apps</li>
     </ul>
@@ -151,14 +168,14 @@
     <p>DropBrain is fully GDPR compliant and provides you with complete control over your personal data. We respect your rights to access, export, and delete all data associated with your account.</p>
     
     <h3>Right to Access</h3>
-    <p>All your data is accessible to you at any time within the app. Your notes, groups, settings, and preferences are always visible and under your control.</p>
+    <p>All your data is accessible to you at any time within the app. Your journal entries, groups, settings, and preferences are always visible and under your control.</p>
     
     <h3>Right to Data Portability (Export)</h3>
     <p>You can export all your data at any time:</p>
     <ul>
         <li><strong>How:</strong> Settings → About → Export All Data</li>
         <li><strong>Format:</strong> ZIP file containing structured YAML files</li>
-        <li><strong>Includes:</strong> All groups, messages (including threaded replies), settings, preferences, and custom icons metadata</li>
+        <li><strong>Includes:</strong> All groups, journal entries (including threaded replies), settings, preferences, and custom icons metadata</li>
         <li><strong>Organization:</strong> Data is organized by groups for easy review</li>
         <li><strong>Save to:</strong> iOS Files app or share via any standard sharing method</li>
     </ul>
@@ -168,7 +185,7 @@
     <p>You have the right to permanently delete all your data at any time:</p>
     <ul>
         <li><strong>How:</strong> Settings → About → Remove All Data</li>
-        <li><strong>What gets deleted:</strong> ALL messages, groups, settings, custom icons, iCloud synced data, and local device data</li>
+        <li><strong>What gets deleted:</strong> ALL journal entries, groups, settings, custom icons, iCloud synced data, and local device data</li>
         <li><strong>Confirmation process:</strong> Multi-step confirmation with option to export before deletion</li>
         <li><strong>Permanence:</strong> Deletion is immediate and permanent with NO recovery option</li>
         <li><strong>Safety:</strong> We strongly recommend exporting your data before deletion</li>
@@ -195,8 +212,8 @@
 
     <h2>Data Retention and Deletion</h2>
     <ul>
-        <li><strong>Your notes:</strong> Stored only in your iCloud and on your devices</li>
-        <li><strong>Deleting individual notes:</strong> Delete notes in the app (soft delete with 30-day recovery period)</li>
+        <li><strong>Your journal entries:</strong> Stored only in your iCloud and on your devices</li>
+        <li><strong>Deleting individual entries:</strong> Delete entries in the app (soft delete with 30-day recovery period)</li>
         <li><strong>Deleting all data (GDPR):</strong> Use Settings → About → Remove All Data for permanent deletion</li>
         <li><strong>Removing from iCloud:</strong> The "Remove All Data" feature deletes all data from iCloud permanently</li>
         <li><strong>We retain:</strong> Nothing. After using "Remove All Data," we have no data about you. Anonymous subscription data via RevenueCat as described in Subscription Management is handled separately.</li>
@@ -208,7 +225,7 @@
         <li><strong>Access:</strong> All your data is accessible to you in the app at any time</li>
         <li><strong>Export (Data Portability):</strong> Export all your data in structured YAML format via Settings → About → Export All Data</li>
         <li><strong>Delete (Right to be Forgotten):</strong> Permanently delete all your data via Settings → About → Remove All Data</li>
-        <li><strong>Modify:</strong> Edit any of your notes, groups, or settings directly in the app</li>
+        <li><strong>Modify:</strong> Edit any of your journal entries, groups, or settings directly in the app</li>
         <li><strong>Portability:</strong> Exported data is in YAML format, making it easy to review or use elsewhere</li>
     </ul>
     <p>These rights are implemented directly in the app - no need to contact support or wait for manual processing.</p>
@@ -238,14 +255,15 @@
     <div class="summary">
         <h2>Summary - The Bottom Line</h2>
         <ul>
-            <li>We do not collect your notes or personal content</li>
-            <li>We do not have access to your notes</li>
+            <li>We do not collect your journal entries or personal content</li>
+            <li>We do not have access to your journal entries</li>
             <li>We do not currently track app usage</li>
             <li>We do not sell user data</li>
-            <li>Your notes stay in your iCloud</li>
+            <li>Your journal entries stay in your iCloud</li>
             <li>We do not operate content storage servers</li>
             <li>AI sentence correction happens entirely on your device</li>
             <li>No text is sent to cloud AI services - uses Apple's on-device models</li>
+            <li>Optional app lock with Face ID / Touch ID and PIN stored securely in iOS Keychain</li>
             <li>Currently no analytics, no ads, no usage tracking</li>
             <li>Anonymous subscription data handled by RevenueCat</li>
             <li>Full GDPR compliance with built-in data export and deletion tools</li>
@@ -256,7 +274,7 @@
     </div>
 
     <hr>
-    <p><small><strong>Version:</strong> 1.2 | <strong>Effective Date:</strong> November 16, 2025 | <strong>App Version:</strong> 1.0.7+</small></p>
+    <p><small><strong>Version:</strong> 1.3 | <strong>Effective Date:</strong> February 13, 2026 | <strong>App Version:</strong> 1.0.8+</small></p>
 </body>
 </html>
 
