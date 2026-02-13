@@ -3,240 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Look Up, Silly! - Break the Scroll Habit</title>
+    <title>Look Up, Silly! — Break the Scroll Habit</title>
+    <meta name="description" content="Break the scroll habit with mindful challenges. Block distracting apps and complete a quick mental challenge before opening them. Privacy-first, free forever.">
     <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0c0c0e;
+            --surface: #141416;
+            --text: #e8e8ec;
+            --text-secondary: #9898a0;
+            --text-muted: #5a5a64;
+            --border: #222226;
+            --accent: #F4A261;
+            --accent-dim: rgba(244, 162, 97, 0.08);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            color: #333;
-            background: #f8f9fa;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
-        .container {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+        body::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: linear-gradient(to right, #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC);
         }
-        h1 {
-            color: #F4A261;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2.5em;
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
-        .tagline {
-            text-align: center;
-            color: #666;
-            font-size: 1.2em;
-            margin-bottom: 40px;
+
+        /* ── Header ── */
+        header {
+            padding: 40px 0 0;
+            animation: fadeDown 0.7s ease both;
         }
-        .feature {
-            margin: 30px 0;
-        }
-        .feature h2 {
-            color: #F4A261;
-            margin-bottom: 10px;
-        }
-        .feature p {
-            color: #666;
-            line-height: 1.8;
-        }
-        .cta {
-            text-align: center;
-            margin: 40px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-        }
-        .cta a {
-            display: inline-block;
-            background: #F4A261;
-            color: white;
-            padding: 16px 48px;
+
+        header a {
+            font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-muted);
             text-decoration: none;
-            border-radius: 30px;
-            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+
+        header a:hover { color: var(--text-secondary); }
+
+        /* ── App Hero ── */
+        .app-hero {
+            padding: 56px 0 48px;
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+
+        .app-hero h1 {
+            font-size: clamp(2rem, 5vw, 2.8rem);
             font-weight: 600;
-            transition: all 0.3s;
-            min-width: 240px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(244, 162, 97, 0.3);
+            letter-spacing: -0.035em;
+            color: var(--accent);
         }
-        .cta a:hover {
-            background: #E8956A;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(244, 162, 97, 0.4);
+
+        .app-hero .tagline {
+            font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-top: 6px;
         }
+
+        /* ── Features ── */
+        .features {
+            animation: fadeUp 0.6s ease 0.2s both;
+        }
+
+        .feature {
+            padding: 28px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── Callout ── */
+        .callout {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            margin: 8px 0;
+        }
+
+        .callout.privacy {
+            border-left: 3px solid #4caf50;
+        }
+
+        .callout.free {
+            border-left: 3px solid var(--accent);
+        }
+
+        .callout h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .callout p {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ── CTA ── */
+        .cta {
+            padding: 48px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            animation: fadeUp 0.6s ease 0.3s both;
+        }
+
+        .cta a, .cta span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            transition: all 0.25s;
+        }
+
+        .cta span.coming-soon {
+            background: var(--surface);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            font-style: italic;
+        }
+
         .cta a.secondary {
-            background: white;
-            color: #F4A261;
-            border: 2px solid #F4A261;
-            padding: 14px 48px;
+            background: var(--surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
+
         .cta a.secondary:hover {
-            background: #FFF5EE;
-            border-color: #E8956A;
-            color: #E8956A;
+            color: var(--text);
+            border-color: var(--text-muted);
         }
-        .privacy-badge {
-            background: #e8f5e9;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-            border-left: 4px solid #4caf50;
-        }
-        .privacy-badge h3 {
-            color: #2e7d32;
-            margin-top: 0;
-        }
-        .privacy-badge p {
-            color: #555;
-            margin-bottom: 0;
-        }
-        .free-badge {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-            border-left: 4px solid #2196f3;
-        }
-        .free-badge h3 {
-            color: #1565c0;
-            margin-top: 0;
-        }
-        .free-badge p {
-            color: #555;
-            margin-bottom: 0;
-        }
-        .links {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid #eee;
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0 32px;
             display: flex;
             justify-content: center;
             gap: 24px;
             flex-wrap: wrap;
+            animation: fadeUp 0.6s ease 0.4s both;
         }
-        .links a {
-            color: #F4A261;
+
+        footer a {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
             text-decoration: none;
-            padding: 8px 0;
+            transition: color 0.2s;
         }
-        .links a:hover {
-            text-decoration: underline;
+
+        footer a:hover { color: var(--text); }
+
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        /* Mobile optimizations */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Responsive ── */
         @media (max-width: 600px) {
-            body {
-                padding: 20px 12px;
-            }
-            .container {
-                padding: 28px 20px;
-                border-radius: 12px;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .tagline {
-                font-size: 1.1em;
-                margin-bottom: 32px;
-            }
-            .cta {
-                gap: 12px;
-                padding: 0 20px;
-            }
-            .cta a {
-                width: auto;
-                max-width: 220px;
-                min-width: 180px;
-                padding: 14px 32px;
-                font-size: 1em;
-            }
-            .cta a.secondary {
-                padding: 12px 32px;
-            }
-            .links {
-                flex-direction: column;
-                gap: 16px;
-            }
-        }
-        
-        /* Extra small mobile */
-        @media (max-width: 400px) {
-            .container {
-                padding: 24px 16px;
-            }
-            .cta {
-                padding: 0 12px;
-            }
-            .cta a {
-                max-width: 200px;
-                min-width: 160px;
-                padding: 14px 24px;
-            }
-            .cta a.secondary {
-                padding: 12px 24px;
-            }
+            .page { padding: 0 16px; }
+            header { padding: 28px 0 0; }
+            .app-hero { padding: 40px 0 36px; }
+            .cta { flex-direction: column; align-items: center; }
+            .cta a, .cta span { min-width: 200px; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Look Up, Silly!</h1>
-        <p class="tagline">Break the Scroll Habit with Mindful Challenges</p>
-        
-        <div class="feature">
-            <h2>How It Works</h2>
-            <p>Choose which apps to block. Before you can open them, complete a quick mental challenge. This simple friction creates a moment of awareness, helping you decide if you really need that app right now. It's not about restriction—it's about intention.</p>
-        </div>
+    <div class="page">
+        <header>
+            <a href="../">&#8592; dropbrain.studio</a>
+        </header>
 
-        <div class="feature">
-            <h2>Five Unique Challenges</h2>
-            <p>Path Recall—remember and trace a pattern. Color Tap—match colors, not words (Stroop effect). Quick Math—solve simple arithmetic. Tic-Tac-Toe—beat the AI. Micro 2048—complete a mini puzzle. Each challenge takes just seconds but creates the pause you need.</p>
-        </div>
+        <section class="app-hero">
+            <h1>Look Up, Silly!</h1>
+            <p class="tagline">Break the Scroll Habit</p>
+        </section>
 
-        <div class="feature">
-            <h2>Powerful Features</h2>
-            <p>Block any app using the Screen Time API. Set "Always Allowed" exceptions for essential apps. Pause challenges when you need a break. Schedule blocking times for focus periods. Track your challenge statistics and streaks. Customize unlock duration. Works completely offline.</p>
-        </div>
+        <div class="features">
+            <div class="feature">
+                <h2>How It Works</h2>
+                <p>Choose which apps to block. Before you can open them, complete a quick mental challenge. This simple friction creates a moment of awareness, helping you decide if you really need that app right now. It's not about restriction — it's about intention.</p>
+            </div>
 
-        <div class="feature">
-            <h2>Why Challenges Work</h2>
-            <p>Research shows that adding friction to automatic behaviors helps build awareness. Instead of mindlessly opening an app, you take a breath, engage your brain, and make a conscious choice. Many users report less time on distracting apps, more awareness of their phone habits, and feeling more in control.</p>
-        </div>
+            <div class="feature">
+                <h2>Five Unique Challenges</h2>
+                <p>Path Recall — remember and trace a pattern. Color Tap — match colors, not words (Stroop effect). Quick Math — solve simple arithmetic. Tic-Tac-Toe — beat the AI. Micro 2048 — complete a mini puzzle. Each takes just seconds but creates the pause you need.</p>
+            </div>
 
-        <div class="privacy-badge">
-            <h3>🔒 Your Data Stays Yours</h3>
-            <p><strong>Zero access to your data.</strong> All settings stored in your private iCloud account. No company servers, no analytics, no tracking. Your app usage data never leaves Apple's ecosystem. We cannot see what apps you block or use.</p>
-        </div>
+            <div class="feature">
+                <h2>Powerful Features</h2>
+                <p>Block any app using the Screen Time API. Set "Always Allowed" exceptions for essential apps. Pause challenges when you need a break. Schedule blocking times for focus periods. Track your challenge statistics and streaks. Works completely offline.</p>
+            </div>
 
-        <div class="free-badge">
-            <h3>💚 Free Forever, No Ads</h3>
-            <p><strong>Completely free with all features.</strong> No ads, no premium tier, no locked features. Optional one-time contributions support development, but all functionality works without payment. Your focus shouldn't cost extra.</p>
-        </div>
+            <div class="feature">
+                <h2>Why Challenges Work</h2>
+                <p>Research shows that adding friction to automatic behaviors helps build awareness. Instead of mindlessly opening an app, you take a breath, engage your brain, and make a conscious choice.</p>
+            </div>
 
-        <div class="feature">
-            <h2>Perfect For</h2>
-            <p>Anyone wanting to reduce screen time. People breaking social media habits. Those who reach for their phone on autopilot. Students needing focus during study time. Anyone who wants more intentional phone use.</p>
+            <div class="callout privacy">
+                <h3>Your Data Stays Yours</h3>
+                <p>Zero access to your data. All settings stored in your private iCloud account. No servers, no analytics, no tracking. Your app usage data never leaves Apple's ecosystem. We cannot see what apps you block or use.</p>
+            </div>
+
+            <div class="callout free">
+                <h3>Free Forever, No Ads</h3>
+                <p>Completely free with all features. No ads, no premium tier, no locked features. Optional one-time contributions support development, but all functionality works without payment. Your focus shouldn't cost extra.</p>
+            </div>
+
+            <div class="feature">
+                <h2>Perfect For</h2>
+                <p>Anyone wanting to reduce screen time. People breaking social media habits. Those who reach for their phone on autopilot. Students needing focus during study time. Anyone who wants more intentional phone use.</p>
+            </div>
         </div>
 
         <div class="cta">
-            <a href="#" target="_blank">Download on App Store</a>
-            <a href="../" class="secondary">More Apps</a>
+            <span class="coming-soon">Coming Soon to App Store</span>
+            <a href="../" class="secondary">All Apps</a>
             <a href="privacy_policy.html" class="secondary">Privacy Policy</a>
         </div>
 
-        <div class="links">
+        <footer>
             <a href="privacy_policy.html">Privacy Policy</a>
-            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a>
-        </div>
+            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
+        </footer>
     </div>
 </body>
 </html>
-

@@ -3,204 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DropBrain - Your Personal Journal Timeline</title>
+    <title>DropBrain — Your Personal Journal Timeline</title>
+    <meta name="description" content="Capture ideas, journal entries, and notes in a timeline with AI-powered writing support. Built with accessibility in mind. Privacy-first with iCloud sync.">
     <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0c0c0e;
+            --surface: #141416;
+            --text: #e8e8ec;
+            --text-secondary: #9898a0;
+            --text-muted: #5a5a64;
+            --border: #222226;
+            --accent: #7AB8FF;
+            --accent-dim: rgba(122, 184, 255, 0.08);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            color: #333;
-            background: #f8f9fa;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
-        .container {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+        body::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: linear-gradient(to right, #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC);
         }
-        h1 {
-            color: #7AB8FF;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2.5em;
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 24px;
         }
-        .tagline {
-            text-align: center;
-            color: #666;
-            font-size: 1.2em;
-            margin-bottom: 40px;
+
+        /* ── Header ── */
+        header {
+            padding: 40px 0 0;
+            animation: fadeDown 0.7s ease both;
         }
-        .feature {
-            margin: 30px 0;
-        }
-        .feature h2 {
-            color: #7AB8FF;
-            margin-bottom: 10px;
-        }
-        .feature p {
-            color: #666;
-            line-height: 1.8;
-        }
-        .cta {
-            text-align: center;
-            margin: 40px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-        }
-        .cta a {
-            display: inline-block;
-            background: #7AB8FF;
-            color: white;
-            padding: 16px 48px;
+
+        header a {
+            font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-muted);
             text-decoration: none;
-            border-radius: 30px;
-            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+
+        header a:hover { color: var(--text-secondary); }
+
+        /* ── App Hero ── */
+        .app-hero {
+            padding: 56px 0 48px;
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+
+        .app-hero h1 {
+            font-size: clamp(2rem, 5vw, 2.8rem);
             font-weight: 600;
-            transition: all 0.3s;
-            min-width: 240px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(122, 184, 255, 0.3);
+            letter-spacing: -0.035em;
+            color: var(--accent);
         }
-        .cta a:hover {
-            background: #5A9AE8;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(122, 184, 255, 0.4);
+
+        .app-hero .tagline {
+            font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-top: 6px;
         }
+
+        /* ── Features ── */
+        .features {
+            animation: fadeUp 0.6s ease 0.2s both;
+        }
+
+        .feature {
+            padding: 28px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── Callout ── */
+        .callout {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            margin: 8px 0;
+        }
+
+        .callout.privacy {
+            border-left: 3px solid #4caf50;
+        }
+
+        .callout h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .callout p {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ── CTA ── */
+        .cta {
+            padding: 48px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            animation: fadeUp 0.6s ease 0.3s both;
+        }
+
+        .cta a {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            transition: all 0.25s;
+        }
+
+        .cta a.primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .cta a.primary:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
         .cta a.secondary {
-            background: white;
-            color: #7AB8FF;
-            border: 2px solid #7AB8FF;
-            padding: 14px 48px;
+            background: var(--surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
+
         .cta a.secondary:hover {
-            background: #EBF5FF;
-            border-color: #5A9AE8;
-            color: #5A9AE8;
+            color: var(--text);
+            border-color: var(--text-muted);
         }
-        .links {
+
+        /* ── Disclaimer ── */
+        .disclaimer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid #eee;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding-bottom: 16px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0 32px;
             display: flex;
             justify-content: center;
             gap: 24px;
             flex-wrap: wrap;
+            animation: fadeUp 0.6s ease 0.4s both;
         }
-        .links a {
-            color: #7AB8FF;
+
+        footer a {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
             text-decoration: none;
-            padding: 8px 0;
+            transition: color 0.2s;
         }
-        .links a:hover {
-            text-decoration: underline;
+
+        footer a:hover { color: var(--text); }
+
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        /* Mobile optimizations */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Responsive ── */
         @media (max-width: 600px) {
-            body {
-                padding: 20px 12px;
-            }
-            .container {
-                padding: 28px 20px;
-                border-radius: 12px;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .tagline {
-                font-size: 1.1em;
-                margin-bottom: 32px;
-            }
-            .cta {
-                gap: 12px;
-                padding: 0 20px;
-            }
-            .cta a {
-                width: auto;
-                max-width: 220px;
-                min-width: 180px;
-                padding: 14px 32px;
-                font-size: 1em;
-            }
-            .cta a.secondary {
-                padding: 12px 32px;
-            }
-            .links {
-                flex-direction: column;
-                gap: 16px;
-            }
-        }
-        
-        /* Extra small mobile */
-        @media (max-width: 400px) {
-            .container {
-                padding: 24px 16px;
-            }
-            .cta {
-                padding: 0 12px;
-            }
-            .cta a {
-                max-width: 200px;
-                min-width: 160px;
-                padding: 14px 24px;
-            }
-            .cta a.secondary {
-                padding: 12px 24px;
-            }
+            .page { padding: 0 16px; }
+            header { padding: 28px 0 0; }
+            .app-hero { padding: 40px 0 36px; }
+            .cta { flex-direction: column; align-items: center; }
+            .cta a { min-width: 200px; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>DropBrain</h1>
-        <p class="tagline">Your Personal Journal Timeline</p>
-        
-        <div class="feature">
-            <h2>AI-Powered Writing Support</h2>
-            <p>Write confidently with on-device Apple Intelligence (iOS 26+). Tap to correct spelling, grammar, and punctuation—all processed locally, no cloud, preserving your natural voice. 25 free corrections per month, unlimited with Premium.</p>
-        </div>
+    <div class="page">
+        <header>
+            <a href="../">&#8592; dropbrain.studio</a>
+        </header>
 
-        <div class="feature">
-            <h2>Built with Accessibility in Mind</h2>
-            <p>Created by someone with dyslexia. Includes accessibility features like OpenDyslexic font option, AI sentence correction, adjustable line spacing and contrast, flexible message padding, and a timeline layout that may help users who think non-linearly.</p>
-        </div>
+        <section class="app-hero">
+            <h1>DropBrain</h1>
+            <p class="tagline">Your Personal Journal Timeline</p>
+        </section>
 
-        <div class="feature">
-            <h2>Flexible Journal Organization</h2>
-            <p>Traditional journaling apps force hierarchy. DropBrain offers a different approach—Home Timeline for all thoughts in one stream, Groups to organize by topic or area of life, Threads to connect related ideas. Capture first, organize later (or never).</p>
-        </div>
+        <div class="features">
+            <div class="feature">
+                <h2>AI-Powered Writing Support</h2>
+                <p>Write confidently with on-device Apple Intelligence (iOS 26+). Tap to correct spelling, grammar, and punctuation — all processed locally, no cloud, preserving your natural voice. 25 free corrections per month, unlimited with Premium.</p>
+            </div>
 
-        <div class="feature">
-            <h2>Customization at the Center</h2>
-            <p>Every brain processes information differently. Customize everything: 5 fonts (System, OpenDyslexic, Fira Code, JetBrains Mono, Lexend), 9 themes (3 free + 6 premium pastels), multiple message styles (bubble, card, minimal), adjustable spacing, and visual density controls.</p>
-        </div>
+            <div class="feature">
+                <h2>Built with Accessibility in Mind</h2>
+                <p>Created by someone with dyslexia. Includes OpenDyslexic font option, AI sentence correction, adjustable line spacing and contrast, flexible message padding, and a timeline layout that may help users who think non-linearly.</p>
+            </div>
 
-        <div class="feature">
-            <h2>Your Data, Your Privacy</h2>
-            <p>Data stored in your private iCloud. AI corrections processed on-device only. No servers, no tracking, no access to your journal entries. Ad-free. Export or delete anytime. You control your data.</p>
-        </div>
+            <div class="feature">
+                <h2>Flexible Journal Organization</h2>
+                <p>Traditional journaling apps force hierarchy. DropBrain offers a different approach — Home Timeline for all thoughts in one stream, Groups to organize by topic, Threads to connect related ideas. Capture first, organize later (or never).</p>
+            </div>
 
-        <div class="feature">
-            <h2>Premium Features ($2.99/month)</h2>
-            <p>Unlimited AI corrections (free: 25/month), 6 additional pastel themes, 4 premium fonts (OpenDyslexic, Fira Code, JetBrains Mono, Lexend), custom app icons, and the ability to hide groups from Home. Cancel anytime.</p>
+            <div class="feature">
+                <h2>Customization at the Center</h2>
+                <p>Every brain processes information differently. 5 fonts (System, OpenDyslexic, Fira Code, JetBrains Mono, Lexend), 9 themes (3 free + 6 premium pastels), multiple message styles, adjustable spacing, and visual density controls.</p>
+            </div>
+
+            <div class="callout privacy">
+                <h3>Your Data, Your Privacy</h3>
+                <p>Data stored in your private iCloud. AI corrections processed on-device only. No servers, no tracking, no access to your journal entries. Ad-free. Export or delete anytime.</p>
+            </div>
+
+            <div class="feature">
+                <h2>Premium ($2.99/month)</h2>
+                <p>Unlimited AI corrections, 6 additional pastel themes, 4 premium fonts, custom app icons, and the ability to hide groups from Home. Cancel anytime.</p>
+            </div>
         </div>
 
         <div class="cta">
-            <a href="https://apps.apple.com/us/app/dropbrain/id6747975488" target="_blank">Download on App Store</a>
-            <a href="../" class="secondary">More Apps</a>
+            <a href="https://apps.apple.com/us/app/dropbrain/id6747975488" target="_blank" rel="noopener" class="primary">Download on App Store</a>
+            <a href="../" class="secondary">All Apps</a>
             <a href="privacy_policy.html" class="secondary">Privacy Policy</a>
         </div>
 
-        <p style="text-align: center; color: #999; font-size: 0.9em; margin: 30px 0;">
-            DropBrain is a personal journaling tool with accessibility features. Individual experiences may vary.
-        </p>
+        <p class="disclaimer">DropBrain is a personal journaling tool with accessibility features. Individual experiences may vary.</p>
+
+        <footer>
+            <a href="privacy_policy.html">Privacy Policy</a>
+            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
+        </footer>
     </div>
 </body>
 </html>
-
