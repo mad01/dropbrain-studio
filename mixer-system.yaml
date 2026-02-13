@@ -1,0 +1,17 @@
+# mixer-system.yaml — per-repo build/test/lint config
+# Mixer auto-discovers this file and merges it into the workspace config.
+# The name field identifies this repo for standalone mode (mixer without mixer.yaml).
+name: dropbrain-studio
+
+# Uncomment and fill in the commands for this repo.
+# build:
+#   command: "make build"
+# test:
+#   command: "make test"
+# lint:
+#   command: "make lint"
+# clean:
+#   command: "make clean"
+# validate:
+#   - "make lint"
+#   - "make test"
