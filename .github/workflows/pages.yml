@@ -14,12 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Build site
+        run: |
+          mkdir -p _site
+          cp -r index.html CNAME llms.txt robots.txt sitemap.xml _site/
+          cp -r airmustacheman dropbrain lookupsilly migraineme _site/
+          mkdir -p _site/blog
+          cp -r blog/index.html blog/images blog/migraine-me-track-your-patterns _site/blog/
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
