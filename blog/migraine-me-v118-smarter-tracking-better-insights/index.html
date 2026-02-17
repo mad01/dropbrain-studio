@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migraine Me v1.1.8: Smarter Tracking, Better Insights — dropbrain blog</title>
+    <meta name="description" content="Version 1.1.8 adds the HIT-6 Headache Impact Test, a statistics dashboard, home screen widgets, and PDF report export alongside reliability fixes for background sync.">
+    <meta property="og:title" content="Migraine Me v1.1.8: Smarter Tracking, Better Insights">
+    <meta property="og:description" content="Version 1.1.8 adds the HIT-6 Headache Impact Test, a statistics dashboard, home screen widgets, and PDF report export alongside reliability fixes for background sync.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/migraine-me-v118-smarter-tracking-better-insights/">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">Migraine Me v1.1.8: Smarter Tracking, Better Insights</h1>
+            <div class="post-meta">
+                <span class="post-date">February 17, 2026</span>
+                <div class="post-tags"><span class="tag">ios</span><span class="tag">swift</span><span class="tag">migraine</span><span class="tag">health</span><span class="tag">swiftui</span><span class="tag">concurrency</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>Version 1.1.8 adds the HIT-6 questionnaire so you can put a number on headache impact, a statistics dashboard that organizes your data into expandable sections, a home screen widget for checking your streak at a glance, and PDF reports you can hand to your doctor. Two background task crashes were also found and fixed, and sync now survives app termination.</p>
+<h2 id="hit-6-headache-impact-test">HIT-6 Headache Impact Test</h2>
+<p>The HIT-6 is a six-question survey that doctors actually use to measure how headaches affect daily life. Each question has five possible answers scored from 6 to 13 points, giving a total between 36 and 78. The app maps that total to one of four severity categories:</p>
+<pre><code class="language-swift">public enum HIT6Category: String, Codable, Sendable {
+  case littleImpact = &quot;LittleImpact&quot;       // 36-49
+  case someImpact = &quot;SomeImpact&quot;           // 50-55
+  case substantialImpact = &quot;SubstantialImpact&quot; // 56-59
+  case severeImpact = &quot;SevereImpact&quot;       // 60-78
+
+  public static func from(score: Int) -&gt; HIT6Category {
+    switch score {
+    case ...49: return .littleImpact
+    case 50...55: return .someImpact
+    case 56...59: return .substantialImpact
+    default: return .severeImpact
+    }
+  }
+}
+</code></pre>
+<p>Results are stored as a SwiftData <code>@Model</code> so they persist across launches and sync with iCloud. The scoring itself is a one-liner: <code>answers.reduce(0) { $0 + $1.rawValue }</code>. Having a standardized number over time gives you something concrete to show your neurologist instead of &ldquo;I think they&rsquo;re getting worse.&rdquo;</p>
+<h2 id="statistics-dashboard">Statistics dashboard</h2>
+<p>The previous version had basic statistics. This release replaces them with a dashboard that shows the most important numbers up front and hides the rest behind collapsible sections.</p>
+<p>The top row (hero metrics and quick facts) is always visible. Below that, detail sections for episode breakdowns, triggers, symptoms, medications, HIT-6 history, and recovery actions are wrapped in <code>ExpandableStatsSection</code>:</p>
+<pre><code class="language-swift">ExpandableStatsSection(
+  title: NSLocalizedString(&quot;stats.section.triggers&quot;, comment: &quot;&quot;),
+  icon: &quot;bolt.trianglebadge.exclamationmark.fill&quot;,
+  iconColor: colors.warning,
+  isExpanded: $triggersExpanded
+) {
+  triggerContent(triggerData)
+}
+</code></pre>
+<p>Each section&rsquo;s expanded/collapsed state is persisted with <code>@AppStorage</code> so the dashboard remembers how you left it between sessions:</p>
+<pre><code class="language-swift">@AppStorage(&quot;statsTriggersExpanded&quot;) private var triggersExpanded = true
+@AppStorage(&quot;statsSymptomsExpanded&quot;) private var symptomsExpanded = true
+@AppStorage(&quot;statsMedicationsExpanded&quot;) private var medicationsExpanded = true
+</code></pre>
+<p>A period selector at the top lets you switch between 7-day, 30-day, 90-day, and all-time views. Delta indicators compare the current period against the previous one, so you can see whether things are trending better or worse.</p>
+<h2 id="home-screen-widget">Home screen widget</h2>
+<p>There&rsquo;s now a Migraine Me widget for your home screen or lock screen. The small widget shows four things: migraine count, headache count, current streak, and whether you have an active episode. If an episode is running, it flips to a rose-colored indicator with a live timer.</p>
+<p>Data flows from the main app to the widget through <code>SharedDataManager</code>, which writes to an App Group <code>UserDefaults</code> container:</p>
+<pre><code class="language-swift">struct SharedDataManager {
+  static let appGroupIdentifier = &quot;group.com.migraineme.app&quot;
+
+  static func updateWidgetData(
+    lastEpisodeDate: Date?,
+    currentStreak: Int,
+    hasActiveEpisode: Bool,
+    activeEpisodeStartDate: Date? = nil,
+    activeEpisodeType: String? = nil,
+    migrainesLast30Days: Int = 0,
+    headachesLast30Days: Int = 0
+  ) {
+    guard let defaults = sharedDefaults else { return }
+    // ... write values ...
+    WidgetCenter.shared.reloadAllTimelines()
+  }
+}
+</code></pre>
+<p>The widget also supports a <code>refreshFromDisk()</code> path that reads the shared <code>HealthEntries.json</code> file directly, so it can recompute stats during background refresh without the main app running. Lock screen widgets (circular and rectangular families) are included for quick streak checks.</p>
+<h2 id="pdf-report-export">PDF report export</h2>
+<p>When you need to share data with your doctor, a printed summary beats scrolling through an app together. You pick a date range (30, 60, or 90 days) and get a PDF with episode counts, migraine-free streaks, average intensity and duration, monthly headache day trends, HIT-6 scores, medication effectiveness with time-to-relief numbers, trigger and symptom frequencies, and a full timeline of every episode.</p>
+<p>The PDF is generated on-device with <code>UIGraphicsPDFRenderer</code> and saved to your Documents folder. Nothing leaves your phone unless you share the file yourself.</p>
+<h2 id="background-task-reliability">Background task reliability</h2>
+<p>Two crashes were hiding in the background task handling. Both showed up as <code>EXC_BREAKPOINT (SIGTRAP)</code> on background threads, which made them hard to trace back to the actual cause.</p>
+<p><strong>Double-completion crash.</strong> <code>BGTask.setTaskCompleted(success:)</code> is a one-shot call. If both the expiration handler and the async work completion path call it, the system kills your process. The race is straightforward: expiration fires while async work is still running, both paths reach <code>setTaskCompleted</code>, and the second call traps.</p>
+<p>The fix uses an <code>OSAllocatedUnfairLock</code> as an atomic guard so whichever path runs first wins:</p>
+<pre><code class="language-swift">nonisolated static func handleBGTask(
+  _ task: BGTask,
+  work: @escaping @Sendable () async -&gt; Bool
+) {
+  let bgTask = SendableTask(task: task)
+  let completed = OSAllocatedUnfairLock(initialState: false)
+
+  let workTask = Task {
+    let success = await work()
+    if completed.withLock({
+      if $0 { return true }; $0 = true; return false
+    }) == false {
+      bgTask.task.setTaskCompleted(success: success)
+    }
+  }
+
+  task.expirationHandler = {
+    workTask.cancel()
+    if completed.withLock({
+      if $0 { return true }; $0 = true; return false
+    }) == false {
+      bgTask.task.setTaskCompleted(success: false)
+    }
+  }
+}
+</code></pre>
+<p><strong>@MainActor isolation crash.</strong> <code>AppDelegate</code> conforms to <code>UIApplicationDelegate</code>, which in Swift 6 infers <code>@MainActor</code> on the entire class. Every closure defined inside an instance method inherits that isolation. <code>BGTaskScheduler</code> calls its handler closures on an internal background queue, so the runtime hits <code>_dispatch_assert_queue_fail</code> and traps.</p>
+<p>The fix moves BGTask registration into a <code>nonisolated static</code> method, which breaks the <code>@MainActor</code> inheritance chain:</p>
+<pre><code class="language-swift">nonisolated static let appRefreshIdentifier = &quot;com.migraineme.app.refresh&quot;
+
+nonisolated private static func performTaskRegistration() {
+  BGTaskScheduler.shared.register(
+    forTaskWithIdentifier: appRefreshIdentifier,
+    using: nil
+  ) { task in
+    handleBGTask(task) {
+      await BackgroundSyncService.shared.performAppRefresh()
+    }
+  }
+}
+</code></pre>
+<p>The widget made this crash reliably reproducible. With a 15-minute refresh interval during active episodes, the BGTask handler fires frequently enough that the queue assertion failure went from &ldquo;rare background crash&rdquo; to &ldquo;consistent crash after locking the phone.&rdquo; The swift-concurrency skill identified both issues by analyzing the actor isolation chain from <code>UIApplicationDelegate</code> through instance method closures to the BGTask handler.</p>
+<h2 id="pending-sync-queue">Pending sync queue</h2>
+<p>CloudKit sync can fail for all the usual reasons: no network, iCloud quota, transient server errors. Before this release, failed operations were just lost when the app got killed. Now there&rsquo;s an actor-based <code>PendingSyncQueue</code> that writes pending operations to the App Group container as JSON:</p>
+<pre><code class="language-swift">public actor PendingSyncQueue {
+  public static let shared = PendingSyncQueue()
+
+  private var operations: [SyncOperation] = []
+  private let maxRetries = 5
+
+  public func enqueue(_ operation: SyncOperation) {
+    operations.removeAll {
+      $0.entryId == operation.entryId &amp;&amp; $0.type == operation.type
+    }
+    operations.append(operation)
+    saveToDisk()
+  }
+
+  public func markFailed(_ operationId: UUID) {
+    guard let index = operations.firstIndex(where: { $0.id == operationId })
+    else { return }
+    operations[index].retryCount += 1
+    if operations[index].retryCount &gt; maxRetries {
+      operations.remove(at: index)
+    }
+    saveToDisk()
+  }
+}
+</code></pre>
+<p>The queue deduplicates by entry ID and operation type, so if you update the same record three times while offline, only the latest operation is queued. Failed operations are retried up to five times before being dropped. Using a Swift actor makes the queue thread-safe without manual lock management, which the swift-concurrency skill recommended over the original <code>DispatchQueue</code>-based approach.</p>
+<h2 id="built-with-claude-code-and-opus-46">Built with Claude Code and Opus 4.6</h2>
+<p>Three Claude Code skills did most of the heavy lifting on this release. The swiftui-expert skill designed the <code>ExpandableStatsSection</code> component and the collapsible layout for the stats dashboard, and structured the widget views with the <code>StatCell</code> pattern and theme constants. The swift-concurrency skill identified both BGTask crashes by tracing the <code>@MainActor</code> isolation inheritance chain and the <code>setTaskCompleted</code> race condition. It also recommended the actor-based <code>PendingSyncQueue</code> over the original <code>DispatchQueue</code> + lock approach, and the <code>@unchecked Sendable</code> wrapper for <code>BGTask</code>. The core-data-expert skill guided the SwiftData model design for <code>HIT6Result</code>, including the <code>categoryRaw</code> / computed <code>category</code> pattern for storing enums in SwiftData and the <code>FetchDescriptor</code> queries in the stats views.</p>
+<hr />
+<p>Migraine Me is on the <a href="https://apps.apple.com/us/app/migraineme/id6755067713">App Store</a>.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Migraine Me v1.1.8 is an iOS app update introducing the HIT-6 (Headache Impact Test) clinically validated questionnaire with SwiftData persistence, a progressive-disclosure statistics dashboard built with ExpandableStatsSection and @AppStorage, home screen and lock screen WidgetKit widgets sharing data through App Groups via SharedDataManager, PDF report generation for doctor visits using UIGraphicsPDFRenderer, two BGTask crash fixes (double-completion guarded by OSAllocatedUnfairLock and @MainActor isolation resolved with nonisolated static), an actor-based PendingSyncQueue for durable CloudKit sync operations, and development assisted by Claude Code Opus 4.6 with swiftui-expert, swift-concurrency, and core-data-expert skills.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Migraine Me v1.1.8: Smarter Tracking, Better Insights",
+    "datePublished": "2026-02-17",
+    "description": "Version 1.1.8 adds the HIT-6 Headache Impact Test, a statistics dashboard, home screen widgets, and PDF report export alongside reliability fixes for background sync.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/migraine-me-v118-smarter-tracking-better-insights/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

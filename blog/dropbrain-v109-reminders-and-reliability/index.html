@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropBrain v1.0.9: Reminders and Reliability — dropbrain blog</title>
+    <meta name="description" content="DropBrain v1.0.9 adds message reminders with snooze, in-app popups, and background sync reliability fixes for ADHD and dyslexia users.">
+    <meta property="og:title" content="DropBrain v1.0.9: Reminders and Reliability">
+    <meta property="og:description" content="DropBrain v1.0.9 adds message reminders with snooze, in-app popups, and background sync reliability fixes for ADHD and dyslexia users.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/dropbrain-v109-reminders-and-reliability/">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">DropBrain v1.0.9: Reminders and Reliability</h1>
+            <div class="post-meta">
+                <span class="post-date">February 17, 2026</span>
+                <div class="post-tags"><span class="tag">ios</span><span class="tag">swift</span><span class="tag">adhd</span><span class="tag">dyslexia</span><span class="tag">notifications</span><span class="tag">concurrency</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>DropBrain is built for people with ADHD and dyslexia. You use it to capture thoughts, notes, and conversations without worrying about structure or formatting. But one problem kept coming up: you&rsquo;d drop a thought into the app and then forget to come back to it. v1.0.9 adds reminders to fix that.</p>
+<h2 id="reminders">Reminders</h2>
+<p>Each reminder is a local notification scheduled through <code>UNCalendarNotificationTrigger</code>. You long-press a message in your timeline, pick a time, and you&rsquo;re done. The date picker has quick presets (one hour, tomorrow morning, next week) and a full calendar picker for anything else.</p>
+<pre><code class="language-swift">let triggerDate = Calendar.current.dateComponents(
+  [.year, .month, .day, .hour, .minute, .second],
+  from: date
+)
+let trigger = UNCalendarNotificationTrigger(
+  dateMatching: triggerDate,
+  repeats: false
+)
+
+let request = UNNotificationRequest(
+  identifier: &quot;reminder-\(messageId.uuidString)&quot;,
+  content: notificationContent,
+  trigger: trigger
+)
+try await center.add(request)
+</code></pre>
+<p>We went with <code>UNCalendarNotificationTrigger</code> over <code>UNTimeIntervalNotificationTrigger</code> because reminders are tied to specific dates and times, not relative offsets. If you set a reminder for tomorrow at 9am, it fires at 9am regardless of when the device was last active.</p>
+<h2 id="snooze">Snooze</h2>
+<p>When a reminder fires, you get snooze options: 5, 15, or 30 minutes, plus a custom time picker. This matters more than it sounds for ADHD users. Rigid &ldquo;snooze for exactly 10 minutes&rdquo; buttons don&rsquo;t match how ADHD brains work. Sometimes you need five minutes, sometimes you need until after lunch. The flexibility is the point.</p>
+<h2 id="in-app-popup-and-the-reminders-view">In-app popup and the reminders view</h2>
+<p>If DropBrain is open when a reminder fires, you don&rsquo;t get a system notification banner. The app posts an internal <code>.reminderFired</code> notification and shows a popup overlay instead. You see the message content, snooze buttons, and a link to jump to that message without leaving what you were doing.</p>
+<pre><code class="language-swift">// Foreground: suppress system banner, show our own popup
+func userNotificationCenter(
+  _ center: UNUserNotificationCenter,
+  willPresent notification: UNNotification,
+  withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -&gt; Void
+) {
+  let messageIdString = notification.request.content.userInfo[&quot;messageId&quot;] as? String
+  guard let messageIdString, let messageId = UUID(uuidString: messageIdString) else {
+    completionHandler([.banner, .sound])
+    return
+  }
+  let sendableInfo: [String: String] = [&quot;messageId&quot;: messageId.uuidString]
+  NotificationCenter.default.post(name: .reminderFired, object: nil, userInfo: sendableInfo)
+  completionHandler([])  // Suppress system banner
+}
+</code></pre>
+<p>If you tapped the notification from the lock screen or notification center, a separate <code>.reminderTapped</code> notification routes you straight to the message.</p>
+<p>Messages with active reminders show a small clock icon in the timeline so you can spot them. There&rsquo;s also a dedicated Reminders view that lists all your active reminders with day separators and context menus for editing or removing them.</p>
+<h2 id="background-reliability">Background reliability</h2>
+<p>DropBrain syncs with CloudKit in the background using <code>BGAppRefreshTask</code>. Two crashes were hiding in this code, both related to how iOS handles background task lifecycle.</p>
+<p>The first was a double-completion crash. When a <code>BGAppRefreshTask</code> expires, iOS calls your expiration handler. If the sync work also finishes at roughly the same time, both paths call <code>setTaskCompleted</code> — and calling it twice is a fatal error (EXC_BREAKPOINT). The fix uses <code>OSAllocatedUnfairLock</code> as an atomic guard so whichever path runs first wins:</p>
+<pre><code class="language-swift">let completed = OSAllocatedUnfairLock(initialState: false)
+
+let syncTask = Task { @MainActor in
+  let success = await syncManager.handleRemoteNotification()
+  let alreadyDone = completed.withLock { if $0 { return true }; $0 = true; return false }
+  if !alreadyDone {
+    bgTask.setTaskCompleted(success: success)
+  }
+}
+
+bgTask.expirationHandler = {
+  syncTask.cancel()
+  let alreadyDone = completed.withLock { if $0 { return true }; $0 = true; return false }
+  if !alreadyDone {
+    bgTask.setTaskCompleted(success: false)
+  }
+}
+</code></pre>
+<p>The second crash was a <code>@MainActor</code> isolation violation. <code>BGTaskScheduler.shared.register</code> runs its closure on an arbitrary background thread. If the registration function or its static properties are annotated <code>@MainActor</code>, Swift 6 strict concurrency flags it and the runtime can crash. The fix: mark the registration function and the task identifier as <code>nonisolated static</code>.</p>
+<p>These are the same two crashes we found and fixed in Migraine Me. The swift-concurrency skill identified both patterns, and we applied the same solution to both apps.</p>
+<h2 id="background-termination-reduction">Background termination reduction</h2>
+<p>Even without crashes, iOS can terminate your app if a background task runs too long. The first thing we added was a <code>backgroundTimeRemaining</code> check before starting sync:</p>
+<pre><code class="language-swift">let backgroundTimeRemaining = UIApplication.shared.backgroundTimeRemaining
+if backgroundTimeRemaining != .infinity &amp;&amp; backgroundTimeRemaining &lt; 20 {
+  logger.warning(&quot;Not enough background time remaining (\(backgroundTimeRemaining)s) - skipping sync&quot;)
+  isSyncing = false
+  endBackgroundTask()
+  return
+}
+</code></pre>
+<p>On top of that, there&rsquo;s a 20-second hard timeout on the sync operation itself, using a task group that races the work against a sleep timer. We also cut retry counts from 5 to 3 and shortened backoff delays (1 second initial, 5 second cap) so retries don&rsquo;t eat into the time budget.</p>
+<h2 id="swift-6-concurrency-and-build-warnings">Swift 6 concurrency and build warnings</h2>
+<p>We fixed 16 concurrency warnings across 8 files. Most were data race risks (mutable state accessed from multiple isolation domains) and actor isolation violations where a <code>@MainActor</code> class had static members called from nonisolated contexts. The <code>nonisolated static</code> pattern for <code>BGTaskScheduler</code> registration was the biggest one, but we also fixed view equality conformances (<code>nonisolated static func ==</code>), background task expiration closures, and the <code>beginBackgroundTask</code> wrapper.</p>
+<h2 id="cloudkit-and-swiftdata-fixes">CloudKit and SwiftData fixes</h2>
+<p>The CloudKit import path had a subtle bug: when a new message arrived from another device, the import code was creating a fresh <code>MessageModel</code> with a new UUID instead of preserving the record&rsquo;s original ID. This meant the same message could end up with different IDs on different devices, breaking sync for any subsequent edits. The fix was <code>insertRemoteMessage</code>, which inserts the remote model directly and preserves its ID:</p>
+<pre><code class="language-swift">} else {
+  // Insert the remote model directly to preserve its CloudKit ID
+  try insertRemoteMessage(remote)
+}
+</code></pre>
+<p>We also extracted model conversion into a dedicated <code>MessageSyncData</code> type. This cleaned up conflict resolution and removed a class of bugs where fields could get out of sync between local and remote representations.</p>
+<h2 id="claude-code-and-opus-46">Claude Code and Opus 4.6</h2>
+<p>This release was built with Claude Code running Opus 4.6. The swiftui-expert skill built the reminder UI: popup overlay, date picker with quick-select buttons, RemindersView with day separators and context menus. The swift-concurrency skill found both <code>BGTask</code> crashes and the <code>@MainActor</code> isolation violations, then guided the <code>OSAllocatedUnfairLock</code> and <code>nonisolated static</code> fixes. The core-data-expert skill caught the CloudKit ID preservation bug and designed the <code>insertRemoteMessage</code> approach.</p>
+<hr />
+<p>DropBrain is on the <a href="https://apps.apple.com/us/app/dropbrain/id6736575743">App Store</a>.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">DropBrain is an iOS app for people with ADHD and dyslexia that helps them capture and organize thoughts across conversation-style groups. Version 1.0.9 adds local notification reminders using UNCalendarNotificationTrigger with quick presets and custom date picker, snooze with 5/15/30 minute presets, in-app reminder popup overlay via UNUserNotificationCenterDelegate with .reminderFired/.reminderTapped notification names, a dedicated RemindersView with context menus and day separators, clock badge indicators on reminded messages in the timeline, BGTask double-completion crash fix using OSAllocatedUnfairLock, @MainActor isolation fix with nonisolated static for BGTaskScheduler registration, backgroundTimeRemaining guard to skip sync when under 20 seconds remain, 20-second timeout on sync operations with reduced retry counts, Swift 6 concurrency warning fixes across 8 files, CloudKit import fix preserving remote message IDs via insertRemoteMessage, and SwiftData model extraction. Built with Claude Code using swiftui-expert, swift-concurrency, and core-data-expert skills on Opus 4.6.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "DropBrain v1.0.9: Reminders and Reliability",
+    "datePublished": "2026-02-17",
+    "description": "DropBrain v1.0.9 adds message reminders with snooze, in-app popups, and background sync reliability fixes for ADHD and dyslexia users.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/dropbrain-v109-reminders-and-reliability/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

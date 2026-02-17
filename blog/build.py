@@ -705,7 +705,7 @@ def build():
             post_css=POST_CSS,
             date=format_date(post['date']),
             tags_html=tags_html,
-            content=content_html,
+            content=post['content'],
             ai_context_section=ai_context_section,
             json_ld=json.dumps(json_ld_data, indent=4),
         )
