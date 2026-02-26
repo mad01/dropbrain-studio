@@ -25,6 +25,7 @@
             --migraineme: #FF6B6B;
             --lookupsilly: #F4A261;
             --mustacheman: #5BA0E0;
+            --hemmetsminnen: #5AC8A0;
         }
 
         body {
@@ -148,6 +149,7 @@
         .app-card:nth-child(2) { animation-delay: 0.25s; }
         .app-card:nth-child(3) { animation-delay: 0.35s; }
         .app-card:nth-child(4) { animation-delay: 0.45s; }
+        .app-card:nth-child(5) { animation-delay: 0.55s; }
 
         .app-card::before {
             content: '';
@@ -174,11 +176,13 @@
         .app-card[data-app="migraineme"]::before { background: var(--migraineme); }
         .app-card[data-app="lookupsilly"]::before { background: var(--lookupsilly); }
         .app-card[data-app="mustacheman"]::before { background: var(--mustacheman); }
+        .app-card[data-app="hemmetsminnen"]::before { background: var(--hemmetsminnen); }
 
         .app-card[data-app="dropbrain"]:hover { box-shadow: 0 8px 28px rgba(122,184,255,0.06); }
         .app-card[data-app="migraineme"]:hover { box-shadow: 0 8px 28px rgba(255,107,107,0.06); }
         .app-card[data-app="lookupsilly"]:hover { box-shadow: 0 8px 28px rgba(244,162,97,0.06); }
         .app-card[data-app="mustacheman"]:hover { box-shadow: 0 8px 28px rgba(91,160,224,0.06); }
+        .app-card[data-app="hemmetsminnen"]:hover { box-shadow: 0 8px 28px rgba(90,200,160,0.06); }
 
         .app-name {
             font-size: 1.4rem;
@@ -191,6 +195,7 @@
         .app-card[data-app="migraineme"] .app-name { color: var(--migraineme); }
         .app-card[data-app="lookupsilly"] .app-name { color: var(--lookupsilly); }
         .app-card[data-app="mustacheman"] .app-name { color: var(--mustacheman); }
+        .app-card[data-app="hemmetsminnen"] .app-name { color: var(--hemmetsminnen); }
 
         .app-tagline {
             font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
@@ -351,6 +356,17 @@
                     <a href="airmustacheman/">About</a>
                     <a href="airmustacheman/privacy_policy.html">Privacy Policy</a>
                     <a href="https://apps.apple.com/us/app/air-mustache-man/id6748342920" target="_blank" rel="noopener" class="store-link">App Store &#8599;</a>
+                </div>
+            </div>
+
+            <div class="app-card" data-app="hemmetsminnen">
+                <h2 class="app-name">Hemmets Minnen</h2>
+                <p class="app-tagline">Home Record Manager</p>
+                <p class="app-desc">Keep everything about your home organized — purchases, maintenance, receipts, mortgages, and running costs. Share with family through iCloud.</p>
+                <div class="app-links">
+                    <a href="hemmets-minnen/">About</a>
+                    <a href="hemmets-minnen/privacy_policy.html">Privacy Policy</a>
+                    <a class="coming-soon">Coming Soon</a>
                 </div>
             </div>
         </div>
