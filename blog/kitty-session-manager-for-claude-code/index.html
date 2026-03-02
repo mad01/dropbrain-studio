@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Built a Session Manager for Kitty and Claude Code — dropbrain blog</title>
+    <meta name="description" content="kitty-session (ks) gives you named terminal sessions with Claude Code on top and a shell on bottom, no tmux required.">
+    <meta property="og:title" content="I Built a Session Manager for Kitty and Claude Code">
+    <meta property="og:description" content="kitty-session (ks) gives you named terminal sessions with Claude Code on top and a shell on bottom, no tmux required.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/kitty-session-manager-for-claude-code/">
+    <meta property="og:image" content="https://dropbrain.io/blog/images/ks-running-session.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">I Built a Session Manager for Kitty and Claude Code</h1>
+            <div class="post-meta">
+                <span class="post-date">March 02, 2026</span>
+                <div class="post-tags"><span class="tag">macos</span><span class="tag">kitty</span><span class="tag">claude-code</span><span class="tag">terminal</span><span class="tag">go</span><span class="tag">tooling</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h1 id="i-built-a-session-manager-for-kitty-and-claude-code">I Built a Session Manager for Kitty and Claude Code</h1>
+<p>I&rsquo;ve never liked tmux. The keybindings feel foreign, the copy-paste story on macOS is rough, and bolting a terminal multiplexer on top of an already capable terminal always felt backwards. Kitty handles splits, tabs, and OS windows natively. Why fight it?</p>
+<p>But once Claude Code became part of my daily workflow I hit a real problem. I&rsquo;d have four or five repos open, each needing a Claude pane and a shell pane, and I had no good way to track what was running where. Closing a tab meant losing the context. Reopening meant rebuilding the layout by hand.</p>
+<p>So I built <code>ks</code> &ndash; a small Go TUI that manages named sessions inside kitty. Each session is a kitty tab split in two: Claude Code on top, shell on bottom. That&rsquo;s it. No multiplexer layer, no config DSL, no abstraction over kitty&rsquo;s own window model.</p>
+<h2 id="what-it-looks-like">What it looks like</h2>
+<p>The main screen shows your sessions, their status, and the working directory. If you&rsquo;ve used Claude Code in a session it also pulls in the latest prompt so you can remember what you were working on.</p>
+<p><img alt="Session list showing status badges, directories, and Claude context" src="/blog/images/ks-session-list.png" />
+<p class="image-caption">Session list showing status badges, directories, and Claude context</p></p>
+<p>Press <code>n</code> and you get a repo picker. It scans your configured directories for git repos and lets you fuzzy-filter down to the one you want.</p>
+<p><img alt="Repository picker with fuzzy search" src="/blog/images/ks-repo-picker.png" />
+<p class="image-caption">Repository picker with fuzzy search</p></p>
+<p>Select a session and press <code>o</code> to open it. Kitty creates a new tab, launches Claude Code in the top pane, and drops you into a shell in the bottom pane. The working directory carries over to both.</p>
+<p><img alt="Running session with Claude Code on top and shell on bottom" src="/blog/images/ks-running-session.png" />
+<p class="image-caption">Running session with Claude Code on top and shell on bottom</p></p>
+<h2 id="how-it-works-under-the-hood">How it works under the hood</h2>
+<p><code>ks</code> talks to kitty through <code>kitty @</code>, the built-in remote control protocol. When you create a session, it calls <code>kitty @ launch</code> to open a tab, then <code>kitty @ launch</code> again with a horizontal split for the shell pane. Tab titles, focus, and close operations all go through the same protocol.</p>
+<p>Sessions are persisted as JSON files in <code>~/.config/ks/sessions/</code>. Each file stores the session name, working directory, creation timestamp, and kitty tab ID. When you reopen a session after closing the tab, <code>ks</code> recreates the layout from that stored metadata.</p>
+<p>The repo scanner runs a concurrent BFS across your configured directories with 32 worker goroutines. It finds <code>.git</code> folders, parses the remote URL to get an <code>org/repo</code> display name, and feeds everything into a fuzzy finder.</p>
+<p>The TUI itself is built with <a href="https://github.com/charmbracelet/bubbletea">Bubble Tea</a> and <a href="https://github.com/charmbracelet/lipgloss">Lipgloss</a>. Standard stuff for Go terminal UIs.</p>
+<h2 id="why-not-tmux">Why not tmux?</h2>
+<p>Kitty already does everything tmux does for window management. Splits, tabs, scrollback, OS-native rendering, GPU acceleration, ligatures &ndash; it&rsquo;s all there out of the box. Adding tmux on top means losing kitty&rsquo;s image protocol, dealing with terminfo mismatches, and adding a layer of key remapping that gets in the way.</p>
+<p>What kitty doesn&rsquo;t have is a session concept. You can&rsquo;t name a group of panes, close it, and bring it back later. That&rsquo;s the gap <code>ks</code> fills. It adds just enough structure &ndash; a name, a directory, a layout &ndash; without replacing kitty&rsquo;s own window management.</p>
+<h2 id="setup">Setup</h2>
+<p><code>ks</code> uses <code>kitty @</code> remote control under the hood, so you need that enabled. Add this to your <code>~/.config/kitty/kitty.conf</code> if you haven&rsquo;t already:</p>
+<pre><code>allow_remote_control yes
+</code></pre>
+<p>Then install:</p>
+<pre><code class="language-bash">git clone https://github.com/mad01/kitty-session
+cd kitty-session
+make install
+</code></pre>
+<p>Configure your repo directories in <code>~/.config/ks/config.yaml</code>:</p>
+<pre><code class="language-yaml">dirs:
+  - ~/code/src/github.com/mad01
+  - ~/workspace
+</code></pre>
+<p>Run <code>ks</code> and you&rsquo;re in the TUI. Press <code>?</code> for keybindings.</p>
+<p><img alt="Help overlay showing all keybindings" src="/blog/images/ks-help.png" />
+<p class="image-caption">Help overlay showing all keybindings</p></p>
+<p>You can also use it from the command line if you prefer:</p>
+<pre><code class="language-bash">ks new -n my-project -d ~/code/my-project
+ks open my-project
+ks list
+ks close my-project
+</code></pre>
+<p>That&rsquo;s about it. <code>ks</code> does what I need &ndash; named sessions, Claude on top, shell on bottom, no tmux. The source is on <a href="https://github.com/mad01/kitty-session">GitHub</a>.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Blog post about kitty-session (ks), a Go TUI tool that manages named kitty terminal sessions with Claude Code and shell split panes, built as an alternative to tmux for developers who want to keep kitty native.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "I Built a Session Manager for Kitty and Claude Code",
+    "datePublished": "2026-03-02",
+    "description": "kitty-session (ks) gives you named terminal sessions with Claude Code on top and a shell on bottom, no tmux required.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/kitty-session-manager-for-claude-code/",
+    "image": "https://dropbrain.io/blog/images/ks-running-session.png"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
