@@ -47,7 +47,7 @@
 </head>
 <body>
     <h1>Privacy Policy for Hemsaga</h1>
-    <p><strong>Last Updated: February 26, 2026</strong></p>
+    <p><strong>Last Updated: March 18, 2026</strong></p>
 
     <div class="important">
         <h2>Home Data Commitment</h2>
@@ -56,12 +56,12 @@
             <li>We have <strong>ZERO access</strong> to your home data</li>
             <li>All data stays on <strong>your device and your iCloud</strong></li>
             <li>We do not operate servers that store your information</li>
-            <li>Your addresses, codes, records, and receipts are <strong>completely private</strong></li>
+            <li>Your addresses, codes, and records are <strong>completely private</strong></li>
         </ul>
     </div>
 
     <h2>Overview</h2>
-    <p>Hemsaga is a home management app for organizing your homes, purchases, maintenance, mortgages, and running costs. This privacy policy explains how the app handles your personal information.</p>
+    <p>Hemsaga is a home management app for organizing your homes, purchases, maintenance, mortgages, supplies, and running costs. This privacy policy explains how the app handles your personal information.</p>
 
     <h2>Data Collection</h2>
     <p>Hemsaga does not collect, store, or send your personal data to our servers. Everything you track stays on your devices and in your private iCloud account. We use RevenueCat for subscription management, which processes anonymous subscription data (see Third-Party Services below).</p>
@@ -90,7 +90,7 @@
     <ul>
         <li>Home profiles (names, types, photos, addresses, entry codes, alarm codes)</li>
         <li>Records (purchases, appliances, renovations, warranties, serial numbers)</li>
-        <li>Receipts (scanned images, OCR-extracted text, vendor, amounts)</li>
+        <li>Receipts (images, vendor, amounts)</li>
         <li>Maintenance tasks (schedules, reminders, assignments, completion history)</li>
         <li>Service contacts (names, phone numbers, emails, categories)</li>
         <li>Mortgages (lender, amounts, interest rates, payment schedules)</li>
@@ -122,7 +122,7 @@
         <li>Subscription status</li>
     </ul>
     <p>RevenueCat Privacy Policy: <a href="https://www.revenuecat.com/privacy">https://www.revenuecat.com/privacy</a></p>
-    <p><strong>Your home data, addresses, codes, records, and receipts are never shared with RevenueCat or any third party.</strong></p>
+    <p><strong>Your home data, addresses, codes, and records are never shared with RevenueCat or any third party.</strong></p>
 
     <h3>Apple CloudKit (Sync &amp; Sharing)</h3>
     <p>Hemsaga uses Apple's CloudKit for data sync and home sharing:</p>
@@ -137,9 +137,10 @@
 
     <h3>Camera (Optional)</h3>
     <ul>
-        <li><strong>Why:</strong> To scan receipts and take photos of your homes</li>
+        <li><strong>Why:</strong> To take photos of your homes and records</li>
         <li><strong>What we access:</strong> Only photos you actively take within the app</li>
         <li><strong>Processing:</strong> All photos stay on your device and in your iCloud</li>
+        <li><strong>Availability:</strong> Camera option is only shown on devices with a camera. Permission is requested on first use; if denied, you can grant access later in iOS Settings.</li>
     </ul>
 
     <h3>Photo Library (Optional)</h3>
@@ -161,15 +162,6 @@
         <li><strong>Why:</strong> To remind you about maintenance tasks and low supply alerts</li>
         <li><strong>What we send:</strong> Local notifications only — no server-side push</li>
         <li><strong>Control:</strong> You can disable notifications at any time in Settings</li>
-    </ul>
-
-    <h2>OCR Processing</h2>
-    <p>Hemsaga can scan receipts using text recognition (OCR):</p>
-    <ul>
-        <li><strong>Processing:</strong> Runs on-device using Apple's Vision framework</li>
-        <li><strong>No third-party OCR:</strong> Your receipt images are never sent to external services</li>
-        <li><strong>Data stays local:</strong> Extracted text is stored only in your iCloud and on your device</li>
-        <li><strong>No cloud processing:</strong> Text recognition happens on your iPhone, not on any server</li>
     </ul>
 
     <h2>Home Sharing</h2>
@@ -198,14 +190,14 @@
     <p>Hemsaga is GDPR compliant. You have full control over your personal data.</p>
 
     <h3>Right to Access</h3>
-    <p>All your data is accessible to you at any time within the app. Your homes, records, receipts, and settings are always visible and under your control.</p>
+    <p>All your data is accessible to you at any time within the app. Your homes, records, and settings are always visible and under your control.</p>
 
     <h3>Right to Data Portability (Export)</h3>
     <p>You can export all your data at any time:</p>
     <ul>
         <li><strong>How:</strong> Settings → Privacy → Export Data</li>
-        <li><strong>Format:</strong> ZIP file containing structured JSON files</li>
-        <li><strong>Includes:</strong> All homes, records, receipts, maintenance tasks, contacts, mortgages, supplies, costs, and settings</li>
+        <li><strong>Format:</strong> JSON file</li>
+        <li><strong>Includes:</strong> All homes, records, maintenance tasks, contacts, mortgages, supplies, costs, and settings</li>
         <li><strong>Save to:</strong> iOS Files app or share via any standard sharing method</li>
     </ul>
 
@@ -213,21 +205,13 @@
     <p>You can permanently delete all your data at any time:</p>
     <ul>
         <li><strong>How:</strong> Settings → Privacy → Delete All Data</li>
-        <li><strong>What gets deleted:</strong> ALL homes, records, receipts, tasks, contacts, mortgages, supplies, costs, inbox items, attachments, and settings</li>
-        <li><strong>Confirmation process:</strong> Multi-step confirmation with option to export before deletion</li>
+        <li><strong>What gets deleted:</strong> ALL homes, records, tasks, contacts, mortgages, supplies, costs, inbox items, attachments, and settings</li>
+        <li><strong>Confirmation process:</strong> Confirmation dialog before deletion</li>
         <li><strong>Permanence:</strong> Deletion is immediate and permanent with NO recovery option</li>
     </ul>
 
-    <h3>Multi-Step Deletion Protection</h3>
-    <p>To prevent accidental data loss, the deletion process includes:</p>
-    <ol>
-        <li>Initial warning screen explaining what will be deleted</li>
-        <li>Optional data export step (strongly recommended)</li>
-        <li>Text confirmation (you must type "DELETE" to proceed)</li>
-        <li>Final confirmation with critical warnings</li>
-        <li>Progress indicator during deletion</li>
-        <li>Completion confirmation</li>
-    </ol>
+    <h3>Deletion Protection</h3>
+    <p>To prevent accidental data loss, the deletion process requires confirmation before proceeding. We recommend exporting your data first using the export option above.</p>
 
     <h2>Changes to This Policy</h2>
     <p>If we ever change our privacy practices, we will:</p>
@@ -251,16 +235,15 @@
             <li><span class="checkmark">✓</span> We do not sell user data</li>
             <li><span class="checkmark">✓</span> Your data stays in your iCloud</li>
             <li><span class="checkmark">✓</span> No analytics, no ads, no data tracking</li>
-            <li><span class="checkmark">✓</span> On-device OCR only — receipts never leave your phone</li>
             <li><span class="checkmark">✓</span> Anonymous subscription data handled by RevenueCat only</li>
             <li><span class="checkmark">✓</span> Full GDPR compliance with built-in export and deletion</li>
-            <li><span class="checkmark">✓</span> Export all data as ZIP/JSON (Settings → Privacy → Export Data)</li>
+            <li><span class="checkmark">✓</span> Export all data as JSON (Settings → Privacy → Export Data)</li>
             <li><span class="checkmark">✓</span> Delete everything permanently (Settings → Privacy → Delete All Data)</li>
         </ul>
         <p><strong>Your home data is yours. We never see it.</strong></p>
     </div>
 
     <hr>
-    <p><small><strong>Version:</strong> 1.0 | <strong>Effective Date:</strong> February 26, 2026 | <strong>App Version:</strong> 1.0.0+</small></p>
+    <p><small><strong>Version:</strong> 1.1 | <strong>Effective Date:</strong> March 18, 2026 | <strong>App Version:</strong> 1.0.0+</small></p>
 </body>
 </html>
