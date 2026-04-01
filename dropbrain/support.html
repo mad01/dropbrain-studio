@@ -5,58 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DropBrain App Support</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
-        h1 { color: #1a1a1a; border-bottom: 2px solid #5AC8A0; padding-bottom: 10px; }
-        h2 { color: #5AC8A0; margin-top: 30px; }
-        a { color: #5AC8A0; }
-        .contact { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
-        .faq-item { margin-bottom: 20px; }
-        .faq-item h3 { color: #555; margin-bottom: 5px; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg: #0c0c0e; --surface: #141416; --text: #e8e8ec; --text-secondary: #9898a0; --text-muted: #5a5a64; --border: #222226; --accent: #5AC8A0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+        body::before { content: ''; display: block; height: 3px; background: linear-gradient(to right, #5AC8A0, #7DD8B8, #5AC8A0); }
+        .page { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+        header { padding: 40px 0 0; animation: fadeDown 0.7s ease both; }
+        header a { font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace; font-size: 0.85rem; font-weight: 400; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        header a:hover { color: var(--text-secondary); }
+        .app-hero { padding: 56px 0 48px; animation: fadeUp 0.7s ease 0.1s both; }
+        .app-hero h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 600; letter-spacing: -0.035em; color: var(--accent); }
+        .app-hero .tagline { font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace; font-size: 0.75rem; font-weight: 400; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.02em; margin-top: 6px; }
+        .contact { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 32px; animation: fadeUp 0.6s ease 0.2s both; }
+        .contact h2 { font-size: 1.15rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+        .contact p { font-size: 0.95rem; font-weight: 300; color: var(--text-secondary); line-height: 1.65; }
+        .contact a { color: var(--accent); text-decoration: none; }
+        .contact a:hover { text-decoration: underline; }
+        .faq { animation: fadeUp 0.6s ease 0.3s both; }
+        .faq h2 { font-size: 1.15rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+        .faq-item { padding: 20px 0; border-top: 1px solid var(--border); }
+        .faq-item h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+        .faq-item p { font-size: 0.9rem; font-weight: 300; color: var(--text-secondary); line-height: 1.6; }
+        footer { border-top: 1px solid var(--border); padding: 24px 0 32px; margin-top: 32px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; animation: fadeUp 0.6s ease 0.4s both; }
+        footer a { font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--text); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 600px) { .page { padding: 0 16px; } header { padding: 28px 0 0; } .app-hero { padding: 40px 0 36px; } }
     </style>
 </head>
 <body>
-    <h1>DropBrain Support</h1>
+    <div class="page">
+        <header>
+            <a href="../">&#8592; dropbrain.studio</a>
+        </header>
 
-    <div class="contact">
-        <h2>Contact us</h2>
-        <p>Have a question, found a bug, or want to request a feature? Email us at:</p>
-        <p><strong><a href="mailto:hello@infralium.com">hello@infralium.com</a></strong></p>
-        <p>We typically respond within 48 hours.</p>
+        <section class="app-hero">
+            <h1>DropBrain</h1>
+            <p class="tagline">Support</p>
+        </section>
+
+        <div class="contact">
+            <h2>Contact us</h2>
+            <p>Have a question, found a bug, or want to request a feature?</p>
+            <p style="margin-top: 8px;"><strong><a href="mailto:hello@infralium.com">hello@infralium.com</a></strong></p>
+            <p style="margin-top: 4px;">We typically respond within 48 hours.</p>
+        </div>
+
+        <div class="faq">
+            <h2>Frequently asked questions</h2>
+
+            <div class="faq-item">
+                <h3>Where is my data stored?</h3>
+                <p>All your entries are stored on your device and in your private iCloud account. We don't operate any servers.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Does DropBrain sync between devices?</h3>
+                <p>Yes. Your timeline syncs automatically between all your Apple devices signed into the same iCloud account.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>How does the AI writing support work?</h3>
+                <p>The AI features run locally or through Apple's on-device processing. Your writing is not sent to external servers.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Can I export my data?</h3>
+                <p>Yes. Go to Settings in the app to export your entries.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>How do I cancel my subscription?</h3>
+                <p>Go to your iPhone Settings &gt; Apple ID &gt; Subscriptions &gt; DropBrain &gt; Cancel.</p>
+            </div>
+        </div>
+
+        <footer>
+            <a href="./">About</a>
+            <a href="privacy_policy.html">Privacy Policy</a>
+            <a href="../support.html">All Apps Support</a>
+            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
+        </footer>
     </div>
-
-    <h2>Frequently asked questions</h2>
-
-    <div class="faq-item">
-        <h3>Where is my data stored?</h3>
-        <p>All your entries are stored on your device and in your private iCloud account. We don't operate any servers.</p>
-    </div>
-
-    <div class="faq-item">
-        <h3>Does DropBrain sync between devices?</h3>
-        <p>Yes. Your timeline syncs automatically between all your Apple devices signed into the same iCloud account.</p>
-    </div>
-
-    <div class="faq-item">
-        <h3>How does the AI writing support work?</h3>
-        <p>The AI features run locally or through Apple's on-device processing. Your writing is not sent to external servers.</p>
-    </div>
-
-    <div class="faq-item">
-        <h3>Can I export my data?</h3>
-        <p>Yes. Go to Settings in the app to export your entries.</p>
-    </div>
-
-    <div class="faq-item">
-        <h3>How do I cancel my subscription?</h3>
-        <p>Go to your iPhone Settings &gt; Apple ID &gt; Subscriptions &gt; DropBrain &gt; Cancel.</p>
-    </div>
-
-    <h2>Resources</h2>
-    <ul>
-        <li><a href="privacy_policy.html">Privacy Policy</a></li>
-        <li><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use (Apple EULA)</a></li>
-    </ul>
-
-    <p style="margin-top: 40px; color: #999; font-size: 14px;">DropBrain is made by DropBrain.</p>
 </body>
 </html>

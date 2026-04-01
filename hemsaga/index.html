@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hemsaga — Your Home, Organized</title>
+    <meta name="description" content="Keep everything about your home organized — purchases, maintenance, receipts, mortgages, and running costs. All data stays in your private iCloud.">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0c0c0e;
+            --surface: #141416;
+            --text: #e8e8ec;
+            --text-secondary: #9898a0;
+            --text-muted: #5a5a64;
+            --border: #222226;
+            --accent: #D49520;
+            --accent-dim: rgba(212, 149, 32, 0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: linear-gradient(to right, #D49520, #E8A838, #D49520);
+        }
+
+        .page { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+        header { padding: 40px 0 0; animation: fadeDown 0.7s ease both; }
+        header a { font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace; font-size: 0.85rem; font-weight: 400; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        header a:hover { color: var(--text-secondary); }
+
+        .app-hero { padding: 56px 0 48px; animation: fadeUp 0.7s ease 0.1s both; }
+        .app-hero h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 600; letter-spacing: -0.035em; color: var(--accent); }
+        .app-hero .tagline { font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace; font-size: 0.75rem; font-weight: 400; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.02em; margin-top: 6px; }
+
+        .features { animation: fadeUp 0.6s ease 0.2s both; }
+        .feature { padding: 28px 0; border-top: 1px solid var(--border); }
+        .feature h2 { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px; }
+        .feature p { font-size: 0.95rem; font-weight: 300; color: var(--text-secondary); line-height: 1.65; letter-spacing: -0.01em; }
+
+        .callout { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin: 8px 0; }
+        .callout.privacy { border-left: 3px solid #4caf50; }
+        .callout h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+        .callout p { font-size: 0.9rem; font-weight: 300; color: var(--text-secondary); line-height: 1.6; }
+
+        .cta { padding: 48px 0; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation: fadeUp 0.6s ease 0.3s both; }
+        .cta a { font-size: 0.9rem; font-weight: 500; text-decoration: none; padding: 12px 28px; border-radius: 8px; transition: all 0.25s; }
+        .cta a.primary { background: var(--accent); color: var(--bg); }
+        .cta a.primary:hover { opacity: 0.88; transform: translateY(-1px); }
+        .cta a.secondary { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+        .cta a.secondary:hover { color: var(--text); border-color: var(--text-muted); }
+
+        footer { border-top: 1px solid var(--border); padding: 24px 0 32px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; animation: fadeUp 0.6s ease 0.4s both; }
+        footer a { font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+        footer a:hover { color: var(--text); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .page { padding: 0 16px; }
+            header { padding: 28px 0 0; }
+            .app-hero { padding: 40px 0 36px; }
+            .cta { flex-direction: column; align-items: center; }
+            .cta a { min-width: 200px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="../">&#8592; dropbrain.studio</a>
+        </header>
+
+        <section class="app-hero">
+            <h1>Hemsaga</h1>
+            <p class="tagline">Your Home, Organized</p>
+        </section>
+
+        <div class="features">
+            <div class="feature">
+                <h2>Everything about your home in one place</h2>
+                <p>Track purchases, appliances, renovations, warranties, and photos. Add entry codes and alarm details. Filter by tags and categories. One app for all the details you'd otherwise forget.</p>
+            </div>
+
+            <div class="feature">
+                <h2>Maintenance and supplies</h2>
+                <p>Set up recurring maintenance tasks with reminders so nothing gets missed. Track supplies with low-stock alerts and link them to tasks. See completion history and upcoming schedules at a glance.</p>
+            </div>
+
+            <div class="feature">
+                <h2>Mortgages and running costs</h2>
+                <p>Track mortgages with interest rates and amortization. Log utility costs for electricity, water, heating, and insurance. View monthly breakdowns and trends over time. Keep rate history for variable mortgages.</p>
+            </div>
+
+            <div class="callout privacy">
+                <h3>Your data is completely private</h3>
+                <p>All data stays on your device and in your private iCloud account. No company servers, no third-party services, no tracking. Export or delete everything anytime. GDPR compliant.</p>
+            </div>
+
+            <div class="feature">
+                <h2>Premium</h2>
+                <p>The free version gives you full tracking for one home. Premium unlocks unlimited homes and cost analytics. Available as yearly subscription or one-time lifetime purchase. 7-day free trial included.</p>
+            </div>
+        </div>
+
+        <div class="cta">
+            <a href="../" class="secondary">All Apps</a>
+            <a href="support.html" class="secondary">Support</a>
+            <a href="privacy_policy.html" class="secondary">Privacy Policy</a>
+        </div>
+
+        <footer>
+            <a href="support.html">Support</a>
+            <a href="privacy_policy.html">Privacy Policy</a>
+            <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
+        </footer>
+    </div>
+</body>
+</html>
