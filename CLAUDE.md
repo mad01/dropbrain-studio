@@ -10,6 +10,7 @@ support.html            Central support hub linking to per-app support
 sitemap.xml             Sitemap (auto-updated by blog build script)
 robots.txt
 CNAME                   GitHub Pages custom domain (dropbrain.io)
+assets/                 Shared assets (App Store badge SVG, etc.)
 
 hemsaga/                App landing pages — each app has its own directory
 dropbrain/                containing index.html, support.html, and
@@ -23,6 +24,9 @@ blog/
   index.html            Generated blog index (do not edit by hand)
   images/               Blog post images
   <slug>/index.html     Generated post pages (do not edit by hand)
+
+.github/workflows/
+  pages.yml             GitHub Actions deploy workflow
 ```
 
 ## Apps
@@ -84,7 +88,14 @@ Place images in `blog/images/` and reference them as `/blog/images/filename.png`
 
 ## Deployment
 
-Push to `main`. GitHub Pages serves the repo root at dropbrain.io.
+Push to `main`. A GitHub Actions workflow (`.github/workflows/pages.yml`) builds and deploys the site to dropbrain.io.
+
+**Important:** The workflow explicitly lists which files and directories get copied into `_site/`. If you add a new root-level file or directory, you must add it to the `cp -r` lines in `pages.yml` or it will not be deployed (you'll get a 404).
+
+Current deploy list:
+- Root files: `index.html`, `support.html`, `CNAME`, `llms.txt`, `robots.txt`, `sitemap.xml`
+- Directories: `assets`, `airmustacheman`, `dropbrain`, `hemsaga`, `lookupsilly`, `migraineme`
+- Blog: copied via `rsync` excluding `build.py` and `_posts/`
 
 ## Style
 
