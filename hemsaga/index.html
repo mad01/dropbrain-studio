@@ -57,8 +57,9 @@
 
         .cta { padding: 48px 0; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation: fadeUp 0.6s ease 0.3s both; }
         .cta a { font-size: 0.9rem; font-weight: 500; text-decoration: none; padding: 12px 28px; border-radius: 8px; transition: all 0.25s; }
-        .cta a.primary { background: var(--accent); color: var(--bg); }
-        .cta a.primary:hover { opacity: 0.88; transform: translateY(-1px); }
+        .cta a.badge { padding: 0; background: none; border: none; }
+        .cta a.badge img { height: 44px; display: block; }
+        .cta a.badge:hover { opacity: 0.88; transform: translateY(-1px); }
         .cta a.secondary { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
         .cta a.secondary:hover { color: var(--text); border-color: var(--text-muted); }
 
@@ -117,7 +118,7 @@
         </div>
 
         <div class="cta">
-            <a href="https://apps.apple.com/us/app/hemsaga/id6759722958" target="_blank" rel="noopener" class="primary">Download on App Store</a>
+            <a href="https://apps.apple.com/us/app/hemsaga/id6759722958" target="_blank" rel="noopener" class="badge"><img src="../assets/app-store-badge.svg" alt="Download on the App Store"></a>
             <a href="../" class="secondary">All Apps</a>
             <a href="support.html" class="secondary">Support</a>
             <a href="privacy_policy.html" class="secondary">Privacy Policy</a>
