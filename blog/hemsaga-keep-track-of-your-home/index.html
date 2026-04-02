@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Home Has More Moving Parts Than You Think — dropbrain blog</title>
+    <meta name="description" content="Warranties expire, filters need replacing, and that roof guy&#x27;s number is somewhere. A look at what homeowners actually need to track.">
+    <meta property="og:title" content="Your Home Has More Moving Parts Than You Think">
+    <meta property="og:description" content="Warranties expire, filters need replacing, and that roof guy&#x27;s number is somewhere. A look at what homeowners actually need to track.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/hemsaga-keep-track-of-your-home/">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">Your Home Has More Moving Parts Than You Think</h1>
+            <div class="post-meta">
+                <span class="post-date">April 02, 2026</span>
+                <div class="post-tags"><span class="tag">hemsaga</span><span class="tag">homeowner</span><span class="tag">maintenance</span><span class="tag">ios</span><span class="tag">app</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h1 id="your-home-has-more-moving-parts-than-you-think">Your home has more moving parts than you think</h1>
+<p>I bought a house a few years back. Within the first year I&rsquo;d already lost the receipt for the heat pump, forgotten when the roof warranty expires, and had no idea which filter size the ventilation system needed.</p>
+<p>None of this is complicated. It&rsquo;s just a lot of small things, and they add up.</p>
+<h2 id="the-stuff-you-forget-about">The stuff you forget about</h2>
+<p>The washing machine, dishwasher, fridge, heat pump, robot mower. Each one has a brand, model number, serial number, purchase date, and warranty period. You need this information exactly once, when something breaks, and that&rsquo;s when you can&rsquo;t find it.</p>
+<p>Renovations are worse. That bathroom cost 125,000 kr and came with a 5-year waterproofing guarantee. The kitchen countertop was granite, installed by a specific company. The roof was redone with concrete tiles, 10-year warranty. Three years later, good luck remembering any of it.</p>
+<p>Then there&rsquo;s the contacts. The plumber who did good work, the electrician, the HVAC guy, the roofer. Their numbers are somewhere in your call history. Probably.</p>
+<h2 id="maintenance-is-where-it-gets-real">Maintenance is where it gets real</h2>
+<p>A house needs regular upkeep, and most of it isn&rsquo;t obvious until you miss it:</p>
+<ul>
+<li>Monthly: test smoke detectors, clean the dishwasher filter</li>
+<li>Quarterly: replace the heat pump filter, clean floor drains</li>
+<li>Twice a year: clear gutters, clean ventilation ducts</li>
+<li>Yearly: service the heat pump, replace smoke detector batteries, check water shutoff valves, inspect window seals, oil the deck</li>
+<li>Every other year: inspect the roof, check the foundation for cracks and moisture</li>
+</ul>
+<p>Miss the heat pump filter for a year and you&rsquo;re looking at reduced efficiency and a bigger service bill. Forget the shutoff valves and you&rsquo;ll find out they&rsquo;re stuck when a pipe bursts.</p>
+<h2 id="supplies-run-out-at-the-worst-time">Supplies run out at the worst time</h2>
+<p>Heat pump filters, LED bulbs, 9V batteries for smoke detectors, descaling solution, dishwasher salt, robot mower blades. Each one has a different replacement interval, stored in a different place.</p>
+<p>It&rsquo;s always the same story. You need the thing, you don&rsquo;t have it, and a 50 kr item turns into a postponed maintenance task.</p>
+<h2 id="costs-add-up-quietly">Costs add up quietly</h2>
+<p>Electricity swings from 800 to 2,100 kr/month depending on season. Add water, waste collection, insurance, internet, property tax, and suddenly you&rsquo;re spending a lot more than you thought. That&rsquo;s before the mortgage, which in Sweden is often split across three separate loans with different rates and terms.</p>
+<p>I kept losing track of what the house actually cost to run. Month to month, it was just a blur of Swish payments and autogiro.</p>
+<h2 id="why-i-built-hemsaga">Why I built Hemsaga</h2>
+<p>I tried spreadsheets for a while. Then a shared note. Then a folder of photos of receipts. All of it fell apart within a few months.</p>
+<p>So I built what I actually wanted: one app for homes, records, maintenance, supplies, mortgages, and running costs. It syncs through iCloud and stays on your devices. No servers, no accounts.</p>
+<p>The free version covers one home. Premium adds unlimited homes and cost analytics.</p>
+<p><a href="https://apps.apple.com/us/app/hemsaga/id6759722958">Download Hemsaga on the App Store</a></p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Blog post announcing Hemsaga iOS app launch. Focuses on the practical problem of tracking home records, maintenance, and costs. Uses real examples from Swedish homeownership.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Your Home Has More Moving Parts Than You Think",
+    "datePublished": "2026-04-02",
+    "description": "Warranties expire, filters need replacing, and that roof guy's number is somewhere. A look at what homeowners actually need to track.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/hemsaga-keep-track-of-your-home/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
