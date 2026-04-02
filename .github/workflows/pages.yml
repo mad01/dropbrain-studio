@@ -17,7 +17,7 @@ jobs:
       - name: Build site
         run: |
           mkdir -p _site
-          cp -r index.html CNAME llms.txt robots.txt sitemap.xml _site/
+          cp -r index.html support.html CNAME llms.txt robots.txt sitemap.xml _site/
           cp -r assets airmustacheman dropbrain hemsaga lookupsilly migraineme _site/
           rsync -a --exclude='build.py' --exclude='_posts' blog/ _site/blog/
       - name: Setup Pages
