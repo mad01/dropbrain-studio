@@ -48,10 +48,10 @@ I kept losing track of what the house actually cost to run. Month to month, it w
 
 ## Why I built Hemsaga
 
-I tried spreadsheets for a while. Then a shared note. Then a folder of photos of receipts. All of it fell apart within a few months.
+I tried spreadsheets for a while. Then a shared note. Then a folder of photos of receipts. All of it fell apart within a few months because none of it was built for this.
 
-So I built what I actually wanted: one app for homes, records, maintenance, supplies, mortgages, and running costs. It syncs through iCloud and stays on your devices. No servers, no accounts.
+So I built the thing I kept wishing existed. One place for everything about the house — what I bought, when it needs service, what it costs to run, who to call when something breaks. It syncs through iCloud and stays on your devices. There are no servers and you don't need an account.
 
-The free version covers one home. Premium adds unlimited homes and cost analytics.
+It's free for one home. If you have more than one, there's a premium tier that also adds cost analytics.
 
 [Download Hemsaga on the App Store](https://apps.apple.com/us/app/hemsaga/id6759722958)

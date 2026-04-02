@@ -1,8 +1,8 @@
 ---
-title: "Migraine Me v1.1.8: Smarter Tracking, Better Insights"
+title: "Migraine Me v1.1.8: HIT-6, Widgets, and Sync Fixes"
 date: 2026-02-17
 slug: migraine-me-v118-smarter-tracking-better-insights
-description: "Version 1.1.8 adds the HIT-6 Headache Impact Test, a statistics dashboard, home screen widgets, and PDF report export alongside reliability fixes for background sync."
+description: "Version 1.1.8 adds the HIT-6 questionnaire, a statistics dashboard, home screen widgets, PDF report export, and fixes two background sync crashes."
 tags: ios, swift, migraine, health, swiftui, concurrency
 ai_context: "Migraine Me v1.1.8 is an iOS app update introducing the HIT-6 (Headache Impact Test) clinically validated questionnaire with SwiftData persistence, a progressive-disclosure statistics dashboard built with ExpandableStatsSection and @AppStorage, home screen and lock screen WidgetKit widgets sharing data through App Groups via SharedDataManager, PDF report generation for doctor visits using UIGraphicsPDFRenderer, two BGTask crash fixes (double-completion guarded by OSAllocatedUnfairLock and @MainActor isolation resolved with nonisolated static), an actor-based PendingSyncQueue for durable CloudKit sync operations, and development assisted by Claude Code Opus 4.6 with swiftui-expert, swift-concurrency, and core-data-expert skills."
 ---
@@ -186,7 +186,7 @@ The queue deduplicates by entry ID and operation type, so if you update the same
 
 ## Built with Claude Code and Opus 4.6
 
-Three Claude Code skills did most of the heavy lifting on this release. The swiftui-expert skill designed the `ExpandableStatsSection` component and the collapsible layout for the stats dashboard, and structured the widget views with the `StatCell` pattern and theme constants. The swift-concurrency skill identified both BGTask crashes by tracing the `@MainActor` isolation inheritance chain and the `setTaskCompleted` race condition. It also recommended the actor-based `PendingSyncQueue` over the original `DispatchQueue` + lock approach, and the `@unchecked Sendable` wrapper for `BGTask`. The core-data-expert skill guided the SwiftData model design for `HIT6Result`, including the `categoryRaw` / computed `category` pattern for storing enums in SwiftData and the `FetchDescriptor` queries in the stats views.
+This release was built with three Claude Code skills. The swiftui-expert skill designed the `ExpandableStatsSection` component and the widget views. The swift-concurrency skill found both BGTask crashes by tracing the `@MainActor` isolation chain and the `setTaskCompleted` race, and it recommended the actor-based `PendingSyncQueue` over the original `DispatchQueue` approach. The core-data-expert skill guided the SwiftData model for `HIT6Result`, including the `categoryRaw` / computed `category` pattern for storing enums.
 
 ---
 

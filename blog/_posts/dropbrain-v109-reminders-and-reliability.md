@@ -91,7 +91,7 @@ bgTask.expirationHandler = {
 
 The second crash was a `@MainActor` isolation violation. `BGTaskScheduler.shared.register` runs its closure on an arbitrary background thread. If the registration function or its static properties are annotated `@MainActor`, Swift 6 strict concurrency flags it and the runtime can crash. The fix: mark the registration function and the task identifier as `nonisolated static`.
 
-These are the same two crashes we found and fixed in Migraine Me. The swift-concurrency skill identified both patterns, and we applied the same solution to both apps.
+These are the same two crashes we found and fixed in Migraine Me — same root cause, same fix, just in a different app.
 
 ## Background termination reduction
 

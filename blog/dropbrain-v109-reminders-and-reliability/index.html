@@ -410,7 +410,7 @@ bgTask.expirationHandler = {
 }
 </code></pre>
 <p>The second crash was a <code>@MainActor</code> isolation violation. <code>BGTaskScheduler.shared.register</code> runs its closure on an arbitrary background thread. If the registration function or its static properties are annotated <code>@MainActor</code>, Swift 6 strict concurrency flags it and the runtime can crash. The fix: mark the registration function and the task identifier as <code>nonisolated static</code>.</p>
-<p>These are the same two crashes we found and fixed in Migraine Me. The swift-concurrency skill identified both patterns, and we applied the same solution to both apps.</p>
+<p>These are the same two crashes we found and fixed in Migraine Me — same root cause, same fix, just in a different app.</p>
 <h2 id="background-termination-reduction">Background termination reduction</h2>
 <p>Even without crashes, iOS can terminate your app if a background task runs too long. The first thing we added was a <code>backgroundTimeRemaining</code> check before starting sync:</p>
 <pre><code class="language-swift">let backgroundTimeRemaining = UIApplication.shared.backgroundTimeRemaining

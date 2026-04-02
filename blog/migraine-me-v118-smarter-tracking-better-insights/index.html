@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Migraine Me v1.1.8: Smarter Tracking, Better Insights — dropbrain blog</title>
-    <meta name="description" content="Version 1.1.8 adds the HIT-6 Headache Impact Test, a statistics dashboard, home screen widgets, and PDF report export alongside reliability fixes for background sync.">
-    <meta property="og:title" content="Migraine Me v1.1.8: Smarter Tracking, Better Insights">
-    <meta property="og:description" content="Version 1.1.8 adds the HIT-6 Headache Impact Test, a statistics dashboard, home screen widgets, and PDF report export alongside reliability fixes for background sync.">
+    <title>Migraine Me v1.1.8: HIT-6, Widgets, and Sync Fixes — dropbrain blog</title>
+    <meta name="description" content="Version 1.1.8 adds the HIT-6 questionnaire, a statistics dashboard, home screen widgets, PDF report export, and fixes two background sync crashes.">
+    <meta property="og:title" content="Migraine Me v1.1.8: HIT-6, Widgets, and Sync Fixes">
+    <meta property="og:description" content="Version 1.1.8 adds the HIT-6 questionnaire, a statistics dashboard, home screen widgets, PDF report export, and fixes two background sync crashes.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://dropbrain.io/blog/migraine-me-v118-smarter-tracking-better-insights/">
     
@@ -338,7 +338,7 @@ footer a:hover {
         </header>
 
         <div class="post-header">
-            <h1 class="post-title">Migraine Me v1.1.8: Smarter Tracking, Better Insights</h1>
+            <h1 class="post-title">Migraine Me v1.1.8: HIT-6, Widgets, and Sync Fixes</h1>
             <div class="post-meta">
                 <span class="post-date">February 17, 2026</span>
                 <div class="post-tags"><span class="tag">ios</span><span class="tag">swift</span><span class="tag">migraine</span><span class="tag">health</span><span class="tag">swiftui</span><span class="tag">concurrency</span></div>
@@ -484,7 +484,7 @@ nonisolated private static func performTaskRegistration() {
 </code></pre>
 <p>The queue deduplicates by entry ID and operation type, so if you update the same record three times while offline, only the latest operation is queued. Failed operations are retried up to five times before being dropped. Using a Swift actor makes the queue thread-safe without manual lock management, which the swift-concurrency skill recommended over the original <code>DispatchQueue</code>-based approach.</p>
 <h2 id="built-with-claude-code-and-opus-46">Built with Claude Code and Opus 4.6</h2>
-<p>Three Claude Code skills did most of the heavy lifting on this release. The swiftui-expert skill designed the <code>ExpandableStatsSection</code> component and the collapsible layout for the stats dashboard, and structured the widget views with the <code>StatCell</code> pattern and theme constants. The swift-concurrency skill identified both BGTask crashes by tracing the <code>@MainActor</code> isolation inheritance chain and the <code>setTaskCompleted</code> race condition. It also recommended the actor-based <code>PendingSyncQueue</code> over the original <code>DispatchQueue</code> + lock approach, and the <code>@unchecked Sendable</code> wrapper for <code>BGTask</code>. The core-data-expert skill guided the SwiftData model design for <code>HIT6Result</code>, including the <code>categoryRaw</code> / computed <code>category</code> pattern for storing enums in SwiftData and the <code>FetchDescriptor</code> queries in the stats views.</p>
+<p>This release was built with three Claude Code skills. The swiftui-expert skill designed the <code>ExpandableStatsSection</code> component and the widget views. The swift-concurrency skill found both BGTask crashes by tracing the <code>@MainActor</code> isolation chain and the <code>setTaskCompleted</code> race, and it recommended the actor-based <code>PendingSyncQueue</code> over the original <code>DispatchQueue</code> approach. The core-data-expert skill guided the SwiftData model for <code>HIT6Result</code>, including the <code>categoryRaw</code> / computed <code>category</code> pattern for storing enums.</p>
 <hr />
 <p>Migraine Me is on the <a href="https://apps.apple.com/us/app/migraineme/id6755067713">App Store</a>.</p>
         </article>
@@ -501,9 +501,9 @@ nonisolated private static func performTaskRegistration() {
 {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": "Migraine Me v1.1.8: Smarter Tracking, Better Insights",
+    "headline": "Migraine Me v1.1.8: HIT-6, Widgets, and Sync Fixes",
     "datePublished": "2026-02-17",
-    "description": "Version 1.1.8 adds the HIT-6 Headache Impact Test, a statistics dashboard, home screen widgets, and PDF report export alongside reliability fixes for background sync.",
+    "description": "Version 1.1.8 adds the HIT-6 questionnaire, a statistics dashboard, home screen widgets, PDF report export, and fixes two background sync crashes.",
     "author": {
         "@type": "Organization",
         "name": "dropbrain studio"

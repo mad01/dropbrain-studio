@@ -11,7 +11,7 @@ ai_context: "Migraine Me is a privacy-first iOS app for tracking migraine and he
 
 If you live with migraines, you've probably had this conversation with your doctor: "What do you think triggered it?" And you're sitting there guessing. Maybe it was the weather. The coffee. Stress. Some combination. You genuinely don't know because you weren't tracking it, or you were scribbling in a notebook that's now buried under a stack of mail.
 
-We built Migraine Me because we wanted something that does one thing well: record what happens and show you the numbers. No gimmicks, no AI diagnoses, no cloud services collecting your health data. Just a place to log your episodes and actually see the patterns.
+We built Migraine Me because we wanted something that does one thing well: record what happens and show you the numbers. It doesn't try to diagnose you and it doesn't send your health data anywhere. Just a place to log your episodes and actually see the patterns.
 
 ## What you can track
 
@@ -19,7 +19,7 @@ When you log an episode, you record intensity, duration (start and end times), p
 
 ## Triggers and symptoms
 
-The app ships with predefined lists of common triggers and symptoms so you can log quickly, even mid-migraine when typing feels impossible. If the defaults don't match your experience, add your own. Over time the app tallies your top triggers and most frequent symptoms, which can surface connections you wouldn't notice otherwise.
+The app ships with predefined lists of common triggers and symptoms so you can log quickly, even mid-migraine when typing feels impossible. If the defaults don't match your experience, add your own. Over time the app tallies your top triggers and most frequent symptoms, which can show you connections you wouldn't spot on your own.
 
 ## Medication tracking
 
@@ -31,7 +31,7 @@ That last one matters. When your doctor asks whether sumatriptan is working for 
 
 Your history shows up as a calendar view with visual markers for frequency and severity. You can spot clustering, see if things are getting worse or better, and track how patterns shift over months.
 
-The statistical summaries pull your data together: top triggers, common symptoms, medication effectiveness rates. These are the kind of numbers that make a medical appointment actually productive.
+The statistical summaries pull your data together: top triggers, common symptoms, medication effectiveness rates. That's the kind of thing that actually makes a doctor's appointment worth the wait.
 
 ## Exporting your data
 
@@ -73,7 +73,7 @@ PDF reports are easier for handing to a doctor in person. Either way, real data 
 
 ## Privacy
 
-We have zero access to your data. All your migraine logs, medications, symptoms, and settings live in your private iCloud account and on your device. We don't run servers that store health information. No analytics, no tracking, no ads.
+We have zero access to your data. All your migraine logs, medications, symptoms, and settings live in your private iCloud account and on your device. We don't run servers that store health information, and there are no analytics or ads in the app.
 
 The only third-party service is RevenueCat for subscription management, which handles anonymous subscription status only, completely separate from any health data.
 
