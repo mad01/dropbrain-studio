@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP stdio is just a subprocess — dropbrain blog</title>
+    <meta name="description" content="Exposing a local code-search CLI to Claude Code as native tools via MCP&#x27;s stdio transport. No daemon, no port, just a subprocess the client spawns per call.">
+    <meta property="og:title" content="MCP stdio is just a subprocess">
+    <meta property="og:description" content="Exposing a local code-search CLI to Claude Code as native tools via MCP&#x27;s stdio transport. No daemon, no port, just a subprocess the client spawns per call.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/mcp-stdio-tools-not-services/">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">MCP stdio is just a subprocess</h1>
+            <div class="post-meta">
+                <span class="post-date">April 10, 2026</span>
+                <div class="post-tags"><span class="tag">mcp</span><span class="tag">claude-code</span><span class="tag">developer-tools</span><span class="tag">cli</span><span class="tag">go</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h1 id="mcp-stdio-is-just-a-subprocess">MCP stdio is just a subprocess</h1>
+<p>I&rsquo;ve been using <code>ks</code>, the little session manager I wrote for kitty and Claude Code, as my local code search. It indexes all my checked-out repos with zoekt, runs a background gRPC daemon that keeps shards in memory, and exposes a <code>ks search</code> / <code>ks count</code> / <code>ks read</code> / <code>ks repo</code> surface. When I want to know where something lives, I ask Claude, Claude runs <code>ks search ...</code>, done.</p>
+<p>Except it wasn&rsquo;t really done. Every <code>ks</code> call triggered a permission prompt. The first search of each session blocked on a full 42-repo index. And Claude didn&rsquo;t always reach for the CLI on its own. I had to nudge it, because the knowledge that <code>ks</code> existed lived in a paragraph of my global <code>CLAUDE.md</code> that got buried under everything else.</p>
+<p>I wanted Claude to know about <code>ks</code> the same way it knows about <code>Read</code> and <code>Grep</code>. Tools in the tool list, with descriptions, no prose.</p>
+<h2 id="what-i-considered">What I considered</h2>
+<p>Four options. A Bash allowlist makes the prompts go away, but Claude still has to build the shell string and parse text output. A skill loads on-demand when the task description matches, which is better, but you still write bash commands inside the skill and the trigger depends on the skill router matching correctly. A slash command is user-invoked, which is the opposite of what I wanted. Or I could build an MCP server.</p>
+<p>I reflexively ruled out MCP because &ldquo;server&rdquo; sounded like something I&rsquo;d have to keep alive. I have enough background processes already. I didn&rsquo;t want another <code>launchctl</code> plist to maintain.</p>
+<p>That was the wrong mental model.</p>
+<h2 id="what-stdio-mcp-actually-is">What stdio MCP actually is</h2>
+<p>For the stdio transport, &ldquo;server&rdquo; is the wrong word. The MCP client (Claude Code, in this case) spawns your binary as a subprocess when it needs the tools. It pipes JSON-RPC 2.0 messages over stdin and stdout. Your process answers each request by writing a JSON response line. When the client closes stdin, your process exits.</p>
+<p>No port, no socket, no service to run. The lifecycle is the same as any <code>Bash()</code> call Claude already makes: short-lived subprocess, stdin in, stdout out, exit. The only real difference is that the wire protocol is structured JSON instead of shell string construction, and the tool metadata (names, descriptions, JSON schemas) lives in code instead of in a CLAUDE.md paragraph.</p>
+<p>Once I understood that, MCP stopped feeling like infrastructure. It&rsquo;s a packaging format for a CLI.</p>
+<h2 id="what-it-looks-like-when-the-tools-are-native">What it looks like when the tools are native</h2>
+<p>When <code>ks_repo_lookup</code> and <code>ks_search</code> are registered MCP tools, Claude sees them in its tool list at plan time, with their descriptions attached. The description string is the prompt for when to use the tool. You write it once, carefully, and Claude discovers it naturally while working.</p>
+<p>Here&rsquo;s what I ended up with for the repo lookup tool:</p>
+<blockquote>
+<p>Resolve a git repo name to its local checkout path. Use when the user mentions a repo by name and you need its absolute path before cd-ing, reading, or grepping inside it. Matching is case-insensitive regex against the org/repo name. Returns an empty matches array if the repo is not checked out locally; in that case, tell the user the repo is not present locally and do not guess a path.</p>
+</blockquote>
+<p>Claude reads that at plan time. If the task looks like &ldquo;find where the tboi repo is checked out&rdquo;, the tool fires. If the task looks like something unrelated, it doesn&rsquo;t. The second-person phrasing (&ldquo;use when&hellip;&rdquo;) does almost all the work. No CLAUDE.md section required. I ended up removing about 45 lines of <code>ks</code> documentation from my global CLAUDE.md after wiring this up, because the tool descriptions now carry that weight.</p>
+<h2 id="how-the-subcommand-is-built">How the subcommand is built</h2>
+<p><code>ks mcp</code> is one new cobra subcommand. Inside, it imports <code>github.com/modelcontextprotocol/go-sdk/mcp</code>, calls <code>mcp.NewServer</code>, registers five tools with <code>mcp.AddTool</code>, and runs a <code>StdioTransport</code>. Each tool handler is a thin adapter over the same internal Go packages that back the existing CLI commands. There&rsquo;s no reimplementation of zoekt search, repo discovery, or file reading. The existing gRPC search daemon keeps running exactly as before; the new MCP subprocess connects to it as a client, so zoekt index shards stay mmap&rsquo;d across MCP calls.</p>
+<p>The whole thing is about 400 lines of Go, most of it tool input/output structs with <code>jsonschema</code> struct tags that the SDK uses to infer the schemas automatically.</p>
+<p>Registration with Claude Code is a one-liner:</p>
+<pre><code class="language-bash">claude mcp add --scope user ks -- ks mcp
+</code></pre>
+<p>That writes a user-scoped MCP entry. The next time I open Claude Code, the five <code>ks_*</code> tools show up in the tool list alongside <code>Read</code>, <code>Grep</code>, and <code>Bash</code>.</p>
+<h2 id="before-and-after">Before and after</h2>
+<p>Before, if I asked Claude &ldquo;find where the tboi repo is checked out&rdquo;, it would recall the <code>ks repo --json | jq</code> recipe from my CLAUDE.md, build the bash command, ask for permission, run it, and parse the output.</p>
+<p>After, it calls <code>ks_repo_lookup({name: "tboi"})</code> and hands me the path.</p>
+<p>For search: &ldquo;how many iOS projects do I have locally&rdquo; becomes <code>ks_search({query: "file:\\.pbxproj$"})</code> and I get 15 results back in structured form.</p>
+<p>The difference isn&rsquo;t raw speed. Both flows take a few hundred milliseconds. The difference is that the second one happens without me having told Claude about <code>ks</code>. The tool is in the registry, the description explains the trigger, and Claude finds it the same way it finds any built-in.</p>
+<h2 id="what-i-took-away">What I took away</h2>
+<p>If you have a local CLI you want an agent to use on its own, the interesting question is how to expose it as typed tools with clear descriptions, not how to document it in prose so the model remembers it exists. For stdio MCP, that&rsquo;s one cobra subcommand and one line in <code>~/.claude.json</code>. No running service to maintain, and no nudging Claude toward tools it should already be reaching for.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Blog post about adding an MCP stdio subcommand to a Go CLI (ks) to expose local code-search functionality as native Claude Code tools. Explains that MCP stdio is subprocess IPC, not a running service, and shows the implementation shape.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "MCP stdio is just a subprocess",
+    "datePublished": "2026-04-10",
+    "description": "Exposing a local code-search CLI to Claude Code as native tools via MCP's stdio transport. No daemon, no port, just a subprocess the client spawns per call.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/mcp-stdio-tools-not-services/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
