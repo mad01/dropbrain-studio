@@ -68,3 +68,7 @@ The difference isn't raw speed. Both flows take a few hundred milliseconds. The 
 ## What I took away
 
 If you have a local CLI you want an agent to use on its own, the interesting question is how to expose it as typed tools with clear descriptions, not how to document it in prose so the model remembers it exists. For stdio MCP, that's one cobra subcommand and one line in `~/.claude.json`. No running service to maintain, and no nudging Claude toward tools it should already be reaching for.
+
+## Reference
+
+- [`ks` source on GitHub](https://github.com/mad01/kitty-session) — the `ks mcp` subcommand lives under `internal/mcpserver/`.

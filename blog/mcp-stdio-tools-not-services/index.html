@@ -379,6 +379,10 @@ footer a:hover {
 <p>The difference isn&rsquo;t raw speed. Both flows take a few hundred milliseconds. The difference is that the second one happens without me having told Claude about <code>ks</code>. The tool is in the registry, the description explains the trigger, and Claude finds it the same way it finds any built-in.</p>
 <h2 id="what-i-took-away">What I took away</h2>
 <p>If you have a local CLI you want an agent to use on its own, the interesting question is how to expose it as typed tools with clear descriptions, not how to document it in prose so the model remembers it exists. For stdio MCP, that&rsquo;s one cobra subcommand and one line in <code>~/.claude.json</code>. No running service to maintain, and no nudging Claude toward tools it should already be reaching for.</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://github.com/mad01/kitty-session"><code>ks</code> source on GitHub</a> — the <code>ks mcp</code> subcommand lives under <code>internal/mcpserver/</code>.</li>
+</ul>
         </article>
 
         <footer>
