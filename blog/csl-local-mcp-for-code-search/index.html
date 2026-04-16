@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your code-search MCP shouldn&#x27;t leave your laptop — dropbrain blog</title>
+    <meta name="description" content="code-search-local (csl) is a zoekt-backed local code search CLI with a built-in MCP stdio server. No cloud, no auth, no vendor. Just a binary and your filesystem.">
+    <meta property="og:title" content="Your code-search MCP shouldn&#x27;t leave your laptop">
+    <meta property="og:description" content="code-search-local (csl) is a zoekt-backed local code search CLI with a built-in MCP stdio server. No cloud, no auth, no vendor. Just a binary and your filesystem.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/csl-local-mcp-for-code-search/">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --text: #e8e8ec;
+    --text-secondary: #9898a0;
+    --text-muted: #5a5a64;
+    --border: #222226;
+    --border-hover: #333338;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">Your code-search MCP shouldn&#x27;t leave your laptop</h1>
+            <div class="post-meta">
+                <span class="post-date">April 16, 2026</span>
+                <div class="post-tags"><span class="tag">mcp</span><span class="tag">claude-code</span><span class="tag">code-search</span><span class="tag">privacy</span><span class="tag">zoekt</span><span class="tag">go</span><span class="tag">developer-tools</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h1 id="your-code-search-mcp-shouldnt-leave-your-laptop">Your code-search MCP shouldn&rsquo;t leave your laptop</h1>
+<p>The pattern is so familiar by now it&rsquo;s almost automatic. Someone builds a useful thing. The useful thing becomes an MCP server. The MCP server lives on their infrastructure. You sign up, you authenticate, you send your data over the wire so that a model on someone else&rsquo;s laptop can reason about it.</p>
+<p>For a lot of things, that&rsquo;s fine. Some tools genuinely need network effects or shared state. A calendar MCP has to talk to a calendar API. A ticketing MCP has to talk to Jira.</p>
+<p>But code search? My code search doesn&rsquo;t need to phone home. The repos I work on are already on my laptop. A zoekt index is already a solved problem. The only reason to ship my code off-site to get it back as search results is that nobody has bothered to build a local-first alternative.</p>
+<p>So I built one. It&rsquo;s called <a href="https://github.com/mad01/code-search-local"><code>csl</code></a>, short for code-search-local, and it does exactly what the name says.</p>
+<h2 id="the-problem-with-remote-code-search-mcp">The problem with remote code-search MCP</h2>
+<p>Most of the code-search MCP integrations I&rsquo;ve looked at assume a remote indexer. You point them at a repo hosting provider, they crawl it, they expose search tools that query their backend.</p>
+<p>That&rsquo;s a reasonable design when the code lives somewhere public. It falls apart for everything else. Private code means jumping through approval hoops to let a third party index your work, or not using the tool at all. Offline on a plane, the tools stop working. The vendor changes pricing or gets acquired, and you lose access to your own search. Searching across repos from three different hosts means three different integrations.</p>
+<p>The remote model works when network access is free. Code search pays for that convenience in ways I don&rsquo;t want to keep paying.</p>
+<h2 id="what-local-gets-you">What local gets you</h2>
+<p>The obvious one is privacy. If the index lives on my laptop and the MCP server reads from it, no code I haven&rsquo;t explicitly published ever leaves the machine. Nothing to audit, no terms of service. The data just doesn&rsquo;t move.</p>
+<p>The less obvious one is latency. A local zoekt query over 45 repos takes milliseconds once the shards are warm. Round-tripping that through a SaaS is two orders of magnitude slower, and you pay the cost on every call. When Claude does ten searches to trace a function, the difference between a warm local daemon and a cloud service is the difference between instant and waiting.</p>
+<p>Then there&rsquo;s the airplane problem. I write a lot of code on planes and in hotel rooms with flaky wifi, and a tool that only works when the network is up is a tool I can&rsquo;t count on.</p>
+<p>And the lock-in problem. If I install <code>csl</code> today and the author abandons it tomorrow, I still have the binary and the index. Worst case I stop getting updates. Nothing to close, nothing to export.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>The architecture is deliberately boring.</p>
+<pre><code>┌──────────────┐  spawn         ┌───────────┐  unix socket   ┌──────────────┐
+│ Claude Code  │ ─────────────▶ │  csl mcp  │ ─────────────▶ │  csl daemon  │
+│  (client)    │ ◀──JSON-RPC─── │  (stdio)  │ ◀──gRPC─────── │   (zoekt)    │
+└──────────────┘                └───────────┘                └──────────────┘
+</code></pre>
+<p>Claude Code spawns <code>csl mcp</code> as a subprocess when it needs the tools. The subprocess talks JSON-RPC over stdin/stdout, same as any MCP stdio server. When Claude&rsquo;s done, stdin closes and the subprocess exits.</p>
+<p>The subprocess itself is just an adapter. It forwards every search call to a long-running gRPC daemon over a unix socket at <code>~/.config/csl/search-daemon.sock</code>. The daemon keeps zoekt shards mmap&rsquo;d in memory, so the hundredth call costs the same as the second. The daemon starts itself on demand and shuts down after idle timeout. There&rsquo;s no systemd unit, no plist, no service manager. You never have to think about it.</p>
+<p>If the daemon is unreachable, the subprocess falls back to in-process search. It&rsquo;s slower because it reopens the shards, but it works. You can literally <code>rm ~/.config/csl/*</code> and the tools keep functioning, just less efficiently, until the next invocation rebuilds what it needs.</p>
+<h2 id="what-the-tools-look-like">What the tools look like</h2>
+<p><code>csl</code> registers eight tools with Claude Code. The pattern is: search, count, read, validate for code content, plus lookup, info, pull, reindex for repo management.</p>
+<ul>
+<li><code>csl_search</code> runs a zoekt query across all indexed repos. Returns file paths by default, matching lines with context if you ask.</li>
+<li><code>csl_count</code> returns how many matches a query has, optionally grouped by repo or language. Cheap way to answer &ldquo;does this codebase even contain X&rdquo;.</li>
+<li><code>csl_read</code> reads a file from a named repo by relative path, with optional line range slicing.</li>
+<li><code>csl_query_validate</code> parses a zoekt query and tells you what it means. Useful before running an expensive search.</li>
+<li><code>csl_repo_lookup</code> resolves a repo name to its local checkout path. Case-insensitive regex.</li>
+<li><code>csl_repo_info</code> reports git health and index state for a repo and returns a suggested action (ready, commit_or_stash, pull_recommended, needs_reindex).</li>
+<li><code>csl_repo_pull</code> does a fast-forward git pull with safety checks for dirty working trees.</li>
+<li><code>csl_repo_reindex</code> rebuilds the zoekt index for a single repo after significant changes.</li>
+</ul>
+<p>A typical Claude session might call <code>csl_repo_lookup</code> to find where a repo lives, <code>csl_repo_info</code> to check git health before making changes, <code>csl_search</code> to locate a function, <code>csl_read</code> to pull the relevant lines. Four tool calls, all local, total latency measured in milliseconds.</p>
+<h2 id="install">Install</h2>
+<pre><code class="language-bash">go install github.com/mad01/code-search-local/cmd/csl@latest
+mkdir -p ~/.config/csl
+cat &gt; ~/.config/csl/config.yaml &lt;&lt;EOF
+dirs:
+  - ~/code/src/github.com/yourorg
+  - ~/workspace
+EOF
+claude mcp add --scope user csl -- csl mcp
+</code></pre>
+<p>That&rsquo;s the whole setup. <code>csl doctor</code> will show you the index state and whether the daemon is reachable. <code>csl search "func main"</code> warms things up.</p>
+<h2 id="why-i-split-it-out-from-ks">Why I split it out from ks</h2>
+<p>The search tooling used to live inside <a href="https://github.com/mad01/kitty-session"><code>ks</code></a>, the kitty session manager I wrote about <a href="/blog/kitty-session-manager-for-claude-code/">last month</a>. That made sense when I was the only user and the two concerns happened to share a repo. It stopped making sense the moment I realized the search half was useful to anyone with a terminal, not just kitty users.</p>
+<p>So I pulled the MCP server, the daemon, the zoekt integration, and all the supporting code into its own project. <code>ks</code> is back to being a small kitty session manager. <code>csl</code> is a standalone local code-search tool that works anywhere Go runs. They don&rsquo;t depend on each other. The repo discovery code lives in both, duplicated on purpose, because coupling them would defeat the split.</p>
+<p>The general lesson: when two things in the same repo aren&rsquo;t really about the same topic, separate them. The awkwardness of maintaining two repos is almost always less than the awkwardness of explaining what the combined thing does.</p>
+<h2 id="try-it">Try it</h2>
+<p>Source: <a href="https://github.com/mad01/code-search-local">github.com/mad01/code-search-local</a>. MIT licensed. It works today, with two honest caveats: zoekt is a lot of dependency to pull in for a search CLI, and first-run indexing of a big workspace takes a minute. After that, it stays out of your way.</p>
+<p>If the pattern interests you but you don&rsquo;t care about the implementation, go read <a href="/blog/mcp-stdio-tools-not-services/">MCP stdio is just a subprocess</a>. That post covers why shipping this kind of tool as an MCP server is easier than it sounds.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Blog post introducing code-search-local (csl), an open-source Go tool that indexes local git repositories with zoekt and exposes them to Claude Code as an MCP stdio server. Available at github.com/mad01/code-search-local. Argues that code-search MCP tools should run locally rather than as remote SaaS, for reasons of privacy, latency, offline availability, and avoiding lock-in.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Your code-search MCP shouldn't leave your laptop",
+    "datePublished": "2026-04-16",
+    "description": "code-search-local (csl) is a zoekt-backed local code search CLI with a built-in MCP stdio server. No cloud, no auth, no vendor. Just a binary and your filesystem.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/csl-local-mcp-for-code-search/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
