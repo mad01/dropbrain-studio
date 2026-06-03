@@ -407,6 +407,8 @@ RULE: 28-line block on how to use my CLI   → redundant
 <p>When the eval flags one of those blocks as redundant, the win isn&rsquo;t a tweak. It&rsquo;s deleting twenty or thirty lines outright and watching the behavior stay exactly the same, because the knowledge moved somewhere the model actually looks. That&rsquo;s the difference between a rule the model has to recall and a tool the model is handed.</p>
 <h2 id="what-i-took-away">What I took away</h2>
 <p>The quality of a <code>CLAUDE.md</code> isn&rsquo;t set by how carefully you write it. It&rsquo;s set by how willing you are to cut from it, and that willingness only holds if something keeps showing you which rules are dead. Left alone, the file grows in one direction. Graded against real sessions, it can shrink and get sharper at the same time. The eval doesn&rsquo;t make my config longer. Most of the time it makes it shorter, and that&rsquo;s the point.</p>
+<h2 id="the-skill">The skill</h2>
+<p>If you want the working version rather than the skeleton, both pieces are in a gist: the <a href="https://gist.github.com/mad01/24c7834d949d18217b88c20747bb12a5"><code>SKILL.md</code> and the transcript miner</a>. The miner is the part that reads the session logs and prints the ranked signals; the <code>SKILL.md</code> is the part that turns those signals into bucketed verdicts and proposed diffs. Drop them in <code>~/.claude/skills/claude-md-eval/</code> and reload.</p>
         </article>
 
         <footer>

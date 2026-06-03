@@ -97,3 +97,7 @@ When the eval flags one of those blocks as redundant, the win isn't a tweak. It'
 ## What I took away
 
 The quality of a `CLAUDE.md` isn't set by how carefully you write it. It's set by how willing you are to cut from it, and that willingness only holds if something keeps showing you which rules are dead. Left alone, the file grows in one direction. Graded against real sessions, it can shrink and get sharper at the same time. The eval doesn't make my config longer. Most of the time it makes it shorter, and that's the point.
+
+## The skill
+
+If you want the working version rather than the skeleton, both pieces are in a gist: the [`SKILL.md` and the transcript miner](https://gist.github.com/mad01/24c7834d949d18217b88c20747bb12a5). The miner is the part that reads the session logs and prints the ranked signals; the `SKILL.md` is the part that turns those signals into bucketed verdicts and proposed diffs. Drop them in `~/.claude/skills/claude-md-eval/` and reload.
