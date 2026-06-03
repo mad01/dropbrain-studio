@@ -78,6 +78,14 @@ RULE: 28-line block on how to use my CLI   → redundant
 
 Three findings, three different actions. None of them is "make the rule louder."
 
+## The first run graded itself wrong
+
+The first time I ran the eval, it flagged one of my rules as ignored, and the evidence looked damning: a safe command the rule should have covered, denied hundreds of times across the logs. The proposed fix was to move the rule into config. Reasonable. Also wrong.
+
+Two things the first pass skipped. It didn't separate my interactive sessions from the background agents I spawn for long jobs, and it didn't check what my config already allowed. Once I split those apart the picture inverted. My interactive sessions had almost no denials. The command was already allowlisted. And every one of those hundreds of denials came from background agents running in a stricter permission context that never loaded the allowlist. The rule wasn't ignored. It was working fine, and the noise was piling up somewhere the rule couldn't reach.
+
+That's the failure mode of any self-assessment. Evidence that isn't segmented, and a current state it never bothered to read. An eval that skips both doesn't find problems, it manufactures them. It's also the second reason the skill proposes instead of applies: if it had write access, it would have "fixed" a rule that was never broken.
+
 ## Pruning: when a rule becomes a tool
 
 That last finding points at the most satisfying kind of cut. A lot of what accumulates in a `CLAUDE.md` is documentation of a command-line tool: when to reach for it, what flags it takes, how to read its output. Paragraphs of prose teaching the model about a thing.
