@@ -4,29 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hemsaga Privacy Policy</title>
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
     <style>
+        :root { --accent: #9C6B12; }
+        [data-theme="dark"] { --accent: #D49520; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            color: #333;
+            background: var(--bg);
+            color: var(--text);
         }
         h1 {
-            color: #1a1a1a;
-            border-bottom: 2px solid #5AC8A0;
+            color: var(--text);
+            border-bottom: 2px solid var(--accent);
             padding-bottom: 10px;
         }
         h2 {
-            color: #5AC8A0;
+            color: var(--accent);
             margin-top: 30px;
         }
         h3 {
-            color: #555;
+            color: var(--text-secondary);
         }
         .summary {
-            background: #f5f5f5;
+            background: var(--surface);
+            border: 1px solid var(--border);
             padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
@@ -35,7 +41,7 @@
             color: #34C759;
         }
         a {
-            color: #5AC8A0;
+            color: var(--accent);
         }
         .important {
             background: #fff3cd;
@@ -235,5 +241,6 @@
 
     <hr>
     <p><small><strong>Version:</strong> 1.1 | <strong>Effective Date:</strong> March 18, 2026 | <strong>App Version:</strong> 1.0.0+</small></p>
+    <script defer src="/assets/theme.js"></script>
 </body>
 </html>

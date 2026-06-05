@@ -1,0 +1,58 @@
+/* Shared theme palette + toggle button for dropbrain.studio.
+   Light is the default; [data-theme="dark"] flips to the warm dark set.
+   Neutral tokens map onto the variable names every page already uses, so
+   existing inline page CSS keeps working unchanged. Per-app accent colors
+   stay defined inline on each page. */
+
+:root {
+    --bg: #FAF9F7;             /* cream */
+    --surface: #FFFFFF;        /* paper */
+    --text: #252320;           /* wg800 */
+    --text-secondary: #6B6459; /* wg500 */
+    --text-muted: #8C8578;     /* wg400 */
+    --border: #D8D4CD;         /* wg200 */
+    --border-hover: #B8B2A7;   /* wg300 */
+}
+
+[data-theme="dark"] {
+    --bg: #1A1916;             /* wg900 */
+    --surface: #252320;        /* wg800 */
+    --text: #F5F3EF;           /* off-white */
+    --text-secondary: #B8B2A7; /* wg300 */
+    --text-muted: #8C8578;     /* wg400 */
+    --border: #35322C;         /* wg700 */
+    --border-hover: #4A453D;   /* wg600 */
+}
+
+body {
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ── Sun/moon toggle (injected by theme.js, fixed top-right) ── */
+.theme-toggle {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 50;
+    appearance: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    padding: 0.45rem;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-hover);
+}
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon { width: 18px; height: 18px; }
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }

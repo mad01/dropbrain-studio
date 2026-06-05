@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DropBrain — Your Personal Journal Timeline</title>
     <meta name="description" content="Capture ideas, journal entries, and notes in a timeline with AI-powered writing support. Built with accessibility in mind. Privacy-first with iCloud sync.">
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #0c0c0e;
-            --surface: #141416;
-            --text: #e8e8ec;
-            --text-secondary: #9898a0;
-            --text-muted: #5a5a64;
-            --border: #222226;
-            --accent: #7AB8FF;
+            --accent: #2D6CB8;
             --accent-dim: rgba(122, 184, 255, 0.08);
         }
+
+        [data-theme="dark"] { --accent: #7AB8FF; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
@@ -275,5 +273,6 @@
             <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
         </footer>
     </div>
+    <script defer src="/assets/theme.js"></script>
 </body>
 </html>

@@ -38,15 +38,7 @@ SHARED_CSS = """\
     box-sizing: border-box;
 }
 
-:root {
-    --bg: #0c0c0e;
-    --surface: #141416;
-    --text: #e8e8ec;
-    --text-secondary: #9898a0;
-    --text-muted: #5a5a64;
-    --border: #222226;
-    --border-hover: #333338;
-}
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
@@ -286,6 +278,8 @@ POST_CSS = """\
     margin: 24px 0;
     border-radius: 10px;
     overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
 }
 
 .post-content pre code {
@@ -295,6 +289,7 @@ POST_CSS = """\
     padding: 0;
     font-size: 0.85rem;
     line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
 }
 
 .post-content img {
@@ -462,6 +457,8 @@ POST_TEMPLATE = """\
     <meta property="og:type" content="article">
     <meta property="og:url" content="{url}">
     {og_image}
+    <script>try{{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}}catch(e){{}}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
     <style>
 {shared_css}
@@ -500,6 +497,7 @@ POST_TEMPLATE = """\
 
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
 </body>
 </html>
 """
@@ -516,6 +514,8 @@ INDEX_TEMPLATE = """\
     <meta property="og:description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dropbrain.io/blog/">
+    <script>try{{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}}catch(e){{}}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
     <style>
 {shared_css}
 {index_css}
@@ -540,6 +540,7 @@ INDEX_TEMPLATE = """\
             <a href="/">Home</a>
         </footer>
     </div>
+    <script defer src="/assets/theme.js"></script>
 </body>
 </html>
 """

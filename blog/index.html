@@ -9,6 +9,8 @@
     <meta property="og:description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dropbrain.io/blog/">
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
     <style>
 *, *::before, *::after {
     margin: 0;
@@ -16,15 +18,7 @@
     box-sizing: border-box;
 }
 
-:root {
-    --bg: #0c0c0e;
-    --surface: #141416;
-    --text: #e8e8ec;
-    --text-secondary: #9898a0;
-    --text-muted: #5a5a64;
-    --border: #222226;
-    --border-hover: #333338;
-}
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
@@ -283,5 +277,6 @@ footer a:hover {
             <a href="/">Home</a>
         </footer>
     </div>
+    <script defer src="/assets/theme.js"></script>
 </body>
 </html>

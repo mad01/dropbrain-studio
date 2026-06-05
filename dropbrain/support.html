@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DropBrain App Support</title>
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --bg: #0c0c0e; --surface: #141416; --text: #e8e8ec; --text-secondary: #9898a0; --text-muted: #5a5a64; --border: #222226; --accent: #5AC8A0; }
+        :root { --accent: #1F8A63; }
+        [data-theme="dark"] { --accent: #5AC8A0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
         body::before { content: ''; display: block; height: 3px; background: linear-gradient(to right, #5AC8A0, #7DD8B8, #5AC8A0); }
         .page { max-width: 720px; margin: 0 auto; padding: 0 24px; }
@@ -88,5 +91,6 @@
             <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
         </footer>
     </div>
+    <script defer src="/assets/theme.js"></script>
 </body>
 </html>
