@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Air Mustache Man — Fly, Dodge, Survive!</title>
     <meta name="description" content="Classic arcade fun for the whole family. Fly through procedurally generated skies, dodge obstacles, and beat your high score. Ages 4+, no ads, privacy-first.">
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #0c0c0e;
-            --surface: #141416;
-            --text: #e8e8ec;
-            --text-secondary: #9898a0;
-            --text-muted: #5a5a64;
-            --border: #222226;
-            --accent: #5BA0E0;
+            --accent: #2E6FAE;
             --accent-dim: rgba(91, 160, 224, 0.08);
         }
+        [data-theme="dark"] { --accent: #5BA0E0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
@@ -279,5 +276,6 @@
             <a href="terms_of_use.html">Terms of Use</a>
         </footer>
     </div>
+    <script defer src="/assets/theme.js"></script>
 </body>
 </html>

@@ -10,7 +10,10 @@ support.html            Central support hub linking to per-app support
 sitemap.xml             Sitemap (auto-updated by blog build script)
 robots.txt
 CNAME                   GitHub Pages custom domain (dropbrain.io)
-assets/                 Shared assets (App Store badge SVG, etc.)
+assets/                 Shared assets
+  theme.css             Shared light/dark palette + toggle button styles (every page links it)
+  theme.js              Injects the sun/moon toggle, persists choice to localStorage
+  (App Store badge SVG, etc.)
 
 hemsaga/                App landing pages — each app has its own directory
 dropbrain/                containing index.html, support.html, and
@@ -99,7 +102,37 @@ Current deploy list:
 
 ## Style
 
-All pages use a dark theme with consistent CSS variables (`--bg: #0c0c0e`, `--surface: #141416`, etc.). There is no shared CSS file — each HTML page inlines its styles. The blog build script embeds shared CSS into generated pages.
+All pages use a warm theme that is **light by default** with a **dark toggle**. Per-page styles are still inlined in each HTML file's `<style>` block (there is no shared component CSS), but the **color palette and theme toggle are shared** via `assets/theme.css` and `assets/theme.js` — see Theming below.
+
+## Theming (light/dark)
+
+The palette comes from the `/present` skill: warm cream light default (`--bg: #FAF9F7`), warm dark (`--bg: #1A1916`). Light is always the first-visit default; the user's toggle choice is remembered in `localStorage` (key `db-theme`). OS `prefers-color-scheme` is intentionally **not** followed.
+
+**How it works — single source of truth in `assets/`:**
+
+- `assets/theme.css` defines the neutral palette under `:root` (light) and `[data-theme="dark"]` (dark), mapped onto the variable names every page already uses (`--bg`, `--surface`, `--text`, `--text-secondary`, `--text-muted`, `--border`, `--border-hover`). It also styles the fixed top-right `.theme-toggle` button and its sun/moon icon swap. **Change the site-wide palette here, in one place.**
+- `assets/theme.js` injects the toggle button into `<body>`, flips the `data-theme` attribute on `<html>`, and writes `db-theme` to `localStorage`. Loaded with `<script defer src="/assets/theme.js"></script>` before `</body>`.
+
+**Every page wires the theme with the same three additions:**
+
+1. In `<head>`, a tiny inline FOUC guard (must be inline + synchronous, before the page renders, so a saved-dark choice doesn't flash light):
+   ```html
+   <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+   ```
+2. In `<head>`, `<link rel="stylesheet" href="/assets/theme.css">` (absolute path — works from root, `/<app>/`, and `/blog/<slug>/`).
+3. Before `</body>`, `<script defer src="/assets/theme.js"></script>`.
+
+Pages must **not** redefine the neutral palette variables in their inline `:root` — those come from `theme.css`. Only per-app accents stay inline.
+
+**Per-app accent colors** (`--accent` on app pages; `--dropbrain`/`--migraineme`/… on the root index) are tuned per theme: a darker value in `:root` for contrast on cream, and the brighter original under `[data-theme="dark"]`. Pattern on an app page:
+```css
+:root { --accent: #2D6CB8; }            /* deeper, readable on cream */
+[data-theme="dark"] { --accent: #7AB8FF; } /* original bright value */
+```
+
+**Adding a new page:** copy the three additions above, drop the neutral palette from its inline `:root`, and give any accent a light + dark value. **Adding a new app:** also add light/dark values for its token to the root `index.html` `:root` and `[data-theme="dark"]` blocks.
+
+**Blog:** `blog/build.py` injects the same three additions into `POST_TEMPLATE` and `INDEX_TEMPLATE`; the neutral palette is **not** in `SHARED_CSS` (it comes from `theme.css`). Code blocks use the `atom-one-dark` highlight theme, so they're given an explicit dark background (`#282c34`) and light foreground (`#abb2bf`) in `POST_CSS` — they stay dark in both themes (don't make them follow `--surface`, or un-highlighted code goes invisible on a light page). Rebuild with `python3 blog/build.py` after any palette/template change.
 
 ## Support pages
 
