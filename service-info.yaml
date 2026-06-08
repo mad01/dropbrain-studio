@@ -1,0 +1,20 @@
+apiVersion: catalog.mad01/v1alpha1
+kind: System
+metadata:
+  name: dropbrain-studio
+  description: Static marketing and support site for the DropBrain app portfolio (dropbrain.io)
+  tags: [web, static-site]
+spec:
+  owner: mad01
+---
+apiVersion: catalog.mad01/v1alpha1
+kind: Component
+metadata:
+  name: dropbrain-studio-site
+  description: Static HTML site deployed to dropbrain.io via GitHub Pages — landing pages, privacy, blog
+  tags: [html, github-pages, web]
+spec:
+  type: service
+  lifecycle: production
+  owner: mad01
+  system: dropbrain-studio
