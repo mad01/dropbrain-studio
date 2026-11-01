@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let the small model do the reading — dropbrain blog</title>
+    <meta name="description" content="csl_ask hands a file read to a cheap worker model and returns the answer, not the lines. Measured: the small model reads as well as the big ones at a hundredth of the price, and the agent only picks it up when the tools push.">
+    <meta property="og:title" content="Let the small model do the reading">
+    <meta property="og:description" content="csl_ask hands a file read to a cheap worker model and returns the answer, not the lines. Measured: the small model reads as well as the big ones at a hundredth of the price, and the agent only picks it up when the tools push.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/csl-ask-let-the-small-model-read/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">Let the small model do the reading</h1>
+            <div class="post-meta">
+                <span class="post-date">November 01, 2026</span>
+                <div class="post-tags"><span class="tag">claude-code</span><span class="tag">mcp</span><span class="tag">code-search</span><span class="tag">evals</span><span class="tag">developer-tools</span><span class="tag">ai</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h1 id="let-the-small-model-do-the-reading">Let the small model do the reading</h1>
+<p>Here is a thing my coding agent did last week. I asked which errors a function could return. The function lived in an 843-line file. The agent read the whole file into its context, about twelve thousand tokens, answered in one line, and never looked at those lines again.</p>
+<p>That read wasn&rsquo;t free. The session model is the expensive one, and every token it reads feeds every token it thinks afterwards. Twelve thousand tokens for a one-line answer is a bad trade, and an agent makes that trade ten times a session.</p>
+<p>The fix I landed on: the agent keeps the discovery and hands off the reading. Finding the right files is what a strong model is good at. Reading them isn&rsquo;t where its strength goes.</p>
+<h2 id="what-csl_ask-does">What csl_ask does</h2>
+<p><a href="https://github.com/mad01/thismoon/tree/main/services/csl">csl</a> is my local code search, a zoekt index over every git checkout on the machine, exposed to Claude Code as a Model Context Protocol (MCP) server. I wrote about it <a href="/blog/csl-local-mcp-for-code-search/">earlier this year</a>. It now has a tool called <code>csl_ask</code>.</p>
+<p>You give it a question and one or more search queries. The queries select up to a handful of files. A cheap worker model, Claude Haiku 5.5, reads those files whole and answers the question. What comes back into the session is the answer plus a footer with the corpus size and the list price of the call. The lines stay out.</p>
+<p>The same tool has a per-repo mode. One question, a query that matches files in forty repositories, forty short answers back. That is the mode I care about most, since the fleet I work in has well over a thousand repositories and no session model can read across it.</p>
+<h2 id="does-a-small-model-read-well-enough">Does a small model read well enough?</h2>
+<p>That was my first worry, so I measured it before trusting it. The eval is eight questions over real files from my own tools, 666 to 2000 lines each. The grader is strict. Every expected fact must be present and no forbidden claim may appear. Every <code>path:line</code> reference must point at a line that holds what it names, and the answer must fit a size budget. Three reps per question, so 24 reads per model.</p>
+<table>
+<thead>
+<tr>
+<th>reader</th>
+<th>pass</th>
+<th>facts found</th>
+<th>wrong line references</th>
+<th>list price for 24 reads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Haiku 5.5</td>
+<td>79%</td>
+<td>0.99</td>
+<td>2 of 185</td>
+<td>$0.055</td>
+</tr>
+<tr>
+<td>Opus 5.5</td>
+<td>29%</td>
+<td>0.98</td>
+<td>6 of 253</td>
+<td>$2.14</td>
+</tr>
+<tr>
+<td>Fable 5.1</td>
+<td>50%</td>
+<td>0.98</td>
+<td>1 of 213</td>
+<td>$5.33</td>
+</tr>
+</tbody>
+</table>
+<p>Every model finds the facts. The pass rates differ because the big models write too much. Opus went over the size budget on 71 percent of its answers, Fable on 46 percent, Haiku on 8 percent. Fable had the most accurate line references of the three. Haiku was close behind it and a hundred times cheaper.</p>
+<p>So the small model is a fine reader. For an extractive question, which is what most reads are, it loses nothing against the session model reading the same lines. It just answers shorter.</p>
+<h2 id="will-the-agent-use-it">Will the agent use it?</h2>
+<p>My second worry, and the more interesting one. A tool nobody calls is a tool that doesn&rsquo;t exist.</p>
+<p>I have an eval runner that drives <code>claude -p</code> with my real hooks and MCP servers through six fixed tasks. Each run is scored on its outcome and on what it cost in turns and tokens. I ran it four times while rolling the tool out.</p>
+<p>Runs A and B: the tool was listed in every session, and my global <code>CLAUDE.md</code> carried a rule saying to use it for large files. It was never called. The model read the 843-line file whole, both times. Prose did nothing.</p>
+<p>Run C came after the tool-side round. The tool was marked as always loaded with a sharper description. The file-read tool named <code>csl_ask</code> in its &ldquo;truncated&rdquo; note, and a hook hint fired after any whole-file read. Now the model picked <code>csl_ask</code> first in both tasks that called for it, then checked the answer with two ranged reads of the spots it would cite. The worker calls cost three tenths of a cent and two tenths of a cent.</p>
+<p>Run D raised the turn budget for the multi-file task and scored a mean of 0.97. Its large-file task finished in four turns against eleven without the tool. The multi-file task took seven against ten.</p>
+<p>The pattern the model found on its own is the one I would have written: ask, then verify one claim with a ranged read. I didn&rsquo;t tell it to verify. It did that itself.</p>
+<h2 id="when-to-reach-for-it">When to reach for it</h2>
+<p>What I now have in my global rules, in one paragraph. Discovery is yours; reading is the worker&rsquo;s. Find the files with search and outline tools. A question over a file of 300 lines or more, or over two or more files, goes to <code>csl_ask</code> before any read. Verify a claim you will act on with one ranged read. Read lines yourself only for a small file or a region you are about to edit.</p>
+<p>When reading it yourself is just as good:</p>
+<ul>
+<li>The file is under 300 lines. One read, nothing lost.</li>
+<li>You are about to edit the region. You need the exact lines anyway.</li>
+<li>The question needs judgment, not extraction. &ldquo;Is this design sound&rdquo; isn&rsquo;t a reading task.</li>
+</ul>
+<p>When a subagent is the right tool: the discovery itself is the hard part. Following references across packages, searching with vocabulary you don&rsquo;t have yet. The worker reads a fixed corpus and can&rsquo;t search. An explorer agent can, and it can call <code>csl_ask</code> for its own reads.</p>
+<p>When the fleet case applies: a question like &ldquo;how does each service set its retry policy&rdquo; is one per-repo ask over a query that selects those services. Never a read per repo in the session, never an agent per repo.</p>
+<h2 id="what-im-not-sure-about-yet">What I&rsquo;m not sure about yet</h2>
+<p>The answer is only as good as the query. A query that selects the wrong files gives a confident answer about the wrong files. The verify step covers this, and I wouldn&rsquo;t drop it.</p>
+<p>My control arm leaked. The &ldquo;without the tool&rdquo; runs denied the MCP tool, and in run D the model found the command-line form and called that instead. It still took eleven turns, but the comparison isn&rsquo;t as clean as I wanted.</p>
+<p>The cost columns in the eval runner are noisy. They rose on every task between runs C and D, including the two tasks the tool never touches. So they reflect prompt cache state and run-to-run variance more than anything I changed.</p>
+<p>Per-repo asking runs four worker calls at a time. Forty repositories answer in under a minute. The whole fleet takes about twenty, so the query has to narrow first.</p>
+<p>And these are one-rep runs on six tasks. Enough to see the pattern, not enough to put a decimal on it.</p>
+<h2 id="try-it-before-you-read">Try it before you read</h2>
+<p>That is the rule in one line. A thin answer costs one cheap call, and the lines are still there to read after. The code and the run reports are in <a href="https://github.com/mad01/thismoon">thismoon</a>.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Blog post on csl_ask, a bulk-reading tool in code-search-local (csl, part of github.com/mad01/thismoon). A search query selects files, a cheap worker model (Claude Haiku 5.5) reads them whole and returns only the answer. Reports an eval with Haiku 5.5, Opus 5.5 and Fable 5.1 as readers (every model finds the facts; Haiku is the cheapest and the tersest), four runs of an eval runner showing that a coding agent adopts the tool through tool-side signals (alwaysLoad, tool descriptions, a hook hint after a whole-file read) and not through CLAUDE.md prose, and a decision rule for when to use bulk reading, a direct read, or a subagent, including per-repo questions across a fleet of over a thousand repositories.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Let the small model do the reading",
+    "datePublished": "2026-11-01",
+    "description": "csl_ask hands a file read to a cheap worker model and returns the answer, not the lines. Measured: the small model reads as well as the big ones at a hundredth of the price, and the agent only picks it up when the tools push.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/csl-ask-let-the-small-model-read/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>
