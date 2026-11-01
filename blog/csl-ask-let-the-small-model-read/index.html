@@ -344,7 +344,7 @@ footer a:hover {
 
         <article class="post-content">
 <h1 id="let-the-small-model-do-the-reading">Let the small model do the reading</h1>
-<p>Here is a thing my coding agent did last week. I asked which errors a function could return. The function lived in an 843-line file. The agent read the whole file into its context, about twelve thousand tokens, answered in one line, and never looked at those lines again.</p>
+<p>Here is a thing my coding agent did this week. I asked which errors a function could return. The function lived in an 843-line file. The agent read the whole file into its context, about twelve thousand tokens, answered in one line, and never looked at those lines again.</p>
 <p>That read wasn&rsquo;t free. The session model is the expensive one, and every token it reads feeds every token it thinks afterwards. Twelve thousand tokens for a one-line answer is a bad trade, and an agent makes that trade ten times a session.</p>
 <p>The fix I landed on: the agent keeps the discovery and hands off the reading. Finding the right files is what a strong model is good at. Reading them isn&rsquo;t where its strength goes.</p>
 <h2 id="what-csl_ask-does">What csl_ask does</h2>

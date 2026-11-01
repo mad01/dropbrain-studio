@@ -9,7 +9,7 @@ ai_context: "Blog post on csl_ask, a bulk-reading tool in code-search-local (csl
 
 # Let the small model do the reading
 
-Here is a thing my coding agent did last week. I asked which errors a function could return. The function lived in an 843-line file. The agent read the whole file into its context, about twelve thousand tokens, answered in one line, and never looked at those lines again.
+Here is a thing my coding agent did this week. I asked which errors a function could return. The function lived in an 843-line file. The agent read the whole file into its context, about twelve thousand tokens, answered in one line, and never looked at those lines again.
 
 That read wasn't free. The session model is the expensive one, and every token it reads feeds every token it thinks afterwards. Twelve thousand tokens for a one-line answer is a bad trade, and an agent makes that trade ten times a session.
 
