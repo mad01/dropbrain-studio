@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>docker machine and aws in combination with ansible — dropbrain blog</title>
+    <meta name="description" content="Initial setup with ansible and docker-machine. In this case i have been using aws to run a docker host for me created with docker-machine. I had a goal to provision a ec2 box and…">
+    <meta property="og:title" content="docker machine and aws in combination with ansible">
+    <meta property="og:description" content="Initial setup with ansible and docker-machine. In this case i have been using aws to run a docker host for me created with docker-machine. I had a goal to provision a ec2 box and…">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/docker-ansible-aws-docker-machine/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">docker machine and aws in combination with ansible</h1>
+            <div class="post-meta">
+                <span class="post-date">June 13, 2015</span>
+                <div class="post-tags"><span class="tag">docker</span><span class="tag">docker-machine</span><span class="tag">ansible</span><span class="tag">aws</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>Initial setup with ansible and <code>docker-machine</code>. In this case i have been using aws to run a docker host for me created with <code>docker-machine</code>. I had a goal to provision a ec2 box and have a few docker containers running in that ec2 vm. A note here is that the same way should work on any of the <code>docker-machine</code> driver there is nothing unique with aws in the way i have done this. From what i know you cant NOT use ansible on boot2docker, i have assumed that there is a full linux vm running. </p>
+<p>Since ansible is using a ssh-key i had to add that key to the <code>docker-machine</code> ec2 vm after it&rsquo;s created. There is a option to run remote command line commands on a remote docker-machine driver. </p>
+<p>first lets create the a driver on amazon ec2. This will create a vm of the type &ldquo;t2.micro&rdquo; which is the default type on aws. If you like to change the instance type you can use this &ldquo;&ndash;amazonec2-instance-type&rdquo;</p>
+<pre><code class="language-bash">docker-machine create \
+--driver amazonec2 \
+--amazonec2-access-key &lt;key&gt; \
+--amazonec2-secret-key &lt;key&gt; \
+--amazonec2-subnet-id &lt;key&gt; \
+--amazonec2-region eu-west-1 \
+box \ 
+</code></pre>
+<p>It can look like this to add your public ssh key to the ec2 vm. I am taking the output of my public ssh key and assigning it to a variable localKey. Then running a remote command with <code>docker-machine</code> on the driver named &lsquo;box&rsquo;. The localKey variable is added to the remote box ssh authorized_keys.</p>
+<pre><code class="language-bash">localKey=$(cat ~/.ssh/id_rsa.pub) \
+&amp;&amp; docker-machine ssh box &quot;echo &quot;$localKey&quot; &gt;&gt; .ssh/authorized_keys&quot; \
+&amp;&amp; eval &quot;$(docker-machine env box)&quot;
+</code></pre>
+<p>To get ansible working now i just have to add the ip of the driver. i am taking the ip of the driver box and assigns it to the variable driverIP that variable it then used to echo the ip in to the configured ansible inventory file.</p>
+<pre><code class="language-bash">driverIP=$(docker-machine ip box) \
+&amp;&amp; echo &quot;\n[box]\nroot&quot;@$driverIP &gt;&gt; $ANSIBLE_INVENTORY
+</code></pre>
+<p>Now that you have done the basic setup to be able to run ansible on the remote system. We have to install a few packets to be able to start docker with ansible. Here is a example ansible playbook. Ansible will need to have docker-py installed on the target host to be able to start docker containers. The file is saved as &ldquo;ansible-docker-host.yml&rdquo; due to a issue in pip the docker-py version had to be 1.1.0 .</p>
+<pre><code class="language-yaml">---
+- hosts: box
+  remote_user: root
+  sudo: yes
+  tasks:
+    - name: apt install python-setuptools
+      apt: name=python-setuptools
+
+    - name: apt install python-dev
+      apt: name=python-dev
+
+    - name: apt install python-pip
+      apt: name=python-pip
+
+    - name: pip install docker-py
+      pip: name=docker-py version=1.1.0
+</code></pre>
+<p>Lets run the playbook to get the remote system installed with the needed to start docker with ansible</p>
+<pre><code class="language-bash">ansible-playbook ansible-docker-host.yml
+</code></pre>
+<p>The image used have have sshd installed username:root password:foobar. What will be done is to start a container named testing with image mad01/sshlab found on the docker hub, and the state of the docker container is started, the container port 22 will be mapped to the ec2 vm port 2222. A note here is that the docker-machine setup function will not have created a fireawall rule for that 2222 port on amazon, that is outside the scope of docker-machine atm. </p>
+<pre><code class="language-yaml">---
+- hosts: box
+  remote_user: root
+  sudo: yes
+  tasks:
+    - name: testing container
+      docker:
+        name: testing
+        image: mad01/sshlab
+        state: started
+        pull: always
+        ports:
+          - &quot;2222:22&quot;
+</code></pre>
+<p>Lets now start the docker container on the remote vm. </p>
+<pre><code class="language-bash">ansible-playbook ansible-docker-start.yml
+</code></pre>
+<p>you can check that the docker container is running with &ldquo;docker ps&rdquo; on the local machine. to remove the aws ec2 vm you just run.</p>
+<pre><code class="language-bash">docker-machine rm box
+</code></pre>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "docker machine and aws in combination with ansible",
+    "datePublished": "2015-06-13",
+    "description": "Initial setup with ansible and docker-machine. In this case i have been using aws to run a docker host for me created with docker-machine. I had a goal to provision a ec2 box and\u2026",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/docker-ansible-aws-docker-machine/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>

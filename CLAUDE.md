@@ -89,6 +89,19 @@ Edit the markdown in `blog/_posts/`, then re-run `python3 blog/build.py`. The ge
 
 Place images in `blog/images/` and reference them as `/blog/images/filename.png` in markdown.
 
+### Blog index layout
+
+`build.py` generates `blog/index.html` in two parts:
+
+- **Latest posts**: the newest post as a large card, the next four in side columns (`LEAD_LEFT`, `LEAD_RIGHT`). Only the large card shows a post's `image`.
+- **All posts**: every post as a compact row, with tag filter, sort, search and "See more" (12 rows at a time). The tag menu lists tags used by at least `MIN_TAG_POSTS` posts. Without JavaScript, all rows show.
+
+Post pages use their own template and don't change with the index layout.
+
+### Archive posts
+
+The 2015 and 2016 posts come from the old personal blog (qone.io, built with Hugo). Their `description` is the post's opening text cut at 180 characters. Edit it in the markdown when a better summary helps.
+
 ## Deployment
 
 Push to `main`. A GitHub Actions workflow (`.github/workflows/pages.yml`) builds and deploys the site to dropbrain.io.

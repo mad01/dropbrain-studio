@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog — dropbrain studio</title>
-    <meta name="description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
+    <meta name="description" content="Blog from dropbrain studio. App updates, developer tools, and engineering notes going back to 2015.">
     <meta property="og:title" content="Blog — dropbrain studio">
-    <meta property="og:description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
+    <meta property="og:description" content="Blog from dropbrain studio. App updates, developer tools, and engineering notes going back to 2015.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dropbrain.io/blog/">
     <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
@@ -121,92 +121,381 @@ footer a:hover {
     }
 }
 
-.blog-header {
-    padding: 56px 0 40px;
-    animation: fadeUp 0.7s ease 0.1s both;
+[hidden] { display: none !important; }
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
 }
 
-.blog-title {
-    font-size: clamp(2rem, 5vw, 2.8rem);
-    font-weight: 600;
-    letter-spacing: -0.035em;
-    color: var(--text);
+.page {
+    max-width: 1160px;
+    --chip: color-mix(in srgb, var(--border) 70%, var(--surface));
+    --mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
 }
 
-.post-list {
-    padding-bottom: 56px;
+/* ── Latest ── */
+
+.lead-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.6s ease 0.05s both;
 }
 
-.post-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px 28px;
-    margin-bottom: 16px;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    opacity: 0;
-    animation: fadeUp 0.55s ease both;
-}
-
-.post-item:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(255,255,255,0.02);
-}
-
-.post-item-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 4px;
-}
-
-.post-item-title a {
-    color: var(--text);
-    text-decoration: none;
-}
-
-.post-item-title a:hover {
-    color: var(--text);
-}
-
-.post-item-date {
-    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-
-.post-item-desc {
-    font-size: 0.92rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    font-weight: 300;
+.lead-bar h1 {
+    font-size: 0.95rem;
+    font-weight: 650;
     letter-spacing: -0.01em;
 }
 
-.post-item-tags {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-}
-
-.post-item-tags .tag {
-    font-size: 0.7rem;
-    font-weight: 500;
+.lead-bar a {
+    font-size: 0.88rem;
     color: var(--text-muted);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2px 9px;
-    letter-spacing: 0.01em;
 }
 
-@media (max-width: 400px) {
-    .post-item {
-        padding: 18px 16px;
+.lead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.85fr) minmax(0, 1fr);
+    grid-template-areas: "left main right";
+    gap: 40px;
+    padding-top: 32px;
+}
+
+.lead-left { grid-area: left; }
+.lead-right { grid-area: right; }
+
+.lead-col .card + .card {
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+}
+
+.card {
+    position: relative;
+    animation: fadeUp 0.55s ease both;
+}
+
+.card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin-bottom: 12px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.card-meta .meta-tag { color: var(--text-secondary); }
+
+.card-title {
+    font-size: 1.28rem;
+    font-weight: 650;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    text-wrap: balance;
+}
+
+.card-title a { color: var(--text); }
+
+/* The whole card is the link target. */
+.card-title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+.card:hover .card-title a { color: var(--text-secondary); }
+
+.card-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 18px;
+}
+
+.card-main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 40px 40px;
+    transition: border-color 0.2s ease;
+}
+
+.card-main .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.card-main:hover { border-color: var(--border-hover); }
+.card-main:hover .card-title a { color: var(--text); }
+
+.card-main .card-title {
+    font-size: clamp(2rem, 3.4vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    margin-bottom: 18px;
+}
+
+.card-main .card-desc {
+    font-size: 1.12rem;
+    max-width: 40em;
+    margin-bottom: 32px;
+    -webkit-line-clamp: 5;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--chip);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.button svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.2s ease;
+}
+
+.card-main .button { margin-top: auto; align-self: flex-start; }
+.card-main:hover .button,
+.button:hover { background: var(--border); border-color: var(--border-hover); }
+.card-main:hover .button svg { transform: translateX(3px); }
+.see-more .button:hover svg { transform: translateY(2px); }
+
+/* ── All posts ── */
+
+.archive {
+    margin-top: 104px;
+    padding-bottom: 72px;
+    scroll-margin-top: 24px;
+}
+
+.archive-title {
+    font-size: clamp(2.4rem, 5.2vw, 3.8rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.045em;
+}
+
+.archive-count {
+    margin-top: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 22px;
+}
+
+.controls-right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.control {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.control select,
+.control input {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 40px;
+    padding: 0 38px 0 14px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 0.2s ease;
+}
+
+.control select { cursor: pointer; }
+.control input { width: 260px; }
+.control input::placeholder { color: var(--text-muted); }
+.control input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+.control select:hover,
+.control input:hover { border-color: var(--border-hover); }
+
+.control select:focus-visible,
+.control input:focus-visible,
+.button:focus-visible,
+.row:focus-visible {
+    outline: 2px solid var(--text-secondary);
+    outline-offset: 2px;
+}
+
+.control svg {
+    position: absolute;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.table-head,
+.row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1.6fr) minmax(0, 0.8fr) 112px;
+    gap: 28px;
+    align-items: center;
+}
+
+.table-head {
+    margin-top: 28px;
+    padding: 0 14px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.row {
+    padding: 20px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.row:hover {
+    color: var(--text-secondary);
+    background: var(--surface);
+    border-bottom-color: transparent;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px var(--border);
+}
+
+.cell {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.cell-title,
+.cell-desc,
+.cell-tags {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+}
+
+.cell-title {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+}
+
+.cell-date { font-variant-numeric: tabular-nums; }
+
+.no-match {
+    padding: 48px 14px;
+    color: var(--text-muted);
+}
+
+.see-more {
+    display: flex;
+    justify-content: center;
+    padding-top: 44px;
+}
+
+@media (max-width: 1020px) {
+    .lead {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas: "main main" "left right";
+        gap: 40px 32px;
     }
+}
+
+@media (max-width: 900px) {
+    .table-head,
+    .row { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.5fr) 104px; }
+    .cell-tags { display: none; }
+}
+
+@media (max-width: 640px) {
+    .lead {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "main" "left" "right";
+    }
+    .lead-left,
+    .lead-right {
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+    }
+    .card-main { padding: 26px 22px 28px; }
+    .archive { margin-top: 72px; }
+    .controls,
+    .controls-right { flex-direction: column; align-items: stretch; }
+    .control select,
+    .control input { width: 100%; }
+    .table-head { display: none; }
+    .row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 4px;
+        padding: 16px 6px;
+    }
+    .cell-desc { display: none; }
+    .cell-title {
+        white-space: normal;
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+    .cell-date { font-size: 0.82rem; color: var(--text-muted); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lead-bar,
+    .card { animation: none; }
 }
 
     </style>
@@ -217,72 +506,412 @@ footer a:hover {
             <a href="/" class="wordmark">dropbrain<span>.studio</span></a>
         </header>
 
-        <div class="blog-header">
-            <h1 class="blog-title">Blog</h1>
-        </div>
+        <section aria-labelledby="latest-title">
+            <div class="lead-bar">
+                <h1 id="latest-title">Latest posts</h1>
+                <a href="#all-posts">All 37 posts &darr;</a>
+            </div>
+            <div class="lead">
+                <article class="card card-main" style="animation-delay: 0.1s;">
+                    
+                    <div class="card-body">
+                        <div class="card-meta"><span class="meta-tag">claude-code</span><time datetime="2026-11-01">Nov 1, 2026</time></div>
+                        <h2 class="card-title"><a href="/blog/csl-ask-let-the-small-model-read/">Let the small model do the reading</a></h2>
+                        <p class="card-desc">csl_ask hands a file read to a cheap worker model and returns the answer, not the lines. Measured: the small model reads as well as the big ones at a hundredth of the price, and the agent only picks it up when the tools push.</p>
+                        <span class="button" aria-hidden="true">Read more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+                    </div>
+                </article>
+                <div class="lead-col lead-left">
+                <article class="card card-side" style="animation-delay: 0.18s;">
+                    
+                    <div class="card-body">
+                        <div class="card-meta"><span class="meta-tag">claude-code</span><time datetime="2026-06-03">Jun 3, 2026</time></div>
+                        <h2 class="card-title"><a href="/blog/claude-md-living-system/">My CLAUDE.md is a living system, not a config file</a></h2>
+                        <p class="card-desc">CLAUDE.md drifts: rules get ignored, go stale, or were never right. Instead of editing it by feel, I run a self-eval skill after each session that grades my rules and proposes the diff.</p>
+                        
+                    </div>
+                </article>
+                <article class="card card-side" style="animation-delay: 0.26s;">
+                    
+                    <div class="card-body">
+                        <div class="card-meta"><span class="meta-tag">mcp</span><time datetime="2026-04-16">Apr 16, 2026</time></div>
+                        <h2 class="card-title"><a href="/blog/csl-local-mcp-for-code-search/">Your code-search MCP shouldn&#x27;t leave your laptop</a></h2>
+                        <p class="card-desc">code-search-local (csl) is a zoekt-backed local code search CLI with a built-in MCP stdio server. No cloud, no auth, no vendor. Just a binary and your filesystem.</p>
+                        
+                    </div>
+                </article>
+                </div>
+                <div class="lead-col lead-right">
+                <article class="card card-side" style="animation-delay: 0.26s;">
+                    
+                    <div class="card-body">
+                        <div class="card-meta"><span class="meta-tag">mcp</span><time datetime="2026-04-10">Apr 10, 2026</time></div>
+                        <h2 class="card-title"><a href="/blog/mcp-stdio-tools-not-services/">MCP stdio is just a subprocess</a></h2>
+                        <p class="card-desc">Exposing a local code-search CLI to Claude Code as native tools via MCP&#x27;s stdio transport. No daemon, no port, just a subprocess the client spawns per call.</p>
+                        
+                    </div>
+                </article>
+                <article class="card card-side" style="animation-delay: 0.34s;">
+                    
+                    <div class="card-body">
+                        <div class="card-meta"><span class="meta-tag">hemsaga</span><time datetime="2026-04-02">Apr 2, 2026</time></div>
+                        <h2 class="card-title"><a href="/blog/hemsaga-keep-track-of-your-home/">Your Home Has More Moving Parts Than You Think</a></h2>
+                        <p class="card-desc">Warranties expire, filters need replacing, and that roof guy&#x27;s number is somewhere. A look at what homeowners actually need to track.</p>
+                        
+                    </div>
+                </article>
+                </div>
+            </div>
+        </section>
 
-        <div class="post-list">
-            <div class="post-item" style="animation-delay: 0.15s;">
-                <h2 class="post-item-title"><a href="/blog/csl-ask-let-the-small-model-read/">Let the small model do the reading</a></h2>
-                <div class="post-item-date">November 01, 2026</div>
-                <p class="post-item-desc">csl_ask hands a file read to a cheap worker model and returns the answer, not the lines. Measured: the small model reads as well as the big ones at a hundredth of the price, and the agent only picks it up when the tools push.</p>
-                <div class="post-item-tags"><span class="tag">claude-code</span><span class="tag">mcp</span><span class="tag">code-search</span><span class="tag">evals</span><span class="tag">developer-tools</span><span class="tag">ai</span></div>
+        <section class="archive" id="all-posts" aria-labelledby="archive-title">
+            <h2 class="archive-title" id="archive-title">All posts</h2>
+            <p class="archive-count" id="post-count" aria-live="polite">37 posts</p>
+
+            <div class="controls" id="post-controls" hidden>
+                <label class="control">
+                    <span class="sr-only">Filter by tag</span>
+                    <select id="filter-tag">
+                        <option value="">All tags</option>
+                        <option value="python">python (10)</option>
+                        <option value="docker">docker (6)</option>
+                        <option value="testing">testing (6)</option>
+                        <option value="claude-code">claude-code (5)</option>
+                        <option value="developer-tools">developer-tools (4)</option>
+                        <option value="go">go (4)</option>
+                        <option value="ios">ios (4)</option>
+                        <option value="aws">aws (3)</option>
+                        <option value="mcp">mcp (3)</option>
+                        <option value="ai">ai (2)</option>
+                        <option value="backup">backup (2)</option>
+                        <option value="bash">bash (2)</option>
+                        <option value="code-search">code-search (2)</option>
+                        <option value="concurrency">concurrency (2)</option>
+                        <option value="health">health (2)</option>
+                        <option value="jenkins">jenkins (2)</option>
+                        <option value="migraine">migraine (2)</option>
+                        <option value="privacy">privacy (2)</option>
+                        <option value="productivity">productivity (2)</option>
+                        <option value="selenium">selenium (2)</option>
+                        <option value="swift">swift (2)</option>
+                        <option value="zsh">zsh (2)</option>
+                    </select>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                </label>
+                <div class="controls-right">
+                    <label class="control">
+                        <span class="sr-only">Sort</span>
+                        <select id="filter-sort">
+                            <option value="newest">Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                        </select>
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                    </label>
+                    <label class="control">
+                        <span class="sr-only">Search posts</span>
+                        <input type="search" id="filter-search" placeholder="Search posts…" autocomplete="off">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>
+                    </label>
+                </div>
             </div>
-            <div class="post-item" style="animation-delay: 0.25s;">
-                <h2 class="post-item-title"><a href="/blog/claude-md-living-system/">My CLAUDE.md is a living system, not a config file</a></h2>
-                <div class="post-item-date">June 03, 2026</div>
-                <p class="post-item-desc">CLAUDE.md drifts: rules get ignored, go stale, or were never right. Instead of editing it by feel, I run a self-eval skill after each session that grades my rules and proposes the diff.</p>
-                <div class="post-item-tags"><span class="tag">claude-code</span><span class="tag">ai</span><span class="tag">developer-tools</span><span class="tag">workflow</span></div>
+
+            <div class="table-head" aria-hidden="true">
+                <span>Title</span><span>Description</span><span class="cell-tags">Tags</span><span>Date</span>
             </div>
-            <div class="post-item" style="animation-delay: 0.35s;">
-                <h2 class="post-item-title"><a href="/blog/csl-local-mcp-for-code-search/">Your code-search MCP shouldn&#x27;t leave your laptop</a></h2>
-                <div class="post-item-date">April 16, 2026</div>
-                <p class="post-item-desc">code-search-local (csl) is a zoekt-backed local code search CLI with a built-in MCP stdio server. No cloud, no auth, no vendor. Just a binary and your filesystem.</p>
-                <div class="post-item-tags"><span class="tag">mcp</span><span class="tag">claude-code</span><span class="tag">code-search</span><span class="tag">privacy</span><span class="tag">zoekt</span><span class="tag">go</span><span class="tag">developer-tools</span></div>
+            <div id="post-rows">
+                <a class="row" href="/blog/csl-ask-let-the-small-model-read/" data-date="2026-11-01" data-tags="claude-code|mcp|code-search|evals|developer-tools|ai" data-search="let the small model do the reading csl_ask hands a file read to a cheap worker model and returns the answer, not the lines. measured: the small model reads as well as the big ones at a hundredth of the price, and the agent only picks it up when the tools push. claude-code mcp code-search evals developer-tools ai">
+                    <span class="cell cell-title">Let the small model do the reading</span>
+                    <span class="cell cell-desc">csl_ask hands a file read to a cheap worker model and returns the answer, not the lines. Measured: the small model reads as well as the big ones at a hundredth of the price, and the agent only picks it up when the tools push.</span>
+                    <span class="cell cell-tags">claude-code, mcp</span>
+                    <time class="cell cell-date" datetime="2026-11-01">Nov 1, 2026</time>
+                </a>
+                <a class="row" href="/blog/claude-md-living-system/" data-date="2026-06-03" data-tags="claude-code|ai|developer-tools|workflow" data-search="my claude.md is a living system, not a config file claude.md drifts: rules get ignored, go stale, or were never right. instead of editing it by feel, i run a self-eval skill after each session that grades my rules and proposes the diff. claude-code ai developer-tools workflow">
+                    <span class="cell cell-title">My CLAUDE.md is a living system, not a config file</span>
+                    <span class="cell cell-desc">CLAUDE.md drifts: rules get ignored, go stale, or were never right. Instead of editing it by feel, I run a self-eval skill after each session that grades my rules and proposes the diff.</span>
+                    <span class="cell cell-tags">claude-code, ai</span>
+                    <time class="cell cell-date" datetime="2026-06-03">Jun 3, 2026</time>
+                </a>
+                <a class="row" href="/blog/csl-local-mcp-for-code-search/" data-date="2026-04-16" data-tags="mcp|claude-code|code-search|privacy|zoekt|go|developer-tools" data-search="your code-search mcp shouldn&#x27;t leave your laptop code-search-local (csl) is a zoekt-backed local code search cli with a built-in mcp stdio server. no cloud, no auth, no vendor. just a binary and your filesystem. mcp claude-code code-search privacy zoekt go developer-tools">
+                    <span class="cell cell-title">Your code-search MCP shouldn&#x27;t leave your laptop</span>
+                    <span class="cell cell-desc">code-search-local (csl) is a zoekt-backed local code search CLI with a built-in MCP stdio server. No cloud, no auth, no vendor. Just a binary and your filesystem.</span>
+                    <span class="cell cell-tags">mcp, claude-code</span>
+                    <time class="cell cell-date" datetime="2026-04-16">Apr 16, 2026</time>
+                </a>
+                <a class="row" href="/blog/mcp-stdio-tools-not-services/" data-date="2026-04-10" data-tags="mcp|claude-code|developer-tools|cli|go" data-search="mcp stdio is just a subprocess exposing a local code-search cli to claude code as native tools via mcp&#x27;s stdio transport. no daemon, no port, just a subprocess the client spawns per call. mcp claude-code developer-tools cli go">
+                    <span class="cell cell-title">MCP stdio is just a subprocess</span>
+                    <span class="cell cell-desc">Exposing a local code-search CLI to Claude Code as native tools via MCP&#x27;s stdio transport. No daemon, no port, just a subprocess the client spawns per call.</span>
+                    <span class="cell cell-tags">mcp, claude-code</span>
+                    <time class="cell cell-date" datetime="2026-04-10">Apr 10, 2026</time>
+                </a>
+                <a class="row" href="/blog/hemsaga-keep-track-of-your-home/" data-date="2026-04-02" data-tags="hemsaga|homeowner|maintenance|ios|app" data-search="your home has more moving parts than you think warranties expire, filters need replacing, and that roof guy&#x27;s number is somewhere. a look at what homeowners actually need to track. hemsaga homeowner maintenance ios app">
+                    <span class="cell cell-title">Your Home Has More Moving Parts Than You Think</span>
+                    <span class="cell cell-desc">Warranties expire, filters need replacing, and that roof guy&#x27;s number is somewhere. A look at what homeowners actually need to track.</span>
+                    <span class="cell cell-tags">hemsaga, homeowner</span>
+                    <time class="cell cell-date" datetime="2026-04-02">Apr 2, 2026</time>
+                </a>
+                <a class="row" href="/blog/kitty-session-manager-for-claude-code/" data-date="2026-03-02" data-tags="macos|kitty|claude-code|terminal|go|tooling" data-search="i built a session manager for kitty and claude code kitty-session (ks) gives you named terminal sessions with claude code on top and a shell on bottom, no tmux required. macos kitty claude-code terminal go tooling">
+                    <span class="cell cell-title">I Built a Session Manager for Kitty and Claude Code</span>
+                    <span class="cell cell-desc">kitty-session (ks) gives you named terminal sessions with Claude Code on top and a shell on bottom, no tmux required.</span>
+                    <span class="cell cell-tags">macos, kitty</span>
+                    <time class="cell cell-date" datetime="2026-03-02">Mar 2, 2026</time>
+                </a>
+                <a class="row" href="/blog/dropbrain-v109-reminders-and-reliability/" data-date="2026-02-17" data-tags="ios|swift|adhd|dyslexia|notifications|concurrency" data-search="dropbrain v1.0.9: reminders and reliability dropbrain v1.0.9 adds message reminders with snooze, in-app popups, and background sync reliability fixes for adhd and dyslexia users. ios swift adhd dyslexia notifications concurrency">
+                    <span class="cell cell-title">DropBrain v1.0.9: Reminders and Reliability</span>
+                    <span class="cell cell-desc">DropBrain v1.0.9 adds message reminders with snooze, in-app popups, and background sync reliability fixes for ADHD and dyslexia users.</span>
+                    <span class="cell cell-tags">ios, swift</span>
+                    <time class="cell cell-date" datetime="2026-02-17">Feb 17, 2026</time>
+                </a>
+                <a class="row" href="/blog/migraine-me-v118-smarter-tracking-better-insights/" data-date="2026-02-17" data-tags="ios|swift|migraine|health|swiftui|concurrency" data-search="migraine me v1.1.8: hit-6, widgets, and sync fixes version 1.1.8 adds the hit-6 questionnaire, a statistics dashboard, home screen widgets, pdf report export, and fixes two background sync crashes. ios swift migraine health swiftui concurrency">
+                    <span class="cell cell-title">Migraine Me v1.1.8: HIT-6, Widgets, and Sync Fixes</span>
+                    <span class="cell cell-desc">Version 1.1.8 adds the HIT-6 questionnaire, a statistics dashboard, home screen widgets, PDF report export, and fixes two background sync crashes.</span>
+                    <span class="cell cell-tags">ios, swift</span>
+                    <time class="cell cell-date" datetime="2026-02-17">Feb 17, 2026</time>
+                </a>
+                <a class="row" href="/blog/migraine-me-track-your-patterns/" data-date="2026-02-13" data-tags="ios|health|migraine|privacy|tracking" data-search="migraine me: understanding your migraine patterns how migraine me helps you track migraine episodes, identify triggers, manage medications, and share real data with your doctor. ios health migraine privacy tracking">
+                    <span class="cell cell-title">Migraine Me: Understanding Your Migraine Patterns</span>
+                    <span class="cell cell-desc">How Migraine Me helps you track migraine episodes, identify triggers, manage medications, and share real data with your doctor.</span>
+                    <span class="cell cell-tags">ios, health</span>
+                    <time class="cell cell-date" datetime="2026-02-13">Feb 13, 2026</time>
+                </a>
+                <a class="row" href="/blog/devops-in-reality-vs-recrutment/" data-date="2016-12-20" data-tags="devops|software-engineering|platform-engineering" data-search="different sides of devops in recrutment and engineering the question is what is devops? how do you recruit a devops engineer. the short answer is you don&#x27;t. a devops engineer does not exist. the thing about recruiting a so called… devops software-engineering platform-engineering">
+                    <span class="cell cell-title">different sides of devops in recrutment and engineering</span>
+                    <span class="cell cell-desc">The question is what is devops? How do you recruit a devops engineer. The short answer is you don&#x27;t. a devops engineer does not exist. The thing about recruiting a so called…</span>
+                    <span class="cell cell-tags">devops, software-engineering</span>
+                    <time class="cell cell-date" datetime="2016-12-20">Dec 20, 2016</time>
+                </a>
+                <a class="row" href="/blog/docker-prometheus-exporter-python/" data-date="2016-08-28" data-tags="prometheus|exporter|python" data-search="simple prometheus exporter in python writing a simple prometheus exporter to collect metrics from a external system that needs monitoring. i will use the python official prometheusclient package for python and falcon… prometheus exporter python">
+                    <span class="cell cell-title">simple prometheus exporter in python</span>
+                    <span class="cell cell-desc">writing a simple prometheus exporter to collect metrics from a external system that needs monitoring. I will use the python official prometheusclient package for python and falcon…</span>
+                    <span class="cell cell-tags">prometheus, exporter</span>
+                    <time class="cell cell-date" datetime="2016-08-28">Aug 28, 2016</time>
+                </a>
+                <a class="row" href="/blog/lessons-learned-by-running-docker-in-production/" data-date="2016-08-21" data-tags="docker|mesos|aurora" data-search="lessons learned by running docker on mesos and aurora in production short about how we run docker. the way we are running docker using aurora to scedule on mesos currently both on aws and on on premise. every service have a aurora job defined… docker mesos aurora">
+                    <span class="cell cell-title">lessons learned by running docker on mesos and aurora in production</span>
+                    <span class="cell cell-desc">Short about how we run docker. The way we are running docker using aurora to scedule on mesos currently both on aws and on on premise. Every service have a aurora job defined…</span>
+                    <span class="cell cell-tags">docker, mesos</span>
+                    <time class="cell cell-date" datetime="2016-08-21">Aug 21, 2016</time>
+                </a>
+                <a class="row" href="/blog/breaking-the-traditional-testing-trend/" data-date="2016-08-07" data-tags="testing|strategies" data-search="killing the traditional quality assurance way of testing after years in testing roles it&#x27;s obvious that the traditional way of doing testing will no longer hold up. what i mena with the traditional way of testing is. quality assurance… testing strategies">
+                    <span class="cell cell-title">killing the traditional quality assurance way of testing</span>
+                    <span class="cell cell-desc">After years in testing roles it&#x27;s obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance…</span>
+                    <span class="cell cell-tags">testing, strategies</span>
+                    <time class="cell cell-date" datetime="2016-08-07">Aug 7, 2016</time>
+                </a>
+                <a class="row" href="/blog/docker-apline-image-size-improvments/" data-date="2016-07-20" data-tags="docker|python|python3|alpine|linux|golang|go" data-search="docker alpine smaller image footprint working with docker images to minimise the footprint i.e the size if a image. there is a few things that you can do to get smaller images. i will show some examples for a small go… docker python python3 alpine linux golang go">
+                    <span class="cell cell-title">Docker alpine smaller image footprint</span>
+                    <span class="cell cell-desc">Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go…</span>
+                    <span class="cell cell-tags">docker, python</span>
+                    <time class="cell cell-date" datetime="2016-07-20">Jul 20, 2016</time>
+                </a>
+                <a class="row" href="/blog/python-fabric-dynamic-hosts/" data-date="2016-06-30" data-tags="python|fabric|fab|dynamic|hosts" data-search="fabric dynamic hosts tasks using fabric with dynamic hosts. in the fabric documentation most of it is using examples and is assuming that you you have a static set of hosts. that is no longer the case when… python fabric fab dynamic hosts">
+                    <span class="cell cell-title">Fabric dynamic hosts tasks</span>
+                    <span class="cell cell-desc">Using fabric with dynamic hosts. In the fabric documentation most of it is using examples and is assuming that you you have a static set of hosts. That is no longer the case when…</span>
+                    <span class="cell cell-tags">python, fabric</span>
+                    <time class="cell cell-date" datetime="2016-06-30">Jun 30, 2016</time>
+                </a>
+                <a class="row" href="/blog/testing-with-unittess/" data-date="2016-06-05" data-tags="testing|unittest" data-search="why do we do need unit tests you might be thinking well unit tests is kind of a obvious thing that you have when you are writhing code. if you do you are wrong. not all developers want and can write unit… testing unittest">
+                    <span class="cell cell-title">why do we do need unit tests</span>
+                    <span class="cell cell-desc">You might be thinking well unit tests is kind of a obvious thing that you have when you are writhing code. If you do you are wrong. Not all developers want and can write unit…</span>
+                    <span class="cell cell-tags">testing, unittest</span>
+                    <time class="cell cell-date" datetime="2016-06-05">Jun 5, 2016</time>
+                </a>
+                <a class="row" href="/blog/python-click-auto-complete-bash-zsh-nested/" data-date="2016-04-24" data-tags="python|bash|zsh|nested" data-search="python click bash zsh auto complete same files nested command groups sharing the same auto completion for zsh and bash. in zsh there is somthing called bashcompinit that can be used to share the same completion for bash and zsh. here is a small… python bash zsh nested">
+                    <span class="cell cell-title">python click bash zsh auto complete same files nested command groups</span>
+                    <span class="cell cell-desc">Sharing the same auto completion for zsh and bash. In zsh there is somthing called bashcompinit that can be used to share the same completion for bash and zsh. here is a small…</span>
+                    <span class="cell cell-tags">python, bash</span>
+                    <time class="cell cell-date" datetime="2016-04-24">Apr 24, 2016</time>
+                </a>
+                <a class="row" href="/blog/python-click-auto-complete-bash-zsh/" data-date="2016-04-24" data-tags="python|bash|zsh" data-search="python click bash zsh auto complete same files sharing the same auto completion for zsh and bash. in zsh there is somthing called bashcompinit that can be used to share the same completion for bash and zsh. here is a small… python bash zsh">
+                    <span class="cell cell-title">python click bash zsh auto complete same files</span>
+                    <span class="cell cell-desc">Sharing the same auto completion for zsh and bash. In zsh there is somthing called bashcompinit that can be used to share the same completion for bash and zsh. here is a small…</span>
+                    <span class="cell cell-tags">python, bash</span>
+                    <time class="cell cell-date" datetime="2016-04-24">Apr 24, 2016</time>
+                </a>
+                <a class="row" href="/blog/python-protobuf-over-http/" data-date="2016-01-11" data-tags="protobuf|python|http" data-search="python protobuf over http the point of this is a smal example on how you could use protobuf to send data over http. in this example i will be using python and the packet falcon for the server. a command… protobuf python http">
+                    <span class="cell cell-title">python protobuf over http</span>
+                    <span class="cell cell-desc">The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command…</span>
+                    <span class="cell cell-tags">protobuf, python</span>
+                    <time class="cell cell-date" datetime="2016-01-11">Jan 11, 2016</time>
+                </a>
+                <a class="row" href="/blog/jenkins-test-dashboard/" data-date="2015-11-14" data-tags="jenkins|react|dashboard|testing|stats" data-search="jenkins test result dashboard minimal jenkins test result dashboard jenkins react dashboard testing stats">
+                    <span class="cell cell-title">jenkins test result dashboard</span>
+                    <span class="cell cell-desc">Minimal Jenkins test result dashboard</span>
+                    <span class="cell cell-tags">jenkins, react</span>
+                    <time class="cell cell-date" datetime="2015-11-14">Nov 14, 2015</time>
+                </a>
+                <a class="row" href="/blog/backup-linux-gsutil/" data-date="2015-08-30" data-tags="backup|google|gsutil" data-search="backup of linux vps using gsutil backing up linux servers to google clound storage with gsutil using the storage option nearline. what is needed to do this is a google cloud accound. start by creating a new… backup google gsutil">
+                    <span class="cell cell-title">backup of linux vps using gsutil</span>
+                    <span class="cell cell-desc">Backing up linux servers to google clound storage with gsutil using the storage option nearline. What is needed to do this is a google cloud accound. Start by creating a new…</span>
+                    <span class="cell cell-tags">backup, google</span>
+                    <time class="cell cell-date" datetime="2015-08-30">Aug 30, 2015</time>
+                </a>
+                <a class="row" href="/blog/selenium-service-osx/" data-date="2015-08-15" data-tags="testing|selenium|jenkins|osx" data-search="selenium as a service in osx setting up selenium server as a service in os x that starts on boot. what is needed is a plist service file to start and take stdout and stderr and log the output. i will be using… testing selenium jenkins osx">
+                    <span class="cell cell-title">selenium as a service in osx</span>
+                    <span class="cell cell-desc">Setting up selenium server as a service in os x that starts on boot. What is needed is a plist service file to start and take stdout and stderr and log the output. I will be using…</span>
+                    <span class="cell cell-tags">testing, selenium</span>
+                    <time class="cell cell-date" datetime="2015-08-15">Aug 15, 2015</time>
+                </a>
+                <a class="row" href="/blog/docker-ansible-aws-docker-machine/" data-date="2015-06-13" data-tags="docker|docker-machine|ansible|aws" data-search="docker machine and aws in combination with ansible initial setup with ansible and docker-machine. in this case i have been using aws to run a docker host for me created with docker-machine. i had a goal to provision a ec2 box and… docker docker-machine ansible aws">
+                    <span class="cell cell-title">docker machine and aws in combination with ansible</span>
+                    <span class="cell cell-desc">Initial setup with ansible and docker-machine. In this case i have been using aws to run a docker host for me created with docker-machine. I had a goal to provision a ec2 box and…</span>
+                    <span class="cell cell-tags">docker, docker-machine</span>
+                    <time class="cell cell-date" datetime="2015-06-13">Jun 13, 2015</time>
+                </a>
+                <a class="row" href="/blog/python-sqlite-testing-clean-state/" data-date="2015-06-06" data-tags="testing|python|sqlite" data-search="sqlite3 in memory db for testing db functions in python designing a app to be as testable as posible. when writing a application that you like to, write unit tests the best options it to always on everything written for a application… testing python sqlite">
+                    <span class="cell cell-title">sqlite3 in memory db for testing db functions in python</span>
+                    <span class="cell cell-desc">designing a app to be as testable as posible. When writing a application that you like to, write unit tests the best options it to always on everything written for a application…</span>
+                    <span class="cell cell-tags">testing, python</span>
+                    <time class="cell cell-date" datetime="2015-06-06">Jun 6, 2015</time>
+                </a>
+                <a class="row" href="/blog/backup-s3-arq/" data-date="2015-05-16" data-tags="backup|arq|aws|s3|glacier" data-search="encrypted backup with arq amazon and s3 glacier as most that have any knowledge of it and tech. backup is a big topic also encryption now in the later days when there have been a lot of talk about that our data can be read if… backup arq aws s3 glacier">
+                    <span class="cell cell-title">encrypted backup with arq amazon and s3 glacier</span>
+                    <span class="cell cell-desc">As most that have any knowledge of IT and tech. Backup is a big topic also encryption now in the later days when there have been a lot of talk about that our data can be read if…</span>
+                    <span class="cell cell-tags">backup, arq</span>
+                    <time class="cell cell-date" datetime="2015-05-16">May 16, 2015</time>
+                </a>
+                <a class="row" href="/blog/minaal-travel-gear/" data-date="2015-05-03" data-tags="travel|minaal|minimalism" data-search="my travel gear travel with a minaal. i am using packing cubes to organize my clothes. when i am packing clean clothes i am roling them and packing them in the packing cudes. this stops somewhat… travel minaal minimalism">
+                    <span class="cell cell-title">my travel gear</span>
+                    <span class="cell cell-desc">Travel with a Minaal. I am using packing cubes to organize my clothes. When i am packing clean clothes i am roling them and packing them in the packing cudes. This stops somewhat…</span>
+                    <span class="cell cell-tags">travel, minaal</span>
+                    <time class="cell cell-date" datetime="2015-05-03">May 3, 2015</time>
+                </a>
+                <a class="row" href="/blog/docker-compose-selenium-hub/" data-date="2015-04-24" data-tags="docker|selenium" data-search="docker compose with selenium running a local setup with selenium hub with firefox and google chrome nodes using docker-compose . using docker-compose makes the setup even more convenient the using the docker… docker selenium">
+                    <span class="cell cell-title">docker compose with selenium</span>
+                    <span class="cell cell-desc">Running a local setup with selenium hub with Firefox and Google Chrome nodes using docker-compose . Using docker-compose makes the setup even more convenient the using the docker…</span>
+                    <span class="cell cell-tags">docker, selenium</span>
+                    <time class="cell cell-date" datetime="2015-04-24">Apr 24, 2015</time>
+                </a>
+                <a class="row" href="/blog/theory-of-productivity/" data-date="2015-04-18" data-tags="productivity" data-search="a theory of productivity how to think about productivity. lest take a example a math test. the test contains 20 problems, the total assumed time with no interruption to finish the test with all correct… productivity">
+                    <span class="cell cell-title">a theory of productivity</span>
+                    <span class="cell cell-desc">How to think about productivity. Lest take a example a math test. The test contains 20 problems, the total assumed time with no interruption to finish the test with all correct…</span>
+                    <span class="cell cell-tags">productivity</span>
+                    <time class="cell cell-date" datetime="2015-04-18">Apr 18, 2015</time>
+                </a>
+                <a class="row" href="/blog/aws-ses-python-boto/" data-date="2015-04-11" data-tags="amazon|aws|ses|python|boto" data-search="html email with aws ses and boto sending html email with amazon ses simple email service using the python module boto. amazon aws ses python boto">
+                    <span class="cell cell-title">html email with aws ses and boto</span>
+                    <span class="cell cell-desc">Sending html email with amazon ses simple email service using the python module boto.</span>
+                    <span class="cell cell-tags">amazon, aws</span>
+                    <time class="cell cell-date" datetime="2015-04-11">Apr 11, 2015</time>
+                </a>
+                <a class="row" href="/blog/docker-basic-build/" data-date="2015-04-03" data-tags="docker|debian" data-search="bulding a debian docker base build for a flask app start by pulling down a debian base build. docker pull debian:8.0 .creating a dockerfile for a base build to a python flask app. based on debian 8 docker debian">
+                    <span class="cell cell-title">bulding a debian docker base build for a flask app</span>
+                    <span class="cell cell-desc">Start by pulling down a debian base build. docker pull debian:8.0 .Creating a Dockerfile for a base build to a python flask app. based on debian 8</span>
+                    <span class="cell cell-tags">docker, debian</span>
+                    <time class="cell cell-date" datetime="2015-04-03">Apr 3, 2015</time>
+                </a>
+                <a class="row" href="/blog/python-flask-mongodb-restapi-auth/" data-date="2015-03-28" data-tags="python|rest|docker|mongodb" data-search="python flask rest api auth option storing in mongodb 3.0 running on docker i have been looking on a way to auth rest api endpoints that needs to have auth. i will be using python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used… python rest docker mongodb">
+                    <span class="cell cell-title">python flask rest api auth option storing in mongoDB 3.0 running on docker</span>
+                    <span class="cell cell-desc">I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used…</span>
+                    <span class="cell cell-tags">python, rest</span>
+                    <time class="cell cell-date" datetime="2015-03-28">Mar 28, 2015</time>
+                </a>
+                <a class="row" href="/blog/productivity/" data-date="2015-03-25" data-tags="productivity" data-search="productivity with pomodoro and micro checklist i have recently started to use a productivity theory called pomodoro. the principe with pomodoro is that you work focused on something for 25 min, having a micro break for 5 min… productivity">
+                    <span class="cell cell-title">productivity with Pomodoro and micro checklist</span>
+                    <span class="cell cell-desc">I have recently started to use a productivity theory called Pomodoro. The principe with Pomodoro is that you work focused on something for 25 min, having a micro break for 5 min…</span>
+                    <span class="cell cell-tags">productivity</span>
+                    <time class="cell cell-date" datetime="2015-03-25">Mar 25, 2015</time>
+                </a>
+                <a class="row" href="/blog/command-line-tools-pitfalls/" data-date="2015-03-21" data-tags="command|line|tools" data-search="pitfalls when writing commandline tools common pitfalls when using template files/support files in the working dir of the script, is easy to miss when you are writing command line tools. in this case using python. some… command line tools">
+                    <span class="cell cell-title">pitfalls when writing commandline tools</span>
+                    <span class="cell cell-desc">Common pitfalls when using template files/support files in the working dir of the script, is easy to miss when you are writing command line tools. In this case using python. Some…</span>
+                    <span class="cell cell-tags">command, line</span>
+                    <time class="cell cell-date" datetime="2015-03-21">Mar 21, 2015</time>
+                </a>
+                <a class="row" href="/blog/test-generation/" data-date="2015-03-15" data-tags="testing|python" data-search="dynamic test generation i what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. in this case i am using python, in… testing python">
+                    <span class="cell cell-title">dynamic test generation</span>
+                    <span class="cell cell-desc">I what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. In this case i am using python, in…</span>
+                    <span class="cell cell-tags">testing, python</span>
+                    <time class="cell cell-date" datetime="2015-03-15">Mar 15, 2015</time>
+                </a>
+                <a class="row" href="/blog/stay-up-tp-date-with-tech/" data-date="2015-03-09" data-tags="tech|news" data-search="stay up to date with tech keeping up with tech. i like read and be aware of what is going on in tech, security, apple, linux, development, testing, and some devops related topics. i have attached a opml… tech news">
+                    <span class="cell cell-title">stay up to date with tech</span>
+                    <span class="cell cell-desc">Keeping up with tech. I like read and be aware of what is going on in tech, security, apple, linux, development, testing, and some devops related topics. I have attached a OPML…</span>
+                    <span class="cell cell-tags">tech, news</span>
+                    <time class="cell cell-date" datetime="2015-03-09">Mar 9, 2015</time>
+                </a>
+                <a class="row" href="/blog/cold-brew-coffee/" data-date="2015-03-08" data-tags="coffee|coldbrew" data-search="cold brew coffee brew some easy and good cold brew coffee. this can be used for just plain ice coffee, ice latte, and many more. a note it that it will be high in caffeine. what you need is. coffee coldbrew">
+                    <span class="cell cell-title">cold brew coffee</span>
+                    <span class="cell cell-desc">Brew some easy and good cold brew coffee. This can be used for just plain ice coffee, ice latte, and many more. A note it that it will be high in caffeine. What you need is.</span>
+                    <span class="cell cell-tags">coffee, coldbrew</span>
+                    <time class="cell cell-date" datetime="2015-03-08">Mar 8, 2015</time>
+                </a>
+                <a class="row" href="/blog/control-temptation-at-work/" data-date="2015-03-04" data-tags="temptation" data-search="control temptation @ work so what do i mean with control temptation @ work. when working with development you have to get it to a problem and try to solve it. doing that requires that you can stay focused… temptation">
+                    <span class="cell cell-title">control temptation @ work</span>
+                    <span class="cell cell-desc">So what do i mean with control temptation @ work. When working with development you have to get it to a problem and try to solve it. Doing that requires that you can stay focused…</span>
+                    <span class="cell cell-tags">temptation</span>
+                    <time class="cell cell-date" datetime="2015-03-04">Mar 4, 2015</time>
+                </a>
             </div>
-            <div class="post-item" style="animation-delay: 0.45s;">
-                <h2 class="post-item-title"><a href="/blog/mcp-stdio-tools-not-services/">MCP stdio is just a subprocess</a></h2>
-                <div class="post-item-date">April 10, 2026</div>
-                <p class="post-item-desc">Exposing a local code-search CLI to Claude Code as native tools via MCP&#x27;s stdio transport. No daemon, no port, just a subprocess the client spawns per call.</p>
-                <div class="post-item-tags"><span class="tag">mcp</span><span class="tag">claude-code</span><span class="tag">developer-tools</span><span class="tag">cli</span><span class="tag">go</span></div>
+            <p class="no-match" id="no-match" hidden>No posts match. Try another tag or search.</p>
+            <div class="see-more" id="see-more" hidden>
+                <button type="button" class="button">See more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></button>
             </div>
-            <div class="post-item" style="animation-delay: 0.55s;">
-                <h2 class="post-item-title"><a href="/blog/hemsaga-keep-track-of-your-home/">Your Home Has More Moving Parts Than You Think</a></h2>
-                <div class="post-item-date">April 02, 2026</div>
-                <p class="post-item-desc">Warranties expire, filters need replacing, and that roof guy&#x27;s number is somewhere. A look at what homeowners actually need to track.</p>
-                <div class="post-item-tags"><span class="tag">hemsaga</span><span class="tag">homeowner</span><span class="tag">maintenance</span><span class="tag">ios</span><span class="tag">app</span></div>
-            </div>
-            <div class="post-item" style="animation-delay: 0.65s;">
-                <h2 class="post-item-title"><a href="/blog/kitty-session-manager-for-claude-code/">I Built a Session Manager for Kitty and Claude Code</a></h2>
-                <div class="post-item-date">March 02, 2026</div>
-                <p class="post-item-desc">kitty-session (ks) gives you named terminal sessions with Claude Code on top and a shell on bottom, no tmux required.</p>
-                <div class="post-item-tags"><span class="tag">macos</span><span class="tag">kitty</span><span class="tag">claude-code</span><span class="tag">terminal</span><span class="tag">go</span><span class="tag">tooling</span></div>
-            </div>
-            <div class="post-item" style="animation-delay: 0.75s;">
-                <h2 class="post-item-title"><a href="/blog/dropbrain-v109-reminders-and-reliability/">DropBrain v1.0.9: Reminders and Reliability</a></h2>
-                <div class="post-item-date">February 17, 2026</div>
-                <p class="post-item-desc">DropBrain v1.0.9 adds message reminders with snooze, in-app popups, and background sync reliability fixes for ADHD and dyslexia users.</p>
-                <div class="post-item-tags"><span class="tag">ios</span><span class="tag">swift</span><span class="tag">adhd</span><span class="tag">dyslexia</span><span class="tag">notifications</span><span class="tag">concurrency</span></div>
-            </div>
-            <div class="post-item" style="animation-delay: 0.85s;">
-                <h2 class="post-item-title"><a href="/blog/migraine-me-v118-smarter-tracking-better-insights/">Migraine Me v1.1.8: HIT-6, Widgets, and Sync Fixes</a></h2>
-                <div class="post-item-date">February 17, 2026</div>
-                <p class="post-item-desc">Version 1.1.8 adds the HIT-6 questionnaire, a statistics dashboard, home screen widgets, PDF report export, and fixes two background sync crashes.</p>
-                <div class="post-item-tags"><span class="tag">ios</span><span class="tag">swift</span><span class="tag">migraine</span><span class="tag">health</span><span class="tag">swiftui</span><span class="tag">concurrency</span></div>
-            </div>
-            <div class="post-item" style="animation-delay: 0.95s;">
-                <h2 class="post-item-title"><a href="/blog/migraine-me-track-your-patterns/">Migraine Me: Understanding Your Migraine Patterns</a></h2>
-                <div class="post-item-date">February 13, 2026</div>
-                <p class="post-item-desc">How Migraine Me helps you track migraine episodes, identify triggers, manage medications, and share real data with your doctor.</p>
-                <div class="post-item-tags"><span class="tag">ios</span><span class="tag">health</span><span class="tag">migraine</span><span class="tag">privacy</span><span class="tag">tracking</span></div>
-            </div>
-        </div>
+        </section>
 
         <footer>
             <a href="/">&larr; dropbrain.studio</a>
             <a href="/">Home</a>
         </footer>
     </div>
+    <script>
+(function () {
+    var PAGE_SIZE = 12;
+    var list = document.getElementById('post-rows');
+    var controls = document.getElementById('post-controls');
+    if (!list || !controls) return;
+
+    var rows = Array.prototype.slice.call(list.querySelectorAll('.row'));
+    var tagSelect = document.getElementById('filter-tag');
+    var sortSelect = document.getElementById('filter-sort');
+    var search = document.getElementById('filter-search');
+    var more = document.getElementById('see-more');
+    var noMatch = document.getElementById('no-match');
+    var count = document.getElementById('post-count');
+    var limit = PAGE_SIZE;
+
+    function matches(row, tag, query) {
+        if (tag && row.dataset.tags.split('|').indexOf(tag) === -1) return false;
+        return !query || row.dataset.search.indexOf(query) !== -1;
+    }
+
+    function render() {
+        var tag = tagSelect.value;
+        var query = search.value.trim().toLowerCase();
+        var dir = sortSelect.value === 'oldest' ? 1 : -1;
+        rows.sort(function (a, b) {
+            if (a.dataset.date === b.dataset.date) return 0;
+            return a.dataset.date < b.dataset.date ? -dir : dir;
+        });
+        var total = 0;
+        rows.forEach(function (row) {
+            list.appendChild(row);
+            var ok = matches(row, tag, query);
+            if (ok) total += 1;
+            row.hidden = !ok || total > limit;
+        });
+        count.textContent = total + (total === 1 ? ' post' : ' posts');
+        noMatch.hidden = total > 0;
+        more.hidden = total <= limit;
+    }
+
+    function restart() {
+        limit = PAGE_SIZE;
+        render();
+    }
+
+    tagSelect.addEventListener('change', restart);
+    sortSelect.addEventListener('change', restart);
+    search.addEventListener('input', restart);
+    more.querySelector('button').addEventListener('click', function () {
+        limit += PAGE_SIZE;
+        render();
+    });
+
+    controls.hidden = false;
+    render();
+})();
+
+    </script>
     <script defer src="/assets/theme.js"></script>
 </body>
 </html>

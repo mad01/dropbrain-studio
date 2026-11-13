@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python flask rest api auth option storing in mongoDB 3.0 running on docker — dropbrain blog</title>
+    <meta name="description" content="I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used…">
+    <meta property="og:title" content="python flask rest api auth option storing in mongoDB 3.0 running on docker">
+    <meta property="og:description" content="I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used…">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/python-flask-mongodb-restapi-auth/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">python flask rest api auth option storing in mongoDB 3.0 running on docker</h1>
+            <div class="post-meta">
+                <span class="post-date">March 28, 2015</span>
+                <div class="post-tags"><span class="tag">python</span><span class="tag">rest</span><span class="tag">docker</span><span class="tag">mongodb</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used to salt the password that will be stored in mondoDB. A note here is that i will be using mongoDB 3.0 which means that you have to install the un released pymongo 3.0. here is the packets and links you need. </p>
+<pre><code class="language-bash">pip install https://github.com/mongodb/mongo-python-driver/archive/3.0b1.tar.gz
+pip install PyYaml
+pip install flask-restful
+pip install flask
+pip install passlib
+</code></pre>
+<p>i am installing MongoDB 3.0 using docker. And starting the db. i should end up with one running mondoDB 3.0 named <code>mongo</code>. i can check that with <code>docker ps</code></p>
+<pre><code class="language-bash">docker pull mongo
+docker run --name mongo -d -p 27017:27017 mongo:3.0
+</code></pre>
+<p>Starting with the mongo module to add a user to a collection in mongo. The <code>createOrUpdateUser</code> function creates a checks if the user exists in mongo. If that is the case it will update it and add a new time to the updates so i have stored the created date and last update with a timestamp. If the user is not in the db collection one will be created. This function will return the ObjectId of the user that later will be used to get the user. </p>
+<pre><code class="language-python">def createOrUpdateUser(username, saltedKey='', host='', database=''):
+    client = MongoClient(host)
+    db = client[database]
+    checkUser = [doc for doc in db.user.find({&quot;username&quot;: username})]
+    if checkUser:
+        userData = checkUser[0]
+        db.user.replace_one(
+            {
+                &quot;username&quot;: username,
+                &quot;saltedKey&quot;: userData.get('saltedKey'),
+            }, {
+                &quot;username&quot;: username,
+                &quot;saltedKey&quot;: saltedKey,
+                &quot;created&quot;: userData.get('created'),
+                &quot;updated&quot;: datetime.datetime.utcnow()
+            }
+        )
+        userObjectId = [doc for doc in db.user.find({&quot;username&quot;: username})][0].get('_id')
+        return str(userObjectId)
+
+    else:
+        data = {
+            &quot;saltedKey&quot;: saltedKey,
+            &quot;created&quot;: datetime.datetime.utcnow(),
+            &quot;updated&quot;: datetime.datetime.utcnow(),
+            &quot;username&quot;: username,
+        }
+        userObjectId = db.user.insert_one(data).inserted_id
+        return str(userObjectId)
+</code></pre>
+<p>Next is the <code>getUser</code> from mongo using the ObjectId. it will return the full json document stored in mongo.</p>
+<pre><code class="language-python">def getUser(userObjectId, host='', database=''):
+    &quot;&quot;&quot;get user json ducument from mongo&quot;&quot;&quot;
+    client = MongoClient(host)
+    db = client[database]
+    return [doc for doc in db.user.find({&quot;_id&quot;: ObjectId(userObjectId)})][0]
+</code></pre>
+<p>To create the use and salt the password i am using <code>passlib</code> i&rsquo;m giving a username, a password, and the mongo host, I&rsquo;m then using the <code>createOrUpdateUser</code> to add the user in to a collection called endpoints. the function returns a dict that contains the ObjectId if the new of updated user.</p>
+<pre><code class="language-python">def addUser(username, password='', mongo=''):
+    passwordSalted = apps.custom_app_context.encrypt(password)
+    userObjectId = createOrUpdateUser(
+        username,
+        saltedKey=passwordSalted,
+        host=mongo,
+        database='endpoints'
+    )
+    return {&quot;userObjectId&quot;: userObjectId}
+</code></pre>
+<p>To validate that the password is current I&rsquo;m using <code>getUser</code> to get the salted password from mongo in the collection endpoints where i stored that user data. the function is then using a validation option of the salt function that takes the salted password and the password to check if it&rsquo;s correct.  if the verification passes a boolean True is returned else you get a False. </p>
+<pre><code class="language-python">def validateUserKey(userObjectId, password='', mongo=''):
+    salt = getUser(
+        userObjectId,
+        host=mongo,
+        database=&quot;endpoints&quot;
+    )
+    valid = apps.custom_app_context.verify(
+        password,
+        salt.get('saltedKey')
+    )
+    return valid
+</code></pre>
+<p>Lest look on the REST api. I am using the <a href="http://flask.pocoo.org/">flask</a> and <a href="https://flask-restful.readthedocs.org/en/0.3.2/">flask restful</a> packets to create the REST api. The <code>protected</code> class <strong>init</strong> have two keys <code>oid</code> and <code>key</code> that should be in the http payload. in the get function i am using &ldquo;self.reqparse.parse_args(strict=True)&rdquo; that means that the oid and key key/value have to be in the get payload or the request will be rejected. i am then checking that the key for the oid is valid using <code>validateCheck</code> if it&rsquo;s valid you get the {&ldquo;key&rdquo;: &ldquo;valid&rdquo;} else you get http 401. i am then adding that class to the &ldquo;api.add_resource(protected, &lsquo;/api/protected&rsquo;)&rdquo; which adds a REST endpoint <code>/api/protected</code>valid</p>
+<pre><code class="language-python">class protected(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('oid')
+        self.reqparse.add_argument('key')
+        self.mongo = conf.get('mongoDB').get('host')
+        super(protected, self).__init__()
+
+    def get(self):
+        args = self.reqparse.parse_args(strict=True)
+        validateCheck = salt.validateUserKey(
+            userObjectId=args.oid,
+            password=args.key,
+            mongo=self.mongo
+        )
+        if validateCheck:
+            return {&quot;key&quot;: &quot;valid&quot;}
+        else:
+            abort(401)
+
+api.add_resource(protected, '/api/protected')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+<p>Looking on a test for this to checks that a user is valid if the correct key/oid is passed and then if the wrong key/right oid is passed it can look like this. The assumption here is that the REST api is started and running on localhost and that the docker mongo:3.0 is running on 192.168.59.103. In the <code>setUpClass</code> i am declaring all variables to self that will be used in test. i am running the tests with <a href="https://nose.readthedocs.org/en/latest/">nosetests</a>. The first test <code>testAccessValidKey</code> passed the correct key/oid and should get back http 200. the second test should fail the validation, it passes a invalid key and a valid oid, the api should return http 401.</p>
+<pre><code class="language-python">def checkAccess(oid, password='', host=''):
+    data = {&quot;oid&quot;: oid, &quot;key&quot;: password}
+    return get('http://' + host + ':5000/api/protected', data=data)
+
+class TestRestGetCalls(unittest.TestCase):
+
+    @classmethod       
+    def setUpClass(self):
+        confFile = file('tests/test_salt.yaml', 'r')
+        conf = yaml.load(confFile)
+        self.mongo = conf.get('mongoDB').get('host')
+        self.api = conf.get('api').get('host')
+        self.key = &quot;foo&quot;
+        self.user = &quot;bar&quot;
+        userDoc = salt.addUser(
+            self.user,
+            password=self.key,
+            mongo=self.mongo
+        )
+        self.oid = userDoc.get(&quot;userObjectId&quot;)
+
+    @classmethod       
+    def tearDownClass(self):
+        pass
+
+    def testAccessValidKey(self):
+        httpGet = checkAccess(
+            self.oid,
+            password=self.key,
+            host=self.api
+        )
+        self.assertEqual(200, httpGet.status_code)
+
+    def testAccessInValidKey(self):
+        httpGet = checkAccess(
+            self.oid,
+            password=&quot;foobar&quot;,
+            host=self.api
+        )
+        self.assertEqual(401, httpGet.status_code)
+</code></pre>
+<p>the source for all the code can be found on my github here <a href="https://github.com/mad01/boilerplates/tree/master/python">Link</a></p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "python flask rest api auth option storing in mongoDB 3.0 running on docker",
+    "datePublished": "2015-03-28",
+    "description": "I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used\u2026",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/python-flask-mongodb-restapi-auth/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>
