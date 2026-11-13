@@ -10,6 +10,7 @@ import sys
 import html
 import re
 import xml.etree.ElementTree as ET
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
@@ -349,99 +350,6 @@ POST_CSS = """\
 }
 """
 
-# ── Index page CSS ──────────────────────────────────────────────────────────
-
-INDEX_CSS = """\
-.blog-header {
-    padding: 56px 0 40px;
-    animation: fadeUp 0.7s ease 0.1s both;
-}
-
-.blog-title {
-    font-size: clamp(2rem, 5vw, 2.8rem);
-    font-weight: 600;
-    letter-spacing: -0.035em;
-    color: var(--text);
-}
-
-.post-list {
-    padding-bottom: 56px;
-}
-
-.post-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px 28px;
-    margin-bottom: 16px;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    opacity: 0;
-    animation: fadeUp 0.55s ease both;
-}
-
-.post-item:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(255,255,255,0.02);
-}
-
-.post-item-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 4px;
-}
-
-.post-item-title a {
-    color: var(--text);
-    text-decoration: none;
-}
-
-.post-item-title a:hover {
-    color: var(--text);
-}
-
-.post-item-date {
-    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-
-.post-item-desc {
-    font-size: 0.92rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    font-weight: 300;
-    letter-spacing: -0.01em;
-}
-
-.post-item-tags {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-}
-
-.post-item-tags .tag {
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2px 9px;
-    letter-spacing: 0.01em;
-}
-
-@media (max-width: 400px) {
-    .post-item {
-        padding: 18px 16px;
-    }
-}
-"""
-
-
 # ── Templates ───────────────────────────────────────────────────────────────
 
 POST_TEMPLATE = """\
@@ -502,6 +410,462 @@ POST_TEMPLATE = """\
 </html>
 """
 
+# ── Index page ──────────────────────────────────────────────────────────────
+# Top: a "Latest" lead (one main card, LEAD_LEFT + LEAD_RIGHT side cards).
+# Only the main card shows a post's `image`; side cards stay text so the
+# columns keep an even height.
+# Below: every post as a compact row, with tag filter, sort, search and
+# "See more" (INDEX_JS). Without JS, all rows show and the controls stay hidden.
+
+LEAD_LEFT = 2
+LEAD_RIGHT = 2
+MIN_TAG_POSTS = 2      # tags used by fewer posts stay out of the filter menu
+ROW_TAGS_SHOWN = 2
+
+INDEX_CSS = """\
+[hidden] { display: none !important; }
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.page {
+    max-width: 1160px;
+    --chip: color-mix(in srgb, var(--border) 70%, var(--surface));
+    --mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+}
+
+/* ── Latest ── */
+
+.lead-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-top: 40px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.6s ease 0.05s both;
+}
+
+.lead-bar h1 {
+    font-size: 0.95rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+}
+
+.lead-bar a {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.lead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.85fr) minmax(0, 1fr);
+    grid-template-areas: "left main right";
+    gap: 40px;
+    padding-top: 32px;
+}
+
+.lead-left { grid-area: left; }
+.lead-right { grid-area: right; }
+
+.lead-col .card + .card {
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+}
+
+.card {
+    position: relative;
+    animation: fadeUp 0.55s ease both;
+}
+
+.card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin-bottom: 12px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.card-meta .meta-tag { color: var(--text-secondary); }
+
+.card-title {
+    font-size: 1.28rem;
+    font-weight: 650;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    text-wrap: balance;
+}
+
+.card-title a { color: var(--text); }
+
+/* The whole card is the link target. */
+.card-title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+.card:hover .card-title a { color: var(--text-secondary); }
+
+.card-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 18px;
+}
+
+.card-main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 40px 40px;
+    transition: border-color 0.2s ease;
+}
+
+.card-main .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.card-main:hover { border-color: var(--border-hover); }
+.card-main:hover .card-title a { color: var(--text); }
+
+.card-main .card-title {
+    font-size: clamp(2rem, 3.4vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    margin-bottom: 18px;
+}
+
+.card-main .card-desc {
+    font-size: 1.12rem;
+    max-width: 40em;
+    margin-bottom: 32px;
+    -webkit-line-clamp: 5;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--chip);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.button svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.2s ease;
+}
+
+.card-main .button { margin-top: auto; align-self: flex-start; }
+.card-main:hover .button,
+.button:hover { background: var(--border); border-color: var(--border-hover); }
+.card-main:hover .button svg { transform: translateX(3px); }
+.see-more .button:hover svg { transform: translateY(2px); }
+
+/* ── All posts ── */
+
+.archive {
+    margin-top: 104px;
+    padding-bottom: 72px;
+    scroll-margin-top: 24px;
+}
+
+.archive-title {
+    font-size: clamp(2.4rem, 5.2vw, 3.8rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.045em;
+}
+
+.archive-count {
+    margin-top: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 22px;
+}
+
+.controls-right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.control {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.control select,
+.control input {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 40px;
+    padding: 0 38px 0 14px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 0.2s ease;
+}
+
+.control select { cursor: pointer; }
+.control input { width: 260px; }
+.control input::placeholder { color: var(--text-muted); }
+.control input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+.control select:hover,
+.control input:hover { border-color: var(--border-hover); }
+
+.control select:focus-visible,
+.control input:focus-visible,
+.button:focus-visible,
+.row:focus-visible {
+    outline: 2px solid var(--text-secondary);
+    outline-offset: 2px;
+}
+
+.control svg {
+    position: absolute;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.table-head,
+.row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1.6fr) minmax(0, 0.8fr) 112px;
+    gap: 28px;
+    align-items: center;
+}
+
+.table-head {
+    margin-top: 28px;
+    padding: 0 14px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.row {
+    padding: 20px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.row:hover {
+    color: var(--text-secondary);
+    background: var(--surface);
+    border-bottom-color: transparent;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px var(--border);
+}
+
+.cell {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.cell-title,
+.cell-desc,
+.cell-tags {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+}
+
+.cell-title {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+}
+
+.cell-date { font-variant-numeric: tabular-nums; }
+
+.no-match {
+    padding: 48px 14px;
+    color: var(--text-muted);
+}
+
+.see-more {
+    display: flex;
+    justify-content: center;
+    padding-top: 44px;
+}
+
+@media (max-width: 1020px) {
+    .lead {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas: "main main" "left right";
+        gap: 40px 32px;
+    }
+}
+
+@media (max-width: 900px) {
+    .table-head,
+    .row { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.5fr) 104px; }
+    .cell-tags { display: none; }
+}
+
+@media (max-width: 640px) {
+    .lead {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "main" "left" "right";
+    }
+    .lead-left,
+    .lead-right {
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+    }
+    .card-main { padding: 26px 22px 28px; }
+    .archive { margin-top: 72px; }
+    .controls,
+    .controls-right { flex-direction: column; align-items: stretch; }
+    .control select,
+    .control input { width: 100%; }
+    .table-head { display: none; }
+    .row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 4px;
+        padding: 16px 6px;
+    }
+    .cell-desc { display: none; }
+    .cell-title {
+        white-space: normal;
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+    .cell-date { font-size: 0.82rem; color: var(--text-muted); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lead-bar,
+    .card { animation: none; }
+}
+"""
+
+INDEX_JS = """\
+(function () {
+    var PAGE_SIZE = 12;
+    var list = document.getElementById('post-rows');
+    var controls = document.getElementById('post-controls');
+    if (!list || !controls) return;
+
+    var rows = Array.prototype.slice.call(list.querySelectorAll('.row'));
+    var tagSelect = document.getElementById('filter-tag');
+    var sortSelect = document.getElementById('filter-sort');
+    var search = document.getElementById('filter-search');
+    var more = document.getElementById('see-more');
+    var noMatch = document.getElementById('no-match');
+    var count = document.getElementById('post-count');
+    var limit = PAGE_SIZE;
+
+    function matches(row, tag, query) {
+        if (tag && row.dataset.tags.split('|').indexOf(tag) === -1) return false;
+        return !query || row.dataset.search.indexOf(query) !== -1;
+    }
+
+    function render() {
+        var tag = tagSelect.value;
+        var query = search.value.trim().toLowerCase();
+        var dir = sortSelect.value === 'oldest' ? 1 : -1;
+        rows.sort(function (a, b) {
+            if (a.dataset.date === b.dataset.date) return 0;
+            return a.dataset.date < b.dataset.date ? -dir : dir;
+        });
+        var total = 0;
+        rows.forEach(function (row) {
+            list.appendChild(row);
+            var ok = matches(row, tag, query);
+            if (ok) total += 1;
+            row.hidden = !ok || total > limit;
+        });
+        count.textContent = total + (total === 1 ? ' post' : ' posts');
+        noMatch.hidden = total > 0;
+        more.hidden = total <= limit;
+    }
+
+    function restart() {
+        limit = PAGE_SIZE;
+        render();
+    }
+
+    tagSelect.addEventListener('change', restart);
+    sortSelect.addEventListener('change', restart);
+    search.addEventListener('input', restart);
+    more.querySelector('button').addEventListener('click', function () {
+        limit += PAGE_SIZE;
+        render();
+    });
+
+    controls.hidden = false;
+    render();
+})();
+"""
+
+ICON_ATTRS = 'viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"'
+ICON_CHEVRON = f'<svg {ICON_ATTRS}><path d="M4 6l4 4 4-4"/></svg>'
+ICON_SEARCH = f'<svg {ICON_ATTRS}><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>'
+ICON_ARROW_RIGHT = f'<svg {ICON_ATTRS}><path d="M3 8h10M9 4l4 4-4 4"/></svg>'
+ICON_ARROW_DOWN = f'<svg {ICON_ATTRS}><path d="M8 3v10M4 9l4 4 4-4"/></svg>'
+
 INDEX_TEMPLATE = """\
 <!DOCTYPE html>
 <html lang="en">
@@ -509,9 +873,9 @@ INDEX_TEMPLATE = """\
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog — dropbrain studio</title>
-    <meta name="description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
+    <meta name="description" content="Blog from dropbrain studio. App updates, developer tools, and engineering notes going back to 2015.">
     <meta property="og:title" content="Blog — dropbrain studio">
-    <meta property="og:description" content="Development blog from dropbrain studio. App updates, feature deep-dives, and behind-the-scenes.">
+    <meta property="og:description" content="Blog from dropbrain studio. App updates, developer tools, and engineering notes going back to 2015.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dropbrain.io/blog/">
     <script>try{{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}}catch(e){{}}</script>
@@ -527,31 +891,89 @@ INDEX_TEMPLATE = """\
             <a href="/" class="wordmark">dropbrain<span>.studio</span></a>
         </header>
 
-        <div class="blog-header">
-            <h1 class="blog-title">Blog</h1>
-        </div>
+        <section aria-labelledby="latest-title">
+            <div class="lead-bar">
+                <h1 id="latest-title">Latest posts</h1>
+                <a href="#all-posts">All {post_count} posts &darr;</a>
+            </div>
+            <div class="lead">
+{lead_cards}
+            </div>
+        </section>
 
-        <div class="post-list">
-{post_items}
-        </div>
+        <section class="archive" id="all-posts" aria-labelledby="archive-title">
+            <h2 class="archive-title" id="archive-title">All posts</h2>
+            <p class="archive-count" id="post-count" aria-live="polite">{post_count} posts</p>
+
+            <div class="controls" id="post-controls" hidden>
+                <label class="control">
+                    <span class="sr-only">Filter by tag</span>
+                    <select id="filter-tag">
+                        <option value="">All tags</option>
+{tag_options}
+                    </select>
+                    {icon_chevron}
+                </label>
+                <div class="controls-right">
+                    <label class="control">
+                        <span class="sr-only">Sort</span>
+                        <select id="filter-sort">
+                            <option value="newest">Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                        </select>
+                        {icon_chevron}
+                    </label>
+                    <label class="control">
+                        <span class="sr-only">Search posts</span>
+                        <input type="search" id="filter-search" placeholder="Search posts…" autocomplete="off">
+                        {icon_search}
+                    </label>
+                </div>
+            </div>
+
+            <div class="table-head" aria-hidden="true">
+                <span>Title</span><span>Description</span><span class="cell-tags">Tags</span><span>Date</span>
+            </div>
+            <div id="post-rows">
+{post_rows}
+            </div>
+            <p class="no-match" id="no-match" hidden>No posts match. Try another tag or search.</p>
+            <div class="see-more" id="see-more" hidden>
+                <button type="button" class="button">See more {icon_arrow_down}</button>
+            </div>
+        </section>
 
         <footer>
             <a href="/">&larr; dropbrain.studio</a>
             <a href="/">Home</a>
         </footer>
     </div>
+    <script>
+{index_js}
+    </script>
     <script defer src="/assets/theme.js"></script>
 </body>
 </html>
 """
 
-POST_ITEM_TEMPLATE = """\
-            <div class="post-item" style="animation-delay: {delay}s;">
-                <h2 class="post-item-title"><a href="/blog/{slug}/">{title}</a></h2>
-                <div class="post-item-date">{date}</div>
-                <p class="post-item-desc">{description}</p>
-                {tags_html}
-            </div>"""
+CARD_TEMPLATE = """\
+                <article class="card card-{kind}" style="animation-delay: {delay}s;">
+                    {image_html}
+                    <div class="card-body">
+                        <div class="card-meta">{tag_html}<time datetime="{date_iso}">{date}</time></div>
+                        <h2 class="card-title"><a href="/blog/{slug}/">{title}</a></h2>
+                        <p class="card-desc">{description}</p>
+                        {button_html}
+                    </div>
+                </article>"""
+
+ROW_TEMPLATE = """\
+                <a class="row" href="/blog/{slug}/" data-date="{date_iso}" data-tags="{tags_data}" data-search="{search}">
+                    <span class="cell cell-title">{title}</span>
+                    <span class="cell cell-desc">{description}</span>
+                    <span class="cell cell-tags">{tags}</span>
+                    <time class="cell cell-date" datetime="{date_iso}">{date}</time>
+                </a>"""
 
 
 # ── Frontmatter parsing ────────────────────────────────────────────────────
@@ -597,6 +1019,15 @@ def format_date(date_str):
         return date_str or ''
 
 
+def format_short_date(date_str):
+    """Format a YYYY-MM-DD date as 'Nov 1, 2026' for compact lists."""
+    try:
+        d = datetime.strptime(date_str, '%Y-%m-%d')
+    except (ValueError, TypeError):
+        return date_str or ''
+    return f'{d:%b} {d.day}, {d.year}'
+
+
 # ── Image caption post-processing ──────────────────────────────────────────
 
 def add_image_captions(html_content):
@@ -610,6 +1041,91 @@ def add_image_captions(html_content):
                 return full + f'\n<p class="image-caption">{html.escape(alt)}</p>'
         return full
     return re.sub(r'<img[^>]+>', replace_img, html_content)
+
+
+# ── Index rendering ────────────────────────────────────────────────────────
+
+def render_card(post, kind, delay):
+    """One card in the Latest lead. kind is 'main' or 'side'."""
+    image_html = ''
+    if kind == 'main' and post['image']:
+        image_html = f'<img class="card-image" src="{html.escape(post["image"])}" alt="">'
+    tag_html = ''
+    if post['tags']:
+        tag_html = f'<span class="meta-tag">{html.escape(post["tags"][0])}</span>'
+    button_html = ''
+    if kind == 'main':
+        button_html = f'<span class="button" aria-hidden="true">Read more {ICON_ARROW_RIGHT}</span>'
+    return CARD_TEMPLATE.format(
+        kind=kind,
+        delay=delay,
+        image_html=image_html,
+        tag_html=tag_html,
+        date_iso=html.escape(post['date']),
+        date=format_short_date(post['date']),
+        slug=html.escape(post['slug']),
+        title=html.escape(post['title']),
+        description=html.escape(post['description']),
+        button_html=button_html,
+    )
+
+
+def render_lead(posts):
+    """Newest post as the main card, the next ones in the left and right columns."""
+    left = posts[1:1 + LEAD_LEFT]
+    right = posts[1 + LEAD_LEFT:1 + LEAD_LEFT + LEAD_RIGHT]
+    parts = [render_card(posts[0], 'main', 0.1)]
+    for name, group, start in (('left', left, 0.18), ('right', right, 0.26)):
+        if group:
+            cards = '\n'.join(render_card(p, 'side', round(start + i * 0.08, 2))
+                              for i, p in enumerate(group))
+            parts.append(f'                <div class="lead-col lead-{name}">\n{cards}\n                </div>')
+    return '\n'.join(parts)
+
+
+def render_row(post):
+    """One compact row in the All posts list."""
+    search = ' '.join([post['title'], post['description'], *post['tags']]).lower()
+    return ROW_TEMPLATE.format(
+        slug=html.escape(post['slug']),
+        date_iso=html.escape(post['date']),
+        tags_data=html.escape('|'.join(post['tags'])),
+        search=html.escape(search),
+        title=html.escape(post['title']),
+        description=html.escape(post['description']),
+        tags=html.escape(', '.join(post['tags'][:ROW_TAGS_SHOWN])),
+        date=format_short_date(post['date']),
+    )
+
+
+def render_tag_options(posts):
+    """Filter menu entries: tags on at least MIN_TAG_POSTS posts, most used first."""
+    counts = Counter(t for p in posts for t in p['tags'])
+    tags = sorted((t for t, n in counts.items() if n >= MIN_TAG_POSTS),
+                  key=lambda t: (-counts[t], t))
+    return '\n'.join(
+        f'                        <option value="{html.escape(t)}">{html.escape(t)} ({counts[t]})</option>'
+        for t in tags
+    )
+
+
+def write_index(posts):
+    """Write blog/index.html and return its path relative to the site root."""
+    index_html = INDEX_TEMPLATE.format(
+        shared_css=SHARED_CSS,
+        index_css=INDEX_CSS,
+        index_js=INDEX_JS,
+        post_count=len(posts),
+        lead_cards=render_lead(posts),
+        tag_options=render_tag_options(posts),
+        post_rows='\n'.join(render_row(p) for p in posts),
+        icon_chevron=ICON_CHEVRON,
+        icon_search=ICON_SEARCH,
+        icon_arrow_down=ICON_ARROW_DOWN,
+    )
+    index_path = BLOG_DIR / 'index.html'
+    index_path.write_text(index_html, encoding='utf-8')
+    return str(index_path.relative_to(SITE_ROOT))
 
 
 # ── Build ───────────────────────────────────────────────────────────────────
@@ -716,32 +1232,7 @@ def build():
         generated.append(str(out_path.relative_to(SITE_ROOT)))
 
     # Generate index page
-    post_items_html = []
-    for i, post in enumerate(posts):
-        tags_html = ''
-        if post['tags']:
-            tags_html = '<div class="post-item-tags">' + ''.join(
-                f'<span class="tag">{html.escape(t)}</span>' for t in post['tags']
-            ) + '</div>'
-
-        post_items_html.append(POST_ITEM_TEMPLATE.format(
-            delay=round(0.15 + i * 0.1, 2),
-            slug=html.escape(post['slug']),
-            title=html.escape(post['title']),
-            date=format_date(post['date']),
-            description=html.escape(post['description']),
-            tags_html=tags_html,
-        ))
-
-    index_html = INDEX_TEMPLATE.format(
-        shared_css=SHARED_CSS,
-        index_css=INDEX_CSS,
-        post_items='\n'.join(post_items_html),
-    )
-
-    index_path = BLOG_DIR / 'index.html'
-    index_path.write_text(index_html, encoding='utf-8')
-    generated.append(str(index_path.relative_to(SITE_ROOT)))
+    generated.append(write_index(posts))
 
     # Update sitemap
     update_sitemap(posts)

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker alpine smaller image footprint — dropbrain blog</title>
+    <meta name="description" content="Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go…">
+    <meta property="og:title" content="Docker alpine smaller image footprint">
+    <meta property="og:description" content="Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go…">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/docker-apline-image-size-improvments/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">Docker alpine smaller image footprint</h1>
+            <div class="post-meta">
+                <span class="post-date">July 20, 2016</span>
+                <div class="post-tags"><span class="tag">docker</span><span class="tag">python</span><span class="tag">python3</span><span class="tag">alpine</span><span class="tag">linux</span><span class="tag">golang</span><span class="tag">go</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go and python3 service built in a Debian and alpine linux based image to compare the result and the footprint that a image. </p>
+<p>The key to building small docker images is only use <code>one</code> <code>RUN</code> step in the Dockerfile. Why you might think. Every RUN in docker is a layer. The layer will contain what you do in that layer like adding package cache. If you then remove the cache in a later RUN you will still have it in the parent layers. So what you do is use al lot of <code>&amp;&amp;</code> in the same RUN and in the end remove the files and cache you don&rsquo;t need. Selecting the base image will affect you the most when it comes to footprint. I will look on Debian and alpine based images. </p>
+<p>I will use the python official images as a reference like <code>python:3.5</code> that is based on jessie with a size of <code>694 MB</code>, and the Alpine Linux version <code>python:3.5-alpine</code> with a size of <code>73 MB</code> .</p>
+<p>One of Alpines key features i see other then the base size of <code>4.8 MB</code> , is <code>virtual package</code> it lets you assign packages to one or multiple virtual packages. When you are done just remove the virtual package.</p>
+<p>The reference app is a small rest service returning status 200 with a body containing json <code>{"status": "OK"}</code> for both python and go.</p>
+<p>Lets start with creating a image based on the <code>python:3.5</code> image with a starting size of <code>694 MB</code>, after build the result is <code>702.5 MB</code></p>
+<pre><code class="language-dockerfile">FROM python:3.5
+
+# adding code
+WORKDIR /app/pikachu
+ADD requirements.txt /app/pikachu
+
+# install
+RUN pip install -r requirements.txt
+
+ADD . /app/pikachu
+
+EXPOSE 8080
+ENTRYPOINT gunicorn --bind 0.0.0.0:8080 pikachu.app:api
+</code></pre>
+<p>If we do the same but now use the <code>python:3.5-alpine</code> image with a starting size of <code>73 MB</code> after build the result is <code>82 MB</code> . Just using the alpine base you will have saved <code>612 MB</code> </p>
+<pre><code class="language-dockerfile">FROM python:3.5-alpine
+
+# adding code
+WORKDIR /app/pikachu
+ADD requirements.txt /app/pikachu
+
+# install
+RUN apk add --update openssl \
+    &amp;&amp; apk --update add --no-cache --virtual build-dependencies libc-dev autoconf gcc \
+    &amp;&amp; pip install --no-cache-dir -r requirements.txt \
+    \ 
+    &amp;&amp; rm -rf ~/.cache \
+    &amp;&amp; apk del build-dependencies
+
+ADD . /app/pikachu
+
+EXPOSE 8080
+ENTRYPOINT gunicorn --bind 0.0.0.0:8080 pikachu.app:api
+</code></pre>
+<p>For go we will use 3 base images, Debian, alpine, and scratch. We need to compile go with it&rsquo;s deps. The resulting file will be about <code>11 MB</code></p>
+<pre><code class="language-bash">$ CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+</code></pre>
+<p>Lets start with a creating a image based on the <code>debian:8</code> image with a starting size of <code>125 MB</code>, after build the result is <code>136 MB</code></p>
+<pre><code class="language-dockerfile">FROM debian:8
+ADD main /
+CMD [&quot;/main&quot;]
+</code></pre>
+<p>If we do the same but now use the <code>alpine:3.4</code> image with a starting size of <code>4.8 MB</code> after build the result is <code>16.1 MB</code></p>
+<pre><code class="language-dockerfile">FROM alpine:3.4
+ADD main /
+CMD [&quot;/main&quot;]
+</code></pre>
+<p>If we now take a look on the scratch base image we have <code>0 MB</code> as a starting point and the result should be about <code>11 MB</code></p>
+<pre><code class="language-dockerfile">FROM alpine:3.4
+ADD main /
+CMD [&quot;/main&quot;]
+</code></pre>
+<p>The conclusion is that if you need to get small images base it on <code>alpine</code> and use the official alpine images that most project like python, java have official version of. </p>
+<p>A note here is that most of the official images now have a alpine option
+The examples can be found here. <a href="https://github.com/mad01/examples/tree/master/alpine">Source</a></p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Docker alpine smaller image footprint",
+    "datePublished": "2016-07-20",
+    "description": "Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go\u2026",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/docker-apline-image-size-improvments/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>

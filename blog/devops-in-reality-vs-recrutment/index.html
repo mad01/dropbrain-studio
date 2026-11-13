@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>different sides of devops in recrutment and engineering — dropbrain blog</title>
+    <meta name="description" content="The question is what is devops? How do you recruit a devops engineer. The short answer is you don&#x27;t. a devops engineer does not exist. The thing about recruiting a so called…">
+    <meta property="og:title" content="different sides of devops in recrutment and engineering">
+    <meta property="og:description" content="The question is what is devops? How do you recruit a devops engineer. The short answer is you don&#x27;t. a devops engineer does not exist. The thing about recruiting a so called…">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/devops-in-reality-vs-recrutment/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">different sides of devops in recrutment and engineering</h1>
+            <div class="post-meta">
+                <span class="post-date">December 20, 2016</span>
+                <div class="post-tags"><span class="tag">devops</span><span class="tag">software-engineering</span><span class="tag">platform-engineering</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>The question is what is devops? How do you recruit a devops engineer. The short answer is you don&rsquo;t. a devops engineer does not exist. The thing about recruiting a so called devops engineer is all a bit undefined and often miss understood and is often used by head hunters and recruiters to find software engineers/ops engineers.</p>
+<p>If we look at it a bit in short first, what is devops! devops is a way of working in a engineering organisation. The way of working generally means a few thing. You start by moving the organisation from a <code>itil</code> or <code>waterfall</code> to a more <code>agile</code> way of working. What this means is that you strive to have a culture that allows people freedom under responsibility, short development cycles, allowing quick adoption and changes, to move fast. The one big part here is <code>trust</code> in the engineers.</p>
+<p>As i see it devops have two main groups, engineering culture, operations culture. knowing that lets add a third group infrastructure engineering culture. If we break down the three the groups a bit to explains what devops/none devops means for the different groups, and what the extra groups brings. </p>
+<h3 id="engineering-culture">engineering culture</h3>
+<h4 id="none-devops">none devops</h4>
+<p>the engineering team develops and delivers builds for approval to QA/Test teams to get the features ready for production and a handover to ops is done when it&rsquo;s done. The engineers gets frustrated due to the slow time to production, and they need to have a lot more balls in the air at the same time. since time to deliver is long and they still need to add more features.</p>
+<h4 id="devops">devops</h4>
+<p>the engineering team, develops and delivers directly to production, takes responsibility to uphold the quality level of a service, and that if it&rsquo;s lower they will prior to fix it. This lowers the wall between engineering and operations that is traditionally there. Since the engineers are the experts they should also run the services. the engineers also don&rsquo;t need to many balls in the air.</p>
+<h2 id="opperations-culture">opperations culture</h2>
+<h4 id="none-devops_1">none devops</h4>
+<p>the ops team have a handover process, that gets a tested and proven build delivered hopefully some documentation, on how to run, and take care of that application. the ops team often tries to minimise the amount of deploys. Since the time to get a fix is long, a deploy is risky and can break production. So the result is that you get a long time from development to delivery. a wall is formed between engineering and operations and there is often disagreement about deployments to production and it tends to be some friction between the two groups. Engineers break things and ops gets to fix it.</p>
+<h4 id="devops_1">devops</h4>
+<p>the ops team have a agreement with engineering that deployments by engineers can be done when they feel like they are done. The agreement here is that you need to have some level of quality checking done. This quality needs to be checked that is&rsquo;s true when running in production to. Like if you agree that 99% of all requests served by the service needs to be correct, if that is lower. engineering will have to fix it. The worry about having a broken service is here moved to engineering and not operations.</p>
+<h2 id="infrastructure-engineering-culture">infrastructure engineering culture</h2>
+<h4 id="devops_2">devops</h4>
+<p>This extra groups is actually not devops. However this is what most people actually is looking for when they need a devops engineer. What devops mostly is mistaken for is automation and tooling around infrastructure, deployment, monitoring when in reality devops is a engineering culture and a agile way of delivering features to production.</p>
+<p>To actually be able to have a devops organisation you will need software engineers that acts as operations engineers to create the needed tools and automation around the platform that services is delivered on. To provide the engineering teams with some sane defaults, a robust platform and the needed tools around it to do deployments, to allow failing services.</p>
+<p>Instead of babying a service to keep it running like ops usually do in a traditional organisation. You need to build and run services with the assumption, that things will break all the time. It&rsquo;s not the engineers job to keep the services running it&rsquo;s the platform. if a service fails a new should just start in it&rsquo;s place. As long as the service upholds the agreed upon availability everything is good.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>What devops actually is. Is not a role it&rsquo;s a way of structuring a agile engineering organisation. And a group of software engineers working with tools and infrastructure to provide a platform to run services on, for the engineering team building the product. </p>
+<p>There is a un answered question. That is do you actually need a operations team in a agile/devops engineering organisation. I would say no, if you run everything in the cloud. You might want some good sysadmin to take care of the day to day IT that is not related to running and delivering the product/platform.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "different sides of devops in recrutment and engineering",
+    "datePublished": "2016-12-20",
+    "description": "The question is what is devops? How do you recruit a devops engineer. The short answer is you don't. a devops engineer does not exist. The thing about recruiting a so called\u2026",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/devops-in-reality-vs-recrutment/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>encrypted backup with arq amazon and s3 glacier — dropbrain blog</title>
+    <meta name="description" content="As most that have any knowledge of IT and tech. Backup is a big topic also encryption now in the later days when there have been a lot of talk about that our data can be read if…">
+    <meta property="og:title" content="encrypted backup with arq amazon and s3 glacier">
+    <meta property="og:description" content="As most that have any knowledge of IT and tech. Backup is a big topic also encryption now in the later days when there have been a lot of talk about that our data can be read if…">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/backup-s3-arq/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">encrypted backup with arq amazon and s3 glacier</h1>
+            <div class="post-meta">
+                <span class="post-date">May 16, 2015</span>
+                <div class="post-tags"><span class="tag">backup</span><span class="tag">arq</span><span class="tag">aws</span><span class="tag">s3</span><span class="tag">glacier</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>As most that have any knowledge of IT and tech. Backup is a big topic also encryption now in the later days when there have been a lot of talk about that our data can be read if we are not using encryption everywhere. Now when most of os have most of our life in a digital form the information that we store in our phones, computers are more then ever a target for criminals and the data is important to us. Not only that electronics to break and when that day comes none will be happy if all there personal data, files, photos are lost due to a broken phone or computer. This is why backup is such a important thing. Doing backup right is not that hard. running around with a external drive or usb memory is not a god option, as a main backup. You will forget to do it, the best is to have one or multiple incremental backups that is running in the background so you don&rsquo;t have to think about all the time. You should of course try to do restores from the backups every now and then to be sure that they are working and running as expected. </p>
+<p>I have a few different backups running all the time. a note i am a mac user and i will be relating to solutions that is working with a mac and os x. Some of them might work with other platforms like <a href="https://www.arqbackup.com/">arq</a> . I am at this moment using two offline external hard drives, with time machine, one network drive with time machine for incremental backups and <a href="http://www.code42.com/crashplan/">crashplan</a> for a online backup. What all of them have in common is that they are supporting encryption on the client side. A note is that i also relying on the os x <code>filevault</code> to encrypt my macs. I have recently taken a decision to start to use a application called <a href="https://www.arqbackup.com/">arq</a> that allows me to backup to a few different storage options like Amazon s3 and glacier, Dropbox, Google Drive, Google Cloud Storage, SFTP, DreamObjects, Microsoft OneDrive and other S3-Compatible Services. This is a few good options like you can se. What <code>arq</code> is providing that others like <a href="https://www.backblaze.com/">backblaze</a> and <a href="http://www.code42.com/crashplan/">crashplan</a> does not, is that i am relaying on a provider like amazon that have proven that they are a good cloud provider that is most likely not going to end there service any time soon.  I am also not capped in any way when using <code>Amazon</code> i can upload all the data i need in more or less line speed of my local network and ISP uplink. Since i am storing my data in <code>Amazon</code> at one datacenter i can also replicate the s3 bucket that i am using in combination with glacier to any other part of the world if i like where <code>Amazon</code> have datacenters. <code>arq</code> also provides me with client side encryption that allows my data to be encrypted before the data leaves by mac. So all the data that is stored in <code>Amazon</code> is encrypted and can&rsquo;t be accessed or restored whiteout my encryption key. </p>
+<p>The way you setup the <code>arq</code> backup is in my case to my amazon aws account, creating a AMI for the backup. When adding a destination <code>Amazon s3 glacier</code> to backup to in <code>arq</code> i am just providing the AMI keys and <code>arq</code> will create the s3 bucket and the needed rules to move all files in to <code>glacier</code> . When selecting configuring the backup it&rsquo;s a bit different from <code>crashplan</code> and <code>Time Machine</code>  where they backup the full user and you have to exclude what you don&rsquo;t need backed up. That is a lot that you don&rsquo;t need. In <code>arq</code> you select every folder or file that you like to backup and if you are using <code>Amazon</code> you get to select if you want the data to be stored in <code>s3</code> or <code>glacier</code> you can have the same files stored in  <code>s3</code> and <code>glacier</code> if you like. Since <code>glacier</code> are slow &ldquo;up to 24h&rdquo; to restore you and have the files that you might need instant restore of in s3 also, you just add the same folder or files again and select s3 as the storage option. </p>
+<p>when it comes to cost the <code>Amazon s3 glacier</code> option might not be the cheapest but it&rsquo;s worth. Due to the proven reliability of the service that <code>Amazon</code> have provided over all the years as a cloud hosting provider. </p>
+<p>one of the biggest reason for adding a service like <code>arq</code> is that Time Machine that i have is not the most persistent it fails every now and then and needs a full backup to be created from scratch.  <code>crashplan</code> is also not that fast when it comes to restore some bigger amount of data. Using a cloud provider gives me the option to backup when ever i have a internet connection.</p>
+<p>what you should take away from this is that backup and encrypted versions of it is important. Even if you are not using encryption in the backup you should at least backup to one place at home and one remote. If you aren&rsquo;t doing it now it&rsquo;s about time to start. You will have data loss time time and that is when the backup will be so valuable.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "encrypted backup with arq amazon and s3 glacier",
+    "datePublished": "2015-05-16",
+    "description": "As most that have any knowledge of IT and tech. Backup is a big topic also encryption now in the later days when there have been a lot of talk about that our data can be read if\u2026",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/backup-s3-arq/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>

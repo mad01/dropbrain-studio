@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>python protobuf over http — dropbrain blog</title>
+    <meta name="description" content="The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command…">
+    <meta property="og:title" content="python protobuf over http">
+    <meta property="og:description" content="The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command…">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/python-protobuf-over-http/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">python protobuf over http</h1>
+            <div class="post-meta">
+                <span class="post-date">January 11, 2016</span>
+                <div class="post-tags"><span class="tag">protobuf</span><span class="tag">python</span><span class="tag">http</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<p>The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command line tool as the client. The example will just be a simple ping/pong containing a message, channel, and PING or PONG sent to the server. The server will respond with the same message and channel and a PONG.</p>
+<p>lets first start with the structure of the files is like the following. all files used can be found on github see source in the end of the post. a note some in the source there is some extra code that is removed to not clutter the example.</p>
+<pre><code class="language-bash">protobuf
+├── client.py
+├── lib
+│   ├── __init__.py
+│   ├── client_api.py
+│   ├── py_proto.proto
+│   ├── py_proto_pb2.py
+│   └── server_api.py
+├── requirements.txt
+├── server.py
+└── tests
+    └── test_proto.py
+</code></pre>
+<p>to get started we need a protobuf file that sets the format of messages that should be used.
+a enum is used to hold the name/value that we like for a pingId. a PingDTO that will hold the message values that we like in the PingDTO. We then use this PingDTO in the PingCommand and the PingDocument. The PingCommand will be used to send to the server and the response will be the PingDocument.</p>
+<pre><code class="language-bash">package api;
+
+enum PingIdDTO {
+    PING = 1;
+    PONG = 2;
+}
+
+message PingDTO {
+    required string msg = 1;
+    required string channel = 2;
+    required PingIdDTO pingId = 3;
+}
+
+message PingCommand {
+    required PingDTO ping = 1;
+}
+
+message PingDocument {
+    required PingDTO ping = 1;
+}
+</code></pre>
+<p>to build the proto python file. you will get py_proto_pb2.py which is the protobuf python class file that you later  use to build a proto client and server.</p>
+<pre><code class="language-bash">$ protoc --python_out=. lib/py_proto.proto
+</code></pre>
+<p>Server api. The server uses the generated protobuf python file to parse the command sent, and to return the document to the client.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import falcon
+from . import py_proto_pb2 as proto
+
+def proto_http_type():
+    return 'application/x-protobuf'
+
+class Ping(object):
+
+    def __init__(self):
+        self.proto = proto
+
+    def on_post(self, req, resp):
+            command = proto.PingCommand()
+            command.ParseFromString(req.stream.read())
+
+            cmd = proto.PingDocument()
+            cmd.ping.msg = command.ping.msg
+            cmd.ping.channel = command.ping.channel
+            cmd.ping.pingId = proto.PONG
+
+            print('msg: %s' % command.ping.msg)
+            print('channel: %s' % command.ping.channel)
+
+            resp.content_type = proto_http_type()
+            resp.status = falcon.HTTP_201
+            resp.data = cmd.SerializeToString()
+</code></pre>
+<p>Server function made to run the falcon app.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import falcon
+from lib import server_api
+
+api = falcon.API()
+api.add_route('/api/ping', server_api.Ping())
+</code></pre>
+<p>Starting the server by using gunicorn and calling the api falcon api</p>
+<pre><code class="language-bash">$ gunicorn server:api
+</code></pre>
+<p>Client api. Like in the server we use the same python generated proto file. To send a command to the server and get back the response document that will be printed to stdout.</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import requests
+from . import py_proto_pb2 as proto
+
+class Client(object):
+
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({
+            &quot;Content-Type&quot;: &quot;application/x-protobuf&quot;,
+            &quot;Accept&quot;: &quot;application/x-protobuf&quot;
+        })
+
+    def pingId(self, ping):
+        return proto.PingIdDTO.Value(ping)
+
+    def build_url(self, urn):
+        url = 'http://%s:8000/%s' % ('127.0.0.1', urn)
+        return url
+
+    def send_ping(self, msg='', channel='', pingId=''):
+        url = self.build_url('api/ping')
+        command = proto.PingCommand()
+        command.ping.msg = str(msg)
+        command.ping.channel = str(channel)
+        command.ping.pingId = self.pingId(pingId)
+
+        res = self.session.post(url, data=command.SerializeToString())
+        cmd = proto.PingDocument()
+        cmd.ParseFromString(res.content)
+        return cmd
+</code></pre>
+<p>Client made as a command line tool to be able to just send some commands and then print the response. You send PING which is id 1 and you should get back id 2 from the server</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import argparse
+from lib import client_api
+
+def call(msg='', channel=''):
+    api = client_api.Client()
+    cmd = api.send_ping(
+        msg=msg,
+        channel=channel,
+        pingId='PING'
+        )
+
+    print('Response: %s' % cmd.ping.pingId)
+    print('message sent: %s' % cmd.ping.msg)
+    print('to channel: %s' % cmd.ping.channel)
+
+def main():
+    description = 'command line tool send messages to a channel'
+    parser = argparse.ArgumentParser(description)
+    parser.add_argument('-m', '--message', required=True)
+    parser.add_argument('-c', '--channel', required=True)
+    args = parser.parse_args()
+    call(
+        msg=args.message,
+        channel=args.channel
+        )
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+<p>The example can be found here. <a href="https://github.com/mad01/examples/tree/master/protobuf">Source</a></p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "python protobuf over http",
+    "datePublished": "2016-01-11",
+    "description": "The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command\u2026",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/python-protobuf-over-http/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>
