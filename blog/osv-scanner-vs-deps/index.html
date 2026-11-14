@@ -501,7 +501,12 @@ footer a:hover {
 <li>I&rsquo;ll look at running govulncheck per module, so &ldquo;not imported&rdquo; can become &ldquo;not called&rdquo;.</li>
 </ol>
 <p>I also asked what it would take to put osv-scanner under deps as the engine. A rough count, which I haven&rsquo;t checked line by line: about 1,500 of the 6,900 lines would go, about 700 would be rewritten, and the rest would stay. The module graph view would be lost. That saves less than a quarter of the code, and I would then follow someone else&rsquo;s JSON schema.</p>
-<p>What would change my mind:</p>
+<h2 id="what-this-doesnt-prove">What this doesn&rsquo;t prove</h2>
+<p>I write and maintain deps alone, and I make mistakes. This test found one. Four repos were never registered, so deps had never looked at them. It reported nothing for them, and that silence looked the same as a clean result.</p>
+<p>More coverage isn&rsquo;t proof of safety. A scanner can tell you what it found. It can&rsquo;t tell you that nothing is there. A parser can skip a file. An advisory can be missing from the database, or arrive late. A check can say &ldquo;not imported&rdquo; and be wrong.</p>
+<p>So a quiet deps page doesn&rsquo;t mean there is nothing to patch. For the Go code in thismoon, govulncheck and Dependabot still decide what gets fixed, and deps sits beside them. A second tool, run now and then, is how I caught the gap this time. If you run something like deps, keep the other layers too.</p>
+<h2 id="what-would-change-my-mind">What would change my mind</h2>
+<p>These would:</p>
 <ul>
 <li>A need for Rust, Dart or yarn support. I would call osv-scanner before I wrote those parsers.</li>
 <li>osv-scanner learning to read Actions refs and installed tool trees, and to watch the registries.</li>

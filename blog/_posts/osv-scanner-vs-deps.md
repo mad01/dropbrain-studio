@@ -114,7 +114,17 @@ I'm keeping deps, with three changes.
 
 I also asked what it would take to put osv-scanner under deps as the engine. A rough count, which I haven't checked line by line: about 1,500 of the 6,900 lines would go, about 700 would be rewritten, and the rest would stay. The module graph view would be lost. That saves less than a quarter of the code, and I would then follow someone else's JSON schema.
 
-What would change my mind:
+## What this doesn't prove
+
+I write and maintain deps alone, and I make mistakes. This test found one. Four repos were never registered, so deps had never looked at them. It reported nothing for them, and that silence looked the same as a clean result.
+
+More coverage isn't proof of safety. A scanner can tell you what it found. It can't tell you that nothing is there. A parser can skip a file. An advisory can be missing from the database, or arrive late. A check can say "not imported" and be wrong.
+
+So a quiet deps page doesn't mean there is nothing to patch. For the Go code in thismoon, govulncheck and Dependabot still decide what gets fixed, and deps sits beside them. A second tool, run now and then, is how I caught the gap this time. If you run something like deps, keep the other layers too.
+
+## What would change my mind
+
+These would:
 
 - A need for Rust, Dart or yarn support. I would call osv-scanner before I wrote those parsers.
 - osv-scanner learning to read Actions refs and installed tool trees, and to watch the registries.
