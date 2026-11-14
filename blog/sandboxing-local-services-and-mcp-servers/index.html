@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A local MCP server runs as you — dropbrain blog</title>
+    <meta name="description" content="Claude Code&#x27;s sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic&#x27;s sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy.">
+    <meta property="og:title" content="A local MCP server runs as you">
+    <meta property="og:description" content="Claude Code&#x27;s sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic&#x27;s sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/sandboxing-local-services-and-mcp-servers/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">A local MCP server runs as you</h1>
+            <div class="post-meta">
+                <span class="post-date">November 14, 2026</span>
+                <div class="post-tags"><span class="tag">claude-code</span><span class="tag">mcp</span><span class="tag">sandboxing</span><span class="tag">security</span><span class="tag">macos</span><span class="tag">developer-tools</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h1 id="a-local-mcp-server-runs-as-you">A local MCP server runs as you</h1>
+<p>I run about a dozen small processes beside my coding agent. Some are Model Context Protocol (MCP) servers the agent spawns. The rest are local web services on loopback ports. Every one of them starts as me. It can read <code>~/.ssh</code>, my cloud credentials and every repo on the disk, and it can open a connection to any host.</p>
+<p>I had assumed the agent&rsquo;s sandbox covered this. It doesn&rsquo;t. The Claude Code docs say it in one line: <a href="https://code.claude.com/docs/en/sandboxing.md">&ldquo;The sandbox covers shell commands only. Claude&rsquo;s file tools, MCP servers, and hooks run outside it.&rdquo;</a> So the sandbox stops a bad <code>curl</code> in a shell command, and does nothing about the MCP server that pulled in a poisoned dependency last week.</p>
+<p>Most of my servers are my own code, but their dependencies aren&rsquo;t. One wraps a Python engine from PyPI, and another is a third-party binary. That is the risk I wanted to contain: a compromised package reads a secret and sends it somewhere.</p>
+<h2 id="the-piece-that-already-exists">The piece that already exists</h2>
+<p>Anthropic published the sandbox Claude Code uses for its shell as a separate tool, the <a href="https://github.com/anthropics/sandbox-runtime">sandbox runtime</a> (srt). Its README says it can sandbox &ldquo;agents, local MCP servers, bash commands and arbitrary processes&rdquo;. On macOS it generates a seatbelt profile from a short JSON settings file and runs your command under it. Network traffic goes through a local proxy that lets through only the hosts you list. The <a href="https://www.anthropic.com/engineering/claude-code-sandboxing">engineering post</a> explains why you need both halves. Without network isolation a compromised process can send your SSH keys out, and without filesystem isolation it can escape the sandbox and reach the network anyway.</p>
+<p>The host filter is why I switched. I used to write seatbelt profiles by hand, and seatbelt can&rsquo;t filter by hostname. &ldquo;HTTPS to GitHub&rdquo; came out as &ldquo;port 443 to anywhere&rdquo;, which is no protection against a leak.</p>
+<p>Now the part I should be honest about. Its README calls srt a &ldquo;Beta Research Preview&rdquo; and says the configuration format may change. I pin version 0.0.81. I build a security boundary on a 0.0.x tool, and I treat it that way. The version is pinned exactly, and a bump means running every sandboxed process again and reading what it gets denied.</p>
+<h2 id="what-i-built-on-top">What I built on top</h2>
+<p>srt gives you one command and one JSON file. With a dozen processes on two machines, I needed more around it.</p>
+<ol>
+<li>One access manifest per process. A short YAML block beside the code says what the process may reach. It is the source of truth.</li>
+<li>Settings rendered from the manifest. A small Go tool, <a href="https://github.com/mad01/thismoon/tree/main/tools/srtspec">srtspec</a>, turns the manifest into the JSON srt reads. Nobody edits the JSON. Continuous integration (CI) renders every manifest again and fails on any difference.</li>
+<li>One launcher. Every sandboxed process starts through <code>srt-run</code>, a shim over <code>srtspec run</code>. There is one launch path to reason about.</li>
+<li>A machine-local layer that may only widen. One machine sometimes needs one more path or host. That goes in a file on that machine, and the launcher refuses the file if it does anything but add.</li>
+<li>A watcher. It reads the kernel&rsquo;s sandbox denials from the system log and turns them into a notification and a ledger line with the process&rsquo;s label.</li>
+</ol>
+<p>Here is a real manifest, for my local event log service. It listens on a port, reads its own binary, and writes its own data directory.</p>
+<pre><code class="language-yaml">spec:
+  access:
+    sandbox: srt
+    workdir: ~/.local/share/events
+    listen: 7430
+    reads: [~/code/bin, workdir]
+    writes: [workdir, temp]
+</code></pre>
+<p>Every render starts from the same floor. Reads of the whole home directory are denied, writes go to temp only, and no host is allowed. A manifest carves back what its process needs. I can review those five lines in seconds. The six lists of JSON they render to take longer, and they don&rsquo;t say why an entry is there.</p>
+<h2 id="one-process-start-to-finish">One process, start to finish</h2>
+<p>You need srt (<code>npm install -g @anthropic-ai/sandbox-runtime</code>) and srtspec (<code>go install github.com/mad01/thismoon/tools/srtspec/cmd/srtspec@latest</code>). srtspec is my tool, not Anthropic&rsquo;s. Without it, write the JSON by hand and run <code>srt --settings &lt;file&gt; -- &lt;command&gt;</code>. The idea is the same.</p>
+<p>Start with a manifest that allows almost nothing. Save it as <code>access.yaml</code>.</p>
+<pre><code class="language-yaml">sandbox: srt
+label: demo
+reads: [~/code/bin]
+writes: [temp]
+</code></pre>
+<p>Render it into the directory the launcher reads from.</p>
+<pre><code class="language-bash">srtspec render access.yaml -o ~/.config/srt/demo.json
+</code></pre>
+<p>Now launch something through it. I use <code>head</code> and <code>curl</code> here so the output is short. Your server&rsquo;s binary goes in the same place.</p>
+<pre><code class="language-bash">$ srtspec run ~/.config/srt/demo.json -- head -1 ~/code/src/github.com/mad01/thismoon/README.md
+srt-run: demo runtime bun
+head: /Users/me/code/src/github.com/mad01/thismoon/README.md: Operation not permitted
+
+$ srtspec run ~/.config/srt/demo.json -- curl -sS -o /dev/null -w '%{http_code}\n' https://example.com
+srt-run: demo runtime bun
+curl: (56) CONNECT tunnel failed, response 403
+</code></pre>
+<p>Both fail closed. The kernel refuses the file read, and srt&rsquo;s proxy refuses the request. On my machine the watcher wrote this to its ledger:</p>
+<pre><code>2026-11-14 10:11:02  ALERT  demo · head(42359) · file-read-data · /Users/me/code/src/github.com/mad01/thismoon/README.md
+</code></pre>
+<p>That line is the whole point of the label. The launcher starts the command as <code>env SRT_RUN=demo ...</code>, srt tags each deny rule with the command, and the watcher decodes the label back out. Without my watcher you can see the raw line yourself:</p>
+<pre><code class="language-bash">/usr/bin/log stream --predicate 'eventMessage CONTAINS &quot;deny(1)&quot;'
+</code></pre>
+<p>Say the process really needs that file and that host. Widen the manifest by exactly those two things.</p>
+<pre><code class="language-yaml">sandbox: srt
+label: demo
+egress: [example.com]
+reads:
+  - ~/code/bin
+  - ~/code/src/github.com/mad01/thismoon/README.md
+writes: [temp]
+</code></pre>
+<p>Before rendering, <code>srtspec check access.yaml ~/.config/srt/demo.json</code> exits 1 with a diff and the line <code>drifted from access.yaml; run srtspec render</code>. CI catches a manifest change without its render the same way. Render again, and the same two commands print the first line of the file and <code>200</code>. A request to <code>example.org</code> still gets the 403.</p>
+<p>Then ask what a launch gets. I added a local layer file and one host from the environment to show where each entry comes from.</p>
+<pre><code>$ SRT_RUN_ALLOW_DOMAINS=api.example.net srtspec explain demo
+srt policy for demo
+  base   ~/.config/srt/demo.json
+  local  ~/.config/srt/demo.local.json
+  env    SRT_RUN_ALLOW_DOMAINS=api.example.net
+
+filesystem.allowRead    ~/code/bin                                      base
+filesystem.allowRead    ~/code/src/github.com/mad01/thismoon/README.md  base
+filesystem.allowRead    ~/notes                                         local
+filesystem.allowWrite   /private/tmp                                    base
+filesystem.allowWrite   /private/var/folders                            base
+filesystem.denyRead     ~                                               base
+filesystem.denyWrite    (empty)                                         base
+network.allowedDomains  example.com                                     base
+network.allowedDomains  api.example.net                                 env
+network.deniedDomains   (empty)                                         base
+</code></pre>
+<p>The local layer can&rsquo;t take a deny away. I put <code>"allowRead": ["~"]</code> in it, and the answer was <code>srt-run refuses to launch demo</code> with the reason <code>would lift the ~ deny</code>. The renderer has the same kind of guard. An <code>egress</code> of <code>*</code> fails with <code>a bare * allows every host; name the hosts</code>, and a misspelled field is an error. A typo can&rsquo;t quietly drop a rule.</p>
+<h2 id="wiring-an-mcp-server">Wiring an MCP server</h2>
+<p>An MCP registration can&rsquo;t express the whole launch, so each server gets a small wrapper script. The end of the one I use for the GitHub MCP server, trimmed:</p>
+<pre><code class="language-bash">token=&quot;$(gh auth token --hostname &quot;$host&quot;)&quot;
+
+cd /
+exec /usr/bin/env -i &quot;${env_allow[@]}&quot; \
+  &quot;$HOME/code/bin/srt-run&quot; &quot;$settings&quot; &quot;$server&quot; &quot;${args[@]}&quot;
+</code></pre>
+<p>Each line is there for a reason.</p>
+<ul>
+<li>The token is resolved outside the sandbox, so the server never needs the keychain.</li>
+<li><code>env -i</code> rebuilds the environment from an allow-list. The sandbox doesn&rsquo;t filter environment variables, so this is where shell secrets stay out.</li>
+<li><code>cd /</code> is there because the client spawns the server from the session&rsquo;s directory. If that directory is read-denied, the process fails before <code>main</code> runs.</li>
+</ul>
+<p>The MCP registration then points at the wrapper and not at the binary.</p>
+<h2 id="when-something-is-denied">When something is denied</h2>
+<p>A denial has three possible meanings, and I decide which one before touching anything.</p>
+<p>Real breakage: the tool fails and the path is one it needs. I add the narrowest allow to the manifest, render, and restart the process.</p>
+<p>Expected noise: the tool works and the denial is a library probing. My <code>curl</code> run above also tried to read three preference files under <code>~/Library</code> that it didn&rsquo;t need. Those get a line in the watcher&rsquo;s ignore list, with a comment saying why.</p>
+<p>A sign of compromise: a read of <code>~/.ssh</code>, or a network attempt from a process with no allowed hosts, most of all right after a version bump. I don&rsquo;t allow it and I don&rsquo;t silence it. I diff the dependencies against the previous pins.</p>
+<p>The rule under all three: never allow or silence a denial I can&rsquo;t explain.</p>
+<h2 id="what-stays-outside">What stays outside</h2>
+<p>Seven services and two MCP servers in the public repo launch this way, and my private config repo wires a few more. Not everything is in.</p>
+<ul>
+<li>My code search service pulls repos over SSH. The proxy can&rsquo;t carry that, and SSH needs the keys the sandbox exists to keep out. Its manifest says <code>sandbox: none</code> and why.</li>
+<li>The code search and task-state MCP servers are my own code and run unsandboxed. That is trust, not containment.</li>
+<li>The text-to-speech engine needs graphics access that srt has no setting for. It keeps a hand-written seatbelt profile.</li>
+<li>Claude Code&rsquo;s own shell sandbox is off on my machines. It broke too much of my tooling.</li>
+</ul>
+<p>And these are the limits I live with:</p>
+<ul>
+<li>Denial reporting is lossy. macOS reports a denial once and throttles a binary that keeps violating, so the ledger is a signal and not an audit trail. Enforcement doesn&rsquo;t depend on the report.</li>
+<li>A process that may read source can read a token someone left in a YAML file. The nested denies cover <code>.env</code> and key files only. I accept that because the hosts are pinned.</li>
+<li>Go binaries need a weaker network setting to verify TLS certificates. The srt README warns that it opens a possible leak path.</li>
+<li>Each sandboxed process costs one extra srt process beside it, about 48 MB under bun in my measurement.</li>
+</ul>
+<h2 id="what-i-would-do-differently">What I would do differently</h2>
+<p>I would write the manifest first. I started with hand-written settings files, and review only became easy once the YAML existed.</p>
+<p>I would put the launcher in one binary from the start. For a short while the widen-only rules lived twice, as jq in a shell launcher and as Go in the tool that explains the policy. Two copies of a security rule is one too many, so the launcher became a shim over the Go code.</p>
+<p>One wart is still there. A host that differs per machine comes from the wrapper at launch, so the egress policy lives in two places: the manifest and the wrapper. A wrapper change is a policy change and has to be reviewed like one.</p>
+<p>The tool, the manifests and the full walkthrough are in <a href="https://github.com/mad01/thismoon">thismoon</a>, under <code>tools/srtspec</code> and <a href="https://github.com/mad01/thismoon/blob/main/docs/SANDBOXING.md"><code>docs/SANDBOXING.md</code></a>. The decision records beside it say why each piece is there.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Blog post on sandboxing local MCP servers and local web services on macOS with Anthropic&#x27;s open source sandbox runtime (srt, npm @anthropic-ai/sandbox-runtime, a beta research preview at version 0.0.81). Describes the setup in github.com/mad01/thismoon: one access manifest per process (spec.access in service-info.yaml or a standalone access.yaml) as the source of truth, the srtspec tool that renders manifests to srt settings JSON, checks them for drift in CI, launches processes (srtspec run, installed as srt-run) and explains the effective policy, a machine-local layer that may only widen access, a watcher that turns kernel sandbox denials into notifications, and a three-outcome triage routine. Includes a worked example with real command output: a denied file read, a denied network call, widening the manifest, and verifying. States the limits: srt is a 0.0.x preview, some processes stay unsandboxed, denial reporting is lossy.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "A local MCP server runs as you",
+    "datePublished": "2026-11-14",
+    "description": "Claude Code's sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic's sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/sandboxing-local-services-and-mcp-servers/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>
