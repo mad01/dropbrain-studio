@@ -1,6 +1,6 @@
 ---
 title: "A local MCP server runs as you"
-date: 2026-11-14
+date: 2026-11-11
 slug: sandboxing-local-services-and-mcp-servers
 description: "Claude Code's sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic's sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy."
 tags: claude-code, mcp, sandboxing, security, macos, developer-tools
@@ -81,7 +81,7 @@ curl: (56) CONNECT tunnel failed, response 403
 Both fail closed. The kernel refuses the file read, and srt's proxy refuses the request. On my machine the watcher wrote this to its ledger:
 
 ```
-2026-11-14 10:11:02  ALERT  demo · head(42359) · file-read-data · /Users/me/code/src/github.com/mad01/thismoon/README.md
+2026-11-11 10:11:02  ALERT  demo · head(42359) · file-read-data · /Users/me/code/src/github.com/mad01/thismoon/README.md
 ```
 
 That line is the whole point of the label. The launcher starts the command as `env SRT_RUN=demo ...`, srt tags each deny rule with the command, and the watcher decodes the label back out. Without my watcher you can see the raw line yourself:

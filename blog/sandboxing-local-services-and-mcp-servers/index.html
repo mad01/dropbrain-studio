@@ -337,7 +337,7 @@ footer a:hover {
         <div class="post-header">
             <h1 class="post-title">A local MCP server runs as you</h1>
             <div class="post-meta">
-                <span class="post-date">November 14, 2026</span>
+                <span class="post-date">November 11, 2026</span>
                 <div class="post-tags"><span class="tag">claude-code</span><span class="tag">mcp</span><span class="tag">sandboxing</span><span class="tag">security</span><span class="tag">macos</span><span class="tag">developer-tools</span></div>
             </div>
         </div>
@@ -391,7 +391,7 @@ srt-run: demo runtime bun
 curl: (56) CONNECT tunnel failed, response 403
 </code></pre>
 <p>Both fail closed. The kernel refuses the file read, and srt&rsquo;s proxy refuses the request. On my machine the watcher wrote this to its ledger:</p>
-<pre><code>2026-11-14 10:11:02  ALERT  demo · head(42359) · file-read-data · /Users/me/code/src/github.com/mad01/thismoon/README.md
+<pre><code>2026-11-11 10:11:02  ALERT  demo · head(42359) · file-read-data · /Users/me/code/src/github.com/mad01/thismoon/README.md
 </code></pre>
 <p>That line is the whole point of the label. The launcher starts the command as <code>env SRT_RUN=demo ...</code>, srt tags each deny rule with the command, and the watcher decodes the label back out. Without my watcher you can see the raw line yourself:</p>
 <pre><code class="language-bash">/usr/bin/log stream --predicate 'eventMessage CONTAINS &quot;deny(1)&quot;'
@@ -481,7 +481,7 @@ exec /usr/bin/env -i &quot;${env_allow[@]}&quot; \
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": "A local MCP server runs as you",
-    "datePublished": "2026-11-14",
+    "datePublished": "2026-11-11",
     "description": "Claude Code's sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic's sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy.",
     "author": {
         "@type": "Organization",
