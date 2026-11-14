@@ -509,20 +509,29 @@ footer a:hover {
         <section aria-labelledby="latest-title">
             <div class="lead-bar">
                 <h1 id="latest-title">Latest posts</h1>
-                <a href="#all-posts">All 38 posts &darr;</a>
+                <a href="#all-posts">All 39 posts &darr;</a>
             </div>
             <div class="lead">
                 <article class="card card-main" style="animation-delay: 0.1s;">
                     
                     <div class="card-body">
-                        <div class="card-meta"><span class="meta-tag">claude-code</span><time datetime="2026-11-14">Nov 14, 2026</time></div>
-                        <h2 class="card-title"><a href="/blog/sandboxing-local-services-and-mcp-servers/">A local MCP server runs as you</a></h2>
-                        <p class="card-desc">Claude Code&#x27;s sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic&#x27;s sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy.</p>
+                        <div class="card-meta"><span class="meta-tag">security</span><time datetime="2026-11-14">Nov 14, 2026</time></div>
+                        <h2 class="card-title"><a href="/blog/osv-scanner-vs-deps/">I tested osv-scanner against my own dependency scanner</a></h2>
+                        <p class="card-desc">I ran Google&#x27;s osv-scanner over the same repos as deps, the small scanner I maintain. The findings overlapped on one package out of 25. Why that is, what each tool is for, and why I&#x27;m keeping mine.</p>
                         <span class="button" aria-hidden="true">Read more <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
                     </div>
                 </article>
                 <div class="lead-col lead-left">
                 <article class="card card-side" style="animation-delay: 0.18s;">
+                    
+                    <div class="card-body">
+                        <div class="card-meta"><span class="meta-tag">claude-code</span><time datetime="2026-11-14">Nov 14, 2026</time></div>
+                        <h2 class="card-title"><a href="/blog/sandboxing-local-services-and-mcp-servers/">A local MCP server runs as you</a></h2>
+                        <p class="card-desc">Claude Code&#x27;s sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic&#x27;s sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy.</p>
+                        
+                    </div>
+                </article>
+                <article class="card card-side" style="animation-delay: 0.26s;">
                     
                     <div class="card-body">
                         <div class="card-meta"><span class="meta-tag">claude-code</span><time datetime="2026-11-01">Nov 1, 2026</time></div>
@@ -531,6 +540,8 @@ footer a:hover {
                         
                     </div>
                 </article>
+                </div>
+                <div class="lead-col lead-right">
                 <article class="card card-side" style="animation-delay: 0.26s;">
                     
                     <div class="card-body">
@@ -540,23 +551,12 @@ footer a:hover {
                         
                     </div>
                 </article>
-                </div>
-                <div class="lead-col lead-right">
-                <article class="card card-side" style="animation-delay: 0.26s;">
+                <article class="card card-side" style="animation-delay: 0.34s;">
                     
                     <div class="card-body">
                         <div class="card-meta"><span class="meta-tag">mcp</span><time datetime="2026-04-16">Apr 16, 2026</time></div>
                         <h2 class="card-title"><a href="/blog/csl-local-mcp-for-code-search/">Your code-search MCP shouldn&#x27;t leave your laptop</a></h2>
                         <p class="card-desc">code-search-local (csl) is a zoekt-backed local code search CLI with a built-in MCP stdio server. No cloud, no auth, no vendor. Just a binary and your filesystem.</p>
-                        
-                    </div>
-                </article>
-                <article class="card card-side" style="animation-delay: 0.34s;">
-                    
-                    <div class="card-body">
-                        <div class="card-meta"><span class="meta-tag">mcp</span><time datetime="2026-04-10">Apr 10, 2026</time></div>
-                        <h2 class="card-title"><a href="/blog/mcp-stdio-tools-not-services/">MCP stdio is just a subprocess</a></h2>
-                        <p class="card-desc">Exposing a local code-search CLI to Claude Code as native tools via MCP&#x27;s stdio transport. No daemon, no port, just a subprocess the client spawns per call.</p>
                         
                     </div>
                 </article>
@@ -566,7 +566,7 @@ footer a:hover {
 
         <section class="archive" id="all-posts" aria-labelledby="archive-title">
             <h2 class="archive-title" id="archive-title">All posts</h2>
-            <p class="archive-count" id="post-count" aria-live="polite">38 posts</p>
+            <p class="archive-count" id="post-count" aria-live="polite">39 posts</p>
 
             <div class="controls" id="post-controls" hidden>
                 <label class="control">
@@ -575,12 +575,12 @@ footer a:hover {
                         <option value="">All tags</option>
                         <option value="python">python (10)</option>
                         <option value="claude-code">claude-code (6)</option>
+                        <option value="developer-tools">developer-tools (6)</option>
                         <option value="docker">docker (6)</option>
                         <option value="testing">testing (6)</option>
-                        <option value="developer-tools">developer-tools (5)</option>
-                        <option value="go">go (4)</option>
+                        <option value="go">go (5)</option>
+                        <option value="mcp">mcp (5)</option>
                         <option value="ios">ios (4)</option>
-                        <option value="mcp">mcp (4)</option>
                         <option value="aws">aws (3)</option>
                         <option value="ai">ai (2)</option>
                         <option value="backup">backup (2)</option>
@@ -593,6 +593,7 @@ footer a:hover {
                         <option value="migraine">migraine (2)</option>
                         <option value="privacy">privacy (2)</option>
                         <option value="productivity">productivity (2)</option>
+                        <option value="security">security (2)</option>
                         <option value="selenium">selenium (2)</option>
                         <option value="swift">swift (2)</option>
                         <option value="zsh">zsh (2)</option>
@@ -620,6 +621,12 @@ footer a:hover {
                 <span>Title</span><span>Description</span><span class="cell-tags">Tags</span><span>Date</span>
             </div>
             <div id="post-rows">
+                <a class="row" href="/blog/osv-scanner-vs-deps/" data-date="2026-11-14" data-tags="security|supply-chain|go|developer-tools|mcp" data-search="i tested osv-scanner against my own dependency scanner i ran google&#x27;s osv-scanner over the same repos as deps, the small scanner i maintain. the findings overlapped on one package out of 25. why that is, what each tool is for, and why i&#x27;m keeping mine. security supply-chain go developer-tools mcp">
+                    <span class="cell cell-title">I tested osv-scanner against my own dependency scanner</span>
+                    <span class="cell cell-desc">I ran Google&#x27;s osv-scanner over the same repos as deps, the small scanner I maintain. The findings overlapped on one package out of 25. Why that is, what each tool is for, and why I&#x27;m keeping mine.</span>
+                    <span class="cell cell-tags">security, supply-chain</span>
+                    <time class="cell cell-date" datetime="2026-11-14">Nov 14, 2026</time>
+                </a>
                 <a class="row" href="/blog/sandboxing-local-services-and-mcp-servers/" data-date="2026-11-14" data-tags="claude-code|mcp|sandboxing|security|macos|developer-tools" data-search="a local mcp server runs as you claude code&#x27;s sandbox covers shell commands only, so a local mcp server or web service runs with your full access. how i confine mine with anthropic&#x27;s sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy. claude-code mcp sandboxing security macos developer-tools">
                     <span class="cell cell-title">A local MCP server runs as you</span>
                     <span class="cell cell-desc">Claude Code&#x27;s sandbox covers shell commands only, so a local MCP server or web service runs with your full access. How I confine mine with Anthropic&#x27;s sandbox runtime, one access manifest per process, and a small tool that renders and checks the policy.</span>

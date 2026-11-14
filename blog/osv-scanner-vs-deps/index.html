@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I tested osv-scanner against my own dependency scanner — dropbrain blog</title>
+    <meta name="description" content="I ran Google&#x27;s osv-scanner over the same repos as deps, the small scanner I maintain. The findings overlapped on one package out of 25. Why that is, what each tool is for, and why I&#x27;m keeping mine.">
+    <meta property="og:title" content="I tested osv-scanner against my own dependency scanner">
+    <meta property="og:description" content="I ran Google&#x27;s osv-scanner over the same repos as deps, the small scanner I maintain. The findings overlapped on one package out of 25. Why that is, what each tool is for, and why I&#x27;m keeping mine.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dropbrain.io/blog/osv-scanner-vs-deps/">
+    
+    <script>try{if(localStorage.getItem('db-theme')==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
+    <link rel="stylesheet" href="/assets/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/atom-one-dark.min.css">
+    <style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neutral palette (light default + dark) lives in /assets/theme.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        #61BB46, #FDB827, #F5821F, #E03A3E, #963D97, #009DDC
+    );
+}
+
+a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--text);
+}
+
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+header {
+    padding: 44px 0 0;
+    animation: fadeDown 0.7s ease both;
+}
+
+.wordmark {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', 'Monaco', 'Cascadia Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.wordmark span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 2px;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.55s ease 0.55s both;
+}
+
+footer a {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+footer a:hover {
+    color: var(--text);
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+    header {
+        padding: 32px 0 0;
+    }
+    footer {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .page {
+        padding: 0 16px;
+    }
+}
+
+.post-header {
+    padding: 56px 0 32px;
+    animation: fadeUp 0.7s ease 0.1s both;
+}
+
+.post-title {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.post-meta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.post-date {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.post-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-tags .tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.01em;
+}
+
+.post-content {
+    padding-bottom: 56px;
+    animation: fadeUp 0.7s ease 0.2s both;
+}
+
+.post-content h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 48px 0 16px;
+    color: var(--text);
+}
+
+.post-content h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 40px 0 14px;
+    color: var(--text);
+}
+
+.post-content h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 32px 0 12px;
+    color: var(--text);
+}
+
+.post-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--text-secondary);
+}
+
+.post-content p {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+    margin: 0 0 18px 24px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.72;
+}
+
+.post-content li {
+    margin-bottom: 6px;
+}
+
+.post-content li::marker {
+    color: var(--text-muted);
+}
+
+.post-content blockquote {
+    border-left: 3px solid var(--border-hover);
+    margin: 24px 0;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+}
+
+.post-content blockquote p {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.post-content code {
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'Menlo', monospace;
+    font-size: 0.88em;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--text);
+}
+
+.post-content pre {
+    margin: 24px 0;
+    border-radius: 10px;
+    overflow-x: auto;
+    background: #282c34;
+    padding: 16px 18px;
+}
+
+.post-content pre code {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #abb2bf; /* atom-one-dark foreground — code blocks stay dark in both themes */
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 24px 0;
+    display: block;
+}
+
+.post-content .image-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.post-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--border-hover);
+    transition: text-decoration-color 0.2s ease;
+}
+
+.post-content a:hover {
+    text-decoration-color: var(--text);
+}
+
+.post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.post-content th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+}
+
+.post-content td {
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.post-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+}
+
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <a href="/blog/" class="wordmark">&larr; dropbrain<span>.studio/blog</span></a>
+        </header>
+
+        <div class="post-header">
+            <h1 class="post-title">I tested osv-scanner against my own dependency scanner</h1>
+            <div class="post-meta">
+                <span class="post-date">November 14, 2026</span>
+                <div class="post-tags"><span class="tag">security</span><span class="tag">supply-chain</span><span class="tag">go</span><span class="tag">developer-tools</span><span class="tag">mcp</span></div>
+            </div>
+        </div>
+
+        <article class="post-content">
+<h1 id="i-tested-osv-scanner-against-my-own-dependency-scanner">I tested osv-scanner against my own dependency scanner</h1>
+<p>I maintain a small dependency scanner called <a href="https://github.com/mad01/thismoon/tree/main/services/deps">deps</a>. It runs on my Mac and reads the packages my repos pin. Each version gets checked against the Open Source Vulnerabilities (OSV) database at <a href="https://osv.dev">osv.dev</a>, and the result shows up on a local page at <code>deps.this</code>. That is about 6,900 lines of Go, and I am the one who has to keep them working.</p>
+<p>Google ships <a href="https://github.com/google/osv-scanner">osv-scanner</a> for the same database. It has a team behind it, a release about once a month, and a feature list much longer than mine. So I had to ask whether my tool still earns its place. I spent a morning finding out.</p>
+<h2 id="the-setup">The setup</h2>
+<p>I installed nothing. <code>go run</code> fetches and builds a pinned version:</p>
+<pre><code class="language-bash">go run github.com/google/osv-scanner/v2/cmd/osv-scanner@v2.7.1 \
+  scan source -r --format json --output-file out.json &lt;dirs&gt;
+</code></pre>
+<p>v2.7.1 was the newest tag, published on 2026-11-09. Exit code 1 means it found something. I gave it 26 repo directories by name. deps scanned the 11 repos in its registry, plus the install trees of 6 command-line tools that <a href="https://mise.jdx.dev">mise</a> put on the machine.</p>
+<p>Pass the directories one by one. The help text says <code>--x-exclude</code> takes &ldquo;just dirname for exact match&rdquo;. In a scratch test, <code>--x-exclude skipme</code> still scanned the directory named <code>skipme</code>, while <code>--x-exclude 'g:**/skipme'</code> skipped it.</p>
+<table>
+<thead>
+<tr>
+<th>run</th>
+<th>wall time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>first <code>go run</code>, download and compile</td>
+<td>45.8 s</td>
+</tr>
+<tr>
+<td>osv-scanner, 26 repos, Go call analysis on (the default)</td>
+<td>14 to 16 s</td>
+</tr>
+<tr>
+<td>osv-scanner, 26 repos, <code>--no-call-analysis=go</code></td>
+<td>10 to 20 s</td>
+</tr>
+<tr>
+<td><code>deps check</code>, 11 repos and 6 tools</td>
+<td>32 to 36 s</td>
+</tr>
+</tbody>
+</table>
+<p>This isn&rsquo;t like for like. deps runs <code>go list</code> in every module and asks three package registries about each version. The spread in the osv-scanner rows is the network. Both are fast enough for a job that runs once a day.</p>
+<h2 id="what-each-one-saw">What each one saw</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>deps</th>
+<th>osv-scanner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>packages checked</td>
+<td>623</td>
+<td>461</td>
+</tr>
+<tr>
+<td>Go modules in thismoon</td>
+<td>275</td>
+<td>108</td>
+</tr>
+<tr>
+<td>npm packages in two lockfiles</td>
+<td>49 and 39</td>
+<td>49 and 39</td>
+</tr>
+<tr>
+<td>one <code>requirements.txt</code></td>
+<td>2</td>
+<td>44</td>
+</tr>
+<tr>
+<td>Swift <code>Package.resolved</code> files</td>
+<td>6</td>
+<td>3</td>
+</tr>
+<tr>
+<td>GitHub Actions refs</td>
+<td>39 in 5 repos</td>
+<td>none</td>
+</tr>
+<tr>
+<td>tools installed by mise</td>
+<td>6</td>
+<td>none</td>
+</tr>
+<tr>
+<td>repos with a <code>yarn.lock</code> or <code>pubspec.lock</code></td>
+<td>none</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>The Go row is the big one. deps reads the full module graph from <code>go list -m all</code>. osv-scanner reads the lines in <code>go.mod</code>. Most of what follows comes from that difference.</p>
+<h2 id="why-the-findings-barely-overlap">Why the findings barely overlap</h2>
+<p>In the 11 repos both tools scanned, they flagged 25 packages between them.</p>
+<table>
+<thead>
+<tr>
+<th>flagged by</th>
+<th>packages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>both</td>
+<td>1</td>
+</tr>
+<tr>
+<td>deps only</td>
+<td>18</td>
+</tr>
+<tr>
+<td>osv-scanner only</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>The shared one is <code>github.com/klauspost/compress@1.18.7</code>, advisory GO-2026-6865. It is a line in thismoon&rsquo;s <code>go.mod</code>, so both tools see it. deps marks it &ldquo;not imported&rdquo;. osv-scanner reports <code>"called": false</code>. <code>go mod why -m</code> shows why: only a test inside a dependency needs it. The two tools get to the same answer by different routes. deps asks whether any package of the module is compiled in. osv-scanner runs govulncheck and asks whether the vulnerable function is called, which is the finer question.</p>
+<p>The 18 that only deps found are all in the module graph and not in a <code>go.mod</code>. None is compiled in. One of my command-line tools carries a <code>golang.org/x/crypto</code> from 2021 with 46 advisories on it:</p>
+<pre><code>$ go mod why -m golang.org/x/crypto
+# golang.org/x/crypto
+(main module does not need module golang.org/x/crypto)
+</code></pre>
+<p>It is in the graph because some other module&rsquo;s <code>go.mod</code> names it. deps puts these under &ldquo;Not compiled in&rdquo;, dims them and never sends a notification. osv-scanner leaves them out. If the question is what to fix, leaving them out is the better answer. I like seeing what the graph could pull in, but I can&rsquo;t count 18 dimmed rows as 18 catches.</p>
+<p>The 6 that only osv-scanner found come from one <code>requirements.txt</code>. It has two exact pins and one unpinned package. deps reads the two pins and stops. osv-scanner resolves the file into 44 packages and flags six of them. As far as I can tell it asks <a href="https://deps.dev">deps.dev</a> for the versions; its docs describe that lookup only for Maven. The resolved versions include setuptools 9.1.0, uploaded to PyPI in December 2014. I doubt a fresh install picks that. I can&rsquo;t prove it, because there is no lockfile, so neither tool knows what pip would install. osv-scanner made a guess; deps didn&rsquo;t look. The fix is on my side: write a lockfile.</p>
+<p>Three things sit outside that table.</p>
+<ul>
+<li>osv-scanner flagged ten packages in repos deps never scanned, because I had never registered them. That is the real miss of the morning, and all it needs is a few lines in the registry.</li>
+<li>The one finding deps counts as live today is in the install tree of an npm tool that mise installed. No repo pins it, so a scan of repo directories can&rsquo;t find it.</li>
+<li>Three of my six <code>Package.resolved</code> files sit inside an <code>*.xcodeproj</code> that <code>.gitignore</code> covers, and osv-scanner honours <code>.gitignore</code>. <code>--no-ignore</code> finds them, along with every build directory. The package count went from 461 to 1,382.</li>
+</ul>
+<h2 id="what-each-tool-is-for">What each tool is for</h2>
+<p>osv-scanner answers a question you ask: is this tree vulnerable right now? It does a lot that deps can&rsquo;t.</p>
+<ul>
+<li>Call analysis for Go and Rust, down to the function.</li>
+<li><code>osv-scanner fix</code>, which suggests the upgrades that remove a finding.</li>
+<li>Licence scanning, an offline mode, and container image scans.</li>
+<li>SARIF, CycloneDX, SPDX and HTML output for other tools to read.</li>
+<li>More ecosystems. It read the <code>yarn.lock</code> and the Dart <code>pubspec.lock</code> that deps has no parser for.</li>
+<li>Ignore rules that expire on a date. I tested that one, and it works.</li>
+<li>An <code>experimental-mcp</code> mode. It is a Model Context Protocol (MCP) server with three tools: <code>scan_vulnerable_dependencies</code>, <code>get_vulnerability_details</code> and <code>ignore_vulnerability</code>.</li>
+</ul>
+<p>deps answers a question I forget to ask: did something I already pinned or installed go bad since yesterday?</p>
+<ul>
+<li>A registry of repos and a daily loop that catches up after the Mac sleeps.</li>
+<li>One macOS banner per scan, and events in my local event log.</li>
+<li>An acknowledgement tied to the exact version, so a finding comes back when the version changes.</li>
+<li>What the registries say: a version withdrawn, yanked, quarantined or deprecated on npm, PyPI or the Go proxy, often before an advisory exists.</li>
+<li>GitHub Actions refs, with a warning when a ref is a tag that can be moved.</li>
+<li>Browser libraries a script downloads, and the trees of tools mise installs.</li>
+<li>A web page and an MCP server that show the same scan.</li>
+</ul>
+<p>Only the Go, npm, Python and Swift parsing overlaps, and that is the part of deps I maintain least.</p>
+<h2 id="the-decision">The decision</h2>
+<p>I&rsquo;m keeping deps, with three changes.</p>
+<ol>
+<li>The unregistered repos go into the registry. That closes the gap that mattered.</li>
+<li>The <code>requirements.txt</code> gets a lockfile.</li>
+<li>I&rsquo;ll look at running govulncheck per module, so &ldquo;not imported&rdquo; can become &ldquo;not called&rdquo;.</li>
+</ol>
+<p>I also asked what it would take to put osv-scanner under deps as the engine. A rough count, which I haven&rsquo;t checked line by line: about 1,500 of the 6,900 lines would go, about 700 would be rewritten, and the rest would stay. The module graph view would be lost. That saves less than a quarter of the code, and I would then follow someone else&rsquo;s JSON schema.</p>
+<p>What would change my mind:</p>
+<ul>
+<li>A need for Rust, Dart or yarn support. I would call osv-scanner before I wrote those parsers.</li>
+<li>osv-scanner learning to read Actions refs and installed tool trees, and to watch the registries.</li>
+<li>A move to shared repos with continuous integration. There osv-scanner in the pipeline is the right tool, and a banner on one Mac isn&rsquo;t.</li>
+</ul>
+<p>The morning was worth it for the registry gap alone. osv-scanner is the better scanner, and I&rsquo;ll keep running it by hand now and then as a second opinion. What I need every day is the watching, and that part is deps. The code is in <a href="https://github.com/mad01/thismoon">thismoon</a>.</p>
+        </article>
+
+        <footer>
+            <a href="/blog/">&larr; Back to blog</a>
+            <a href="/">dropbrain.studio</a>
+        </footer>
+    </div>
+
+    <section class="ai-context" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);" aria-hidden="true">Blog post comparing Google&#x27;s osv-scanner (v2.7.1, run with go run, scan source -r) against deps, a local dependency scanner in github.com/mad01/thismoon (services/deps) that checks pinned versions against OSV.dev on a daily loop and serves a local page. Reports timings (osv-scanner 14 to 16 s over 26 repos, deps check 32 to 36 s over 11 repos and 6 mise tools), coverage differences (deps reads the full Go module graph from go list -m all, 275 modules, where osv-scanner reads the 108 go.mod lines; osv-scanner resolves a requirements.txt transitively through deps.dev, 44 packages against 2 pins; osv-scanner honours .gitignore; deps reads GitHub Actions refs and mise-installed tool trees), and findings parity in repos both scanned: 1 flagged package in both, 18 only in deps (all in the module graph but not compiled in), 6 only in osv-scanner (all from deps.dev resolving one requirements.txt with no lockfile). Lists what only each tool has (osv-scanner: govulncheck call analysis, guided remediation, licence scanning, offline mode, SARIF, CycloneDX and SPDX output, container images, more ecosystems, ignore rules with expiry, an experimental MCP mode; deps: a repo registry with a daily loop, macOS banner, registry signals, Actions refs, vendored JavaScript, a web page and an MCP server). Decision: keep deps, register the missing repos, look at borrowing call analysis, and the conditions that would reverse the decision.</section>
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "I tested osv-scanner against my own dependency scanner",
+    "datePublished": "2026-11-14",
+    "description": "I ran Google's osv-scanner over the same repos as deps, the small scanner I maintain. The findings overlapped on one package out of 25. Why that is, what each tool is for, and why I'm keeping mine.",
+    "author": {
+        "@type": "Organization",
+        "name": "dropbrain studio"
+    },
+    "url": "https://dropbrain.io/blog/osv-scanner-vs-deps/"
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script defer src="/assets/theme.js"></script>
+</body>
+</html>
